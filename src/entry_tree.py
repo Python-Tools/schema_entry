@@ -177,18 +177,18 @@ class EntryPoint:
             argv (Sequence[str]): [description]
 
         """
-        if len(self._subcmds) != 0:
-            self.pass_args_to_sub(argv)
-        else:
-            self.parse_args(argv)
-
-    def pass_args_to_sub(self, argv: Sequence[str]) -> None:
-        """解析复杂命令行参数并将参数传递至下一级."""
         parser = argparse.ArgumentParser(
             prog=self.prog,
             epilog=self.epilog,
             description=self.description,
             usage=self.__doc__)
+        if len(self._subcmds) != 0:
+            self.pass_args_to_sub(parser,argv)
+        else:
+            self.parse_args(parser,argv)
+
+    def pass_args_to_sub(self, parser:argparse.ArgumentParser,argv: Sequence[str]) -> None:
+        """解析复杂命令行参数并将参数传递至下一级."""
         parser.add_argument('subcmd', help='执行子命令')
         args = parser.parse_args(argv[0:1])
         if self._subcmds.get(args.subcmd):
@@ -198,7 +198,7 @@ class EntryPoint:
             parser.print_help()
             sys.exit(1)
 
-    def parse_commandline_args(self,argv: Sequence[str])->Dict[str,Any]:
+    def parse_commandline_args(self,parser:argparse.ArgumentParser,argv: Sequence[str])->Dict[str,Any]:
         """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
         return {}
 
@@ -341,7 +341,7 @@ class EntryPoint:
         for callback in self._callbacks:
             callback(self.config)
         
-    def parse_args(self,argv: Sequence[str])->None:
+    def parse_args(self,parser:argparse.ArgumentParser,argv: Sequence[str])->None:
         """解析参数.
 
         解析顺序: 指定的文件->环境变量->命令行参数.
@@ -356,7 +356,7 @@ class EntryPoint:
         self._config.update(file_config)
         env_config = self.parse_env_args()
         self._config.update(env_config)
-        cmd_config = self.parse_commandline_args(argv)
+        cmd_config = self.parse_commandline_args(parser,argv)
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_callback()
