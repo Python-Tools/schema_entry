@@ -54,20 +54,20 @@ import warnings
 import argparse
 import functools
 from pathlib import Path
-from typing import Callable, Sequence,List, Dict, Any,Optional
+from typing import Callable, Sequence,List,Dict, Any, Optional
 
 from jsonschema import validate
 
 
-def _get_parent_tree(c:"EntryPoint",result:List[str])->None:
+def _get_parent_tree(c: "EntryPoint", result: List[str]) -> None:
     if c.parent:
-        result.append(c.parent.name) 
-        _get_parent_tree(c.parent,result)
+        result.append(c.parent.name)
+        _get_parent_tree(c.parent, result)
     else:
         return
 
 
-def get_parent_tree(c:"EntryPoint")->List[str]:
+def get_parent_tree(c: "EntryPoint") -> List[str]:
     """获取父节点树.
 
     Args:
@@ -75,10 +75,10 @@ def get_parent_tree(c:"EntryPoint")->List[str]:
 
     Returns:
         List[str]: 父节点树
-    
+
     """
-    result_list:List[str] = []
-    _get_parent_tree(c,result_list)
+    result_list: List[str] = []
+    _get_parent_tree(c, result_list)
     return list(reversed(result_list))
 
 
@@ -86,25 +86,25 @@ class EntryPoint:
     """入口类基类."""
 
     epilog: str = ""
-    description: str =""
-    parent:Optional["EntryPoint"] = None
+    description: str = ""
+    parent: Optional["EntryPoint"] = None
 
-    schema:Optional[Dict[str,Any]] = None
-    
-    default_config_file_paths:Sequence[str] = []
-    env_prefix:Optional[str]=None
+    schema: Optional[Dict[str, Any]] = None
+
+    default_config_file_paths: Sequence[str] = []
+    env_prefix: Optional[str] = None
 
     _subcmds: Dict[str, "EntryPoint"]
-    _callbacks: List[Callable[[Dict[str,Any]],None]]
-    _config:Dict[str,Any]
+    _callbacks: List[Callable[[Dict[str, Any]], None]]
+    _config: Dict[str, Any]
 
-    def __init__(self)->None:
+    def __init__(self) -> None:
         self._subcmds = {}
         self._callbacks = []
         self._config = {}
 
     @property
-    def name(self)->str:
+    def name(self) -> str:
         """实例的名字.
 
         实例名字就是它的构造类名.
@@ -112,18 +112,16 @@ class EntryPoint:
         return self.__class__.__name__
 
     @property
-    def prog(self)->str:
+    def prog(self) -> str:
         """命令路径."""
         parent_list = get_parent_tree(self)
         parent_list.append(self.name)
         return " ".join(parent_list)
 
     @property
-    def config(self)->Dict[str,Any]:
+    def config(self) -> Dict[str, Any]:
         """执行配置."""
         return self._config
-
-    
 
     def regist_subcmd(self, subcmd: "EntryPoint") -> None:
         """注册子命令.
@@ -132,10 +130,10 @@ class EntryPoint:
             subcmd (EntryPoint): 子命令的实例
 
         """
-        subcmd.parent=self
+        subcmd.parent = self
         self._subcmds[subcmd.name] = subcmd
-    
-    def regist_sub(self,subcmdclz:type)->"EntryPoint":
+
+    def regist_sub(self, subcmdclz: type) -> "EntryPoint":
         """注册子命令.
 
         Args:
@@ -143,13 +141,13 @@ class EntryPoint:
 
         Returns:
             [EntryPoint]: 注册类的实例
-    
+
         """
         instance = subcmdclz()
         self.regist_subcmd(instance)
         return instance
 
-    def regist_callback(self,func:Callable[[Dict[str,Any]],None])->Callable[[Dict[str,Any]],None]:
+    def regist_callback(self, func: Callable[[Dict[str, Any]], None]) -> Callable[[Dict[str, Any]], None]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -159,12 +157,11 @@ class EntryPoint:
 
         """
         @functools.wraps(func)
-        def warp(config:Dict[str,Any])->None:
+        def warp(config: Dict[str, Any]) -> None:
             return func(config)
 
         self._callbacks.append(warp)
         return warp
-
 
     def __call__(self, argv: Sequence[str]) -> None:
         """执行命令.
@@ -183,11 +180,11 @@ class EntryPoint:
             description=self.description,
             usage=self.__doc__)
         if len(self._subcmds) != 0:
-            self.pass_args_to_sub(parser,argv)
+            self.pass_args_to_sub(parser, argv)
         else:
-            self.parse_args(parser,argv)
+            self.parse_args(parser, argv)
 
-    def pass_args_to_sub(self, parser:argparse.ArgumentParser,argv: Sequence[str]) -> None:
+    def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         """解析复杂命令行参数并将参数传递至下一级."""
         parser.add_argument('subcmd', help='执行子命令')
         args = parser.parse_args(argv[0:1])
@@ -198,46 +195,46 @@ class EntryPoint:
             parser.print_help()
             sys.exit(1)
 
-    def parse_commandline_args(self,parser:argparse.ArgumentParser,argv: Sequence[str])->Dict[str,Any]:
+    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
         """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
         return {}
 
-    def _parse_env_args_by_type(self,value_str:str,info:Dict[str,Any])->Any:
+    def _parse_env_args_by_type(self, value_str: str, info: Dict[str, Any]) -> Any:
         t = info.get("type")
         if not t:
             return value_str
-        elif t =="string":
+        elif t == "string":
             return value_str
-        elif t =="number":
+        elif t == "number":
             return float(value_str)
         elif t == "integer":
             return int(value_str)
         elif t == "boolean":
             value_u = value_str.upper()
             return True if value_u == "TRUE" else False
-        elif t =="array":
+        elif t == "array":
             item_info = info.get("items")
             if not item_info:
                 return value_str.split(",")
             else:
-                return [self._parse_env_args_by_type(i,item_info) for i in value_str.split(",")]
+                return [self._parse_env_args_by_type(i, item_info) for i in value_str.split(",")]
         elif t == "object":
             properties = info.get("properties")
             if not properties:
                 result = {}
                 for i in value_str.split(";"):
-                    key,value = i.split(":")
-                    result[key]=value
+                    key, value = i.split(":")
+                    result[key] = value
                 return result
             else:
                 result = {}
                 for i in value_str.split(";"):
-                    key,value_s =  i.split(":")
-                    item_info =  properties.get(key)
+                    key, value_s = i.split(":")
+                    item_info = properties.get(key)
                     if not item_info:
-                        result[key]=value_s
+                        result[key] = value_s
                     else:
-                        result[key]= self._parse_env_args_by_type(value_s,item_info)
+                        result[key] = self._parse_env_args_by_type(value_s, item_info)
                 return result
         elif t == "null":
             return None
@@ -245,22 +242,22 @@ class EntryPoint:
             warnings.warn(f"未知的数据类型{t}")
             return value_str
 
-    def _parse_env_args(self,key:str,info:Dict[str,Any])->Any:
+    def _parse_env_args(self, key: str, info: Dict[str, Any]) -> Any:
         if self.env_prefix:
             env_prefix = self.env_prefix.upper()
         else:
-            env_prefix = self.prog.replace(" ","_").upper()
+            env_prefix = self.prog.replace(" ", "_").upper()
         env = os.environ.get(f"{env_prefix}_{key.upper()}")
         if not env:
             if info.get("default"):
                 env = info.get("default")
             else:
-                env=None
+                env = None
         else:
-            env = self._parse_env_args_by_type(env,info)
+            env = self._parse_env_args_by_type(env, info)
         return env
 
-    def parse_env_args(self)->Dict[str,Any]:
+    def parse_env_args(self) -> Dict[str, Any]:
         """从环境变量中读取配置.
 
         必须设定json schema才能从环境变量中读取配置.
@@ -272,12 +269,12 @@ class EntryPoint:
             Dict[str,Any]: 环境变量中解析出来的参数.
 
         """
-        properties:Dict[str,Any]
+        properties: Dict[str, Any]
         if self.schema:
-            properties = self.schema.get("properties",{})
+            properties = self.schema.get("properties", {})
             result = {}
-            for key,info in properties.items():
-                value= self._parse_env_args(key,info)
+            for key, info in properties.items():
+                value = self._parse_env_args(key, info)
                 result.update({
                     key: value
                 })
@@ -285,8 +282,7 @@ class EntryPoint:
         else:
             return {}
 
-
-    def parse_configfile_args(self)->Dict[str,Any]:
+    def parse_configfile_args(self) -> Dict[str, Any]:
         """从指定的配置文件队列中构造配置参数.
 
         目前只支持json格式的配置文件.
@@ -300,14 +296,14 @@ class EntryPoint:
             Dict[str,Any]: 从配置文件中读取到的配置
 
         """
-        if len(self.default_config_file_paths)==0:
+        if len(self.default_config_file_paths) == 0:
             return {}
         else:
             for p_str in self.default_config_file_paths:
                 p = Path(p_str)
                 if p.is_file():
                     if p.suffix == ".json":
-                        with open(p,"r",encoding="utf-8") as f:
+                        with open(p, "r", encoding="utf-8") as f:
                             result = json.load(f)
                         return result
                     else:
@@ -317,12 +313,12 @@ class EntryPoint:
                 warnings.warn(f"配置文件的指定路径都不可用.")
                 return {}
 
-    def validat_config(self)->bool:
+    def validat_config(self) -> bool:
         """校验配置.
 
         Returns:
             bool: 是否通过校验
-        
+
         """
         if self.schema and self.config:
             try:
@@ -336,12 +332,12 @@ class EntryPoint:
             warnings.warn("必须有schema和config才能校验.")
             return True
 
-    def do_callback(self)->None:
+    def do_callback(self) -> None:
         """执行回调."""
         for callback in self._callbacks:
             callback(self.config)
-        
-    def parse_args(self,parser:argparse.ArgumentParser,argv: Sequence[str])->None:
+
+    def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         """解析参数.
 
         解析顺序: 指定的文件->环境变量->命令行参数.
@@ -356,7 +352,7 @@ class EntryPoint:
         self._config.update(file_config)
         env_config = self.parse_env_args()
         self._config.update(env_config)
-        cmd_config = self.parse_commandline_args(parser,argv)
+        cmd_config = self.parse_commandline_args(parser, argv)
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_callback()
