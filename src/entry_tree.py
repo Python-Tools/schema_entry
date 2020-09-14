@@ -54,7 +54,7 @@ import warnings
 import argparse
 import functools
 from pathlib import Path
-from typing import Callable, Sequence,List,Dict, Any, Optional
+from typing import Callable, Sequence, List, Dict, Any, Optional
 
 from jsonschema import validate
 
