@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>简介 &mdash; entry-tree 0.0.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="0.0.0" href="Changelog.html" />
+    <link rel="prev" title="欢迎使用entry_tree!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> entry-tree
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用指引:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id2">特性</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id3">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id4">文档</a></li>
+</ul>
+<p class="caption"><span class="caption-text">版本变更:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Changelog.html">0.0.0</a></li>
+</ul>
+<p class="caption"><span class="caption-text">接口文档:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="entry_tree.html">模块介绍</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">entry-tree</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>简介</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/README.md.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>简介<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>入口树的构造工具.</p>
+<p>这个基类的设计目的是为了配置化入口的定义.通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.</p>
+<p>目前的实现可以依次从指定路径下的json文件,环境变量,命令行参数读取需要的数据.
+然后校验是否符合设定的json schema规定的模式,在符合模式后执行注册进去的回调函数.</p>
+<p>入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.
+他们将参数传递给下一级节点,直到尾部可以执行为止.</p>
+</div>
+<div class="section" id="id2">
+<h1>特性<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h1>
+<ul class="simple">
+<li><p>从默认文件路径,环境变量,命令行参数中获取配置参数</p></li>
+<li><p>通过jsonschema的定义构造环境变量的获取行为</p></li>
+<li><p>配置参数通过jsonschema进行检验</p></li>
+<li><p>可以构造多级命令行命令</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h1>安装<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h1>
+</div>
+<div class="section" id="id4">
+<h1>文档<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h1>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Changelog.html" class="btn btn-neutral float-right" title="0.0.0" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="欢迎使用entry_tree!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, hsz12
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="http://sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

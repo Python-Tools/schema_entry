@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, hsz12
+# This file is distributed under the same license as the entry-tree package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: entry-tree 0.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-15 17:53+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../document/README.md:1
+msgid "简介"
+msgstr ""
+
+#: ../../document/README.md:3
+msgid "入口树的构造工具."
+msgstr ""
+
+#: ../../document/README.md:5
+msgid "这个基类的设计目的是为了配置化入口的定义.通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取."
+msgstr ""
+
+#: ../../document/README.md:7
+msgid ""
+"目前的实现可以依次从指定路径下的json文件,环境变量,命令行参数读取需要的数据. 然后校验是否符合设定的json "
+"schema规定的模式,在符合模式后执行注册进去的回调函数."
+msgstr ""
+
+#: ../../document/README.md:10
+msgid "入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行. 他们将参数传递给下一级节点,直到尾部可以执行为止."
+msgstr ""
+
+#: ../../document/README.md:14
+msgid "特性"
+msgstr ""
+
+#: ../../document/README.md:16
+msgid "从默认文件路径,环境变量,命令行参数中获取配置参数"
+msgstr ""
+
+#: ../../document/README.md:17
+msgid "通过jsonschema的定义构造环境变量的获取行为"
+msgstr ""
+
+#: ../../document/README.md:18
+msgid "配置参数通过jsonschema进行检验"
+msgstr ""
+
+#: ../../document/README.md:19
+msgid "可以构造多级命令行命令"
+msgstr ""
+
+#: ../../document/README.md:21
+msgid "安装"
+msgstr ""
+
+#: ../../document/README.md:23
+msgid "文档"
+msgstr ""
+

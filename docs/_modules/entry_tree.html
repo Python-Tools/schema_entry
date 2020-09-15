@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>entry_tree &mdash; entry-tree 0.0.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> entry-tree
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用指引:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#id2">特性</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#id3">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#id4">文档</a></li>
+</ul>
+<p class="caption"><span class="caption-text">版本变更:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Changelog.html">0.0.0</a></li>
+</ul>
+<p class="caption"><span class="caption-text">接口文档:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../entry_tree.html">模块介绍</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">entry-tree</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">模块代码</a> &raquo;</li>
+        
+      <li>entry_tree</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>entry_tree 源代码</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;入口树的构造工具.</span>
+
+<span class="sd">这个基类的设计目的是为了配置化入口的定义.</span>
+<span class="sd">通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.</span>
+
+<span class="sd">目前的实现可以依次从指定路径下的json文件,环境变量,命令行参数读取需要的数据.</span>
+<span class="sd">然后校验是否符合设定的json schema规定的模式,在符合模式后执行注册进去的回调函数.</span>
+
+<span class="sd">入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.</span>
+<span class="sd">他们将参数传递给下一级节点,直到尾部可以执行为止.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">&gt;&gt;&gt; class ppm(EntryPoint):</span>
+<span class="sd">...     &quot;&quot;&quot;ppm &lt;subcmd&gt; [&lt;args&gt;]</span>
+<span class="sd">...     ppm工具的子命令有:</span>
+<span class="sd">...         工具自身相关:</span>
+<span class="sd">...         help              展示ppm的帮助说明</span>
+<span class="sd">...         version           展示ppm的版本</span>
+<span class="sd">...         reset             将ppm工具的设置初始化</span>
+<span class="sd">...         cache             管理ppm的缓存</span>
+<span class="sd">...     &quot;&quot;&quot;</span>
+<span class="sd">...     epilog = &#39;&#39;</span>
+<span class="sd">...     description = &#39;项目脚手架&#39;</span>
+
+<span class="sd">&gt;&gt;&gt; main = ppm()</span>
+
+<span class="sd">&gt;&gt;&gt; class help(EntryPoint):</span>
+<span class="sd">...     &quot;&quot;&quot;帮助信息.</span>
+<span class="sd">...     ppm help &lt;subcommand&gt;</span>
+<span class="sd">...     ppm工具的子命令有:</span>
+<span class="sd">...         工具自身相关:</span>
+<span class="sd">...         help              展示ppm的帮助说明</span>
+<span class="sd">...         version           展示ppm的版本</span>
+<span class="sd">...         reset             将ppm工具的设置初始化</span>
+<span class="sd">...         cache             管理ppm的缓存</span>
+<span class="sd">...     &quot;&quot;&quot;</span>
+<span class="sd">...     description=&#39;查看子命令的帮助说明&#39;</span>
+
+<span class="sd">&gt;&gt;&gt; main_help = main.regist_sub(help)</span>
+<span class="sd">&gt;&gt;&gt; @main_help.regist_callback</span>
+<span class="sd">... def printconfig(config):</span>
+<span class="sd">...     print(&quot;1231&quot;)</span>
+<span class="sd">...     print(config)</span>
+
+<span class="sd">&gt;&gt;&gt; main([&quot;help&quot;])</span>
+<span class="sd">1231</span>
+<span class="sd">{}</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">validate</span>
+
+
+<span class="k">def</span> <span class="nf">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="s2">&quot;EntryPoint&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span>
+
+
+<div class="viewcode-block" id="get_parent_tree"><a class="viewcode-back" href="../entry_tree.html#entry_tree.get_parent_tree">[文档]</a><span class="k">def</span> <span class="nf">get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="s2">&quot;EntryPoint&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;获取父节点树.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        c (EntryPoint): 节点类</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[str]: 父节点树</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">result_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">result_list</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="EntryPoint"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint">[文档]</a><span class="k">class</span> <span class="nc">EntryPoint</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;入口类基类.&quot;&quot;&quot;</span>
+
+    <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;EntryPoint&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">default_config_file_paths</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">env_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">_subcmds</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;EntryPoint&quot;</span><span class="p">]</span>
+    <span class="n">_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]]</span>
+    <span class="n">_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;实例的名字.</span>
+
+<span class="sd">        实例名字就是它的构造类名.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;命令路径.&quot;&quot;&quot;</span>
+        <span class="n">parent_list</span> <span class="o">=</span> <span class="n">get_parent_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">parent_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_list</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;执行配置.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
+
+<div class="viewcode-block" id="EntryPoint.regist_subcmd"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.regist_subcmd">[文档]</a>    <span class="k">def</span> <span class="nf">regist_subcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmd</span><span class="p">:</span> <span class="s2">&quot;EntryPoint&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;注册子命令.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            subcmd (EntryPoint): 子命令的实例</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subcmd</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">[</span><span class="n">subcmd</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcmd</span></div>
+
+<div class="viewcode-block" id="EntryPoint.regist_sub"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.regist_sub">[文档]</a>    <span class="k">def</span> <span class="nf">regist_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmdclz</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;EntryPoint&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;注册子命令.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            subcmdclz (EntryPoint): 子命令的定义类</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [EntryPoint]: 注册类的实例</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">subcmdclz</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regist_subcmd</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span></div>
+
+<div class="viewcode-block" id="EntryPoint.regist_callback"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.regist_callback">[文档]</a>    <span class="k">def</span> <span class="nf">regist_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;注册函数在解析参数成功后执行.</span>
+
+<span class="sd">        执行顺序按被注册的顺序来.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable[[Dict[str,Any]],None]): 待执行的参数.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">warp</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">warp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">warp</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;执行命令.</span>
+
+<span class="sd">        如果当前的命令节点不是终点(也就是下面还有子命令)则传递参数到下一级;</span>
+<span class="sd">        如果当前节点已经是终点则解析命令行参数,环境变量,指定路径后获取参数,然后构造成配置,并检验是否符合定义的json schema模式.</span>
+<span class="sd">        然后如果通过验证并有注册执行函数的话则执行注册的函数.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            argv (Sequence[str]): [description]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+            <span class="n">prog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="p">,</span>
+            <span class="n">epilog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epilog</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">usage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pass_args_to_sub</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EntryPoint.pass_args_to_sub"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.pass_args_to_sub">[文档]</a>    <span class="k">def</span> <span class="nf">pass_args_to_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;解析复杂命令行参数并将参数传递至下一级.&quot;&quot;&quot;</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;subcmd&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;执行子命令&#39;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">subcmd</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">subcmd</span><span class="p">](</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;未知的子命令 </span><span class="si">{argv[1:]}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntryPoint.parse_commandline_args"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.parse_commandline_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_commandline_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="nf">_parse_env_args_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value_str</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value_str</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value_str</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value_str</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;boolean&quot;</span><span class="p">:</span>
+            <span class="n">value_u</span> <span class="o">=</span> <span class="n">value_str</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">value_u</span> <span class="o">==</span> <span class="s2">&quot;TRUE&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;array&quot;</span><span class="p">:</span>
+            <span class="n">item_info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;items&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item_info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_env_args_by_type</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">item_info</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">properties</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">value_s</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="n">item_info</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">item_info</span><span class="p">:</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_s</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_env_args_by_type</span><span class="p">(</span><span class="n">value_s</span><span class="p">,</span> <span class="n">item_info</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未知的数据类型</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value_str</span>
+
+    <span class="k">def</span> <span class="nf">_parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_prefix</span><span class="p">:</span>
+            <span class="n">env_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_prefix</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">env_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{env_prefix}</span><span class="s2">_{key.upper()}&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">env</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+                <span class="n">env</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">env</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_env_args_by_type</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">env</span>
+
+<div class="viewcode-block" id="EntryPoint.parse_env_args"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.parse_env_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;从环境变量中读取配置.</span>
+
+<span class="sd">        必须设定json schema才能从环境变量中读取配置.</span>
+<span class="sd">        程序会读取schema结构,并解析其中的`properties`字段.如果没有定义schema则不会解析环境变量.</span>
+
+<span class="sd">        如果是列表型的数据,那么使用`,`分隔,如果是object型的数据,那么使用`key:value;key:value`的形式分隔</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str,Any]: 环境变量中解析出来的参数.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">properties</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">:</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_env_args</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
+                <span class="p">})</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="EntryPoint.parse_configfile_args"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.parse_configfile_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_configfile_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;从指定的配置文件队列中构造配置参数.</span>
+
+<span class="sd">        目前只支持json格式的配置文件.</span>
+<span class="sd">        指定的配置文件路径队列中第一个json格式且存在的配置文件将被读取解析.</span>
+<span class="sd">        一旦读取到了配置后面的路径将被忽略.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            argv (Sequence[str]): 配置的可能路径</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str,Any]: 从配置文件中读取到的配置</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_config_file_paths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_config_file_paths</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">p_str</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">result</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;跳过不支持的配置格式的文件{str(p)}&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;配置文件的指定路径都不可用.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="EntryPoint.validat_config"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.validat_config">[文档]</a>    <span class="k">def</span> <span class="nf">validat_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;校验配置.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: 是否通过校验</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;必须有schema和config才能校验.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="EntryPoint.do_callback"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.do_callback">[文档]</a>    <span class="k">def</span> <span class="nf">do_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;执行回调.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntryPoint.parse_args"><a class="viewcode-back" href="../entry_tree.html#entry_tree.EntryPoint.parse_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;解析参数.</span>
+
+<span class="sd">        解析顺序: 指定的文件-&gt;环境变量-&gt;命令行参数.</span>
+
+<span class="sd">        执行顺序: 解析配置-&gt;校验配置-&gt;执行回调</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            argv (Sequence[str]): 命令行参数.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_configfile_args</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">file_config</span><span class="p">)</span>
+        <span class="n">env_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_env_args</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">env_config</span><span class="p">)</span>
+        <span class="n">cmd_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_commandline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cmd_config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validat_config</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_callback</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, hsz12
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="http://sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
