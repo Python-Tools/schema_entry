@@ -9,43 +9,6 @@
 入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.
 他们将参数传递给下一级节点,直到尾部可以执行为止.
 
-Example:
->>> class ppm(EntryPoint):
-...     """ppm <subcmd> [<args>]
-...     ppm工具的子命令有:
-...         工具自身相关:
-...         help              展示ppm的帮助说明
-...         version           展示ppm的版本
-...         reset             将ppm工具的设置初始化
-...         cache             管理ppm的缓存
-...     """
-...     epilog = ''
-...     description = '项目脚手架'
-
->>> main = ppm()
-
->>> class help(EntryPoint):
-...     """帮助信息.
-...     ppm help <subcommand>
-...     ppm工具的子命令有:
-...         工具自身相关:
-...         help              展示ppm的帮助说明
-...         version           展示ppm的版本
-...         reset             将ppm工具的设置初始化
-...         cache             管理ppm的缓存
-...     """
-...     description='查看子命令的帮助说明'
-
->>> main_help = main.regist_sub(help)
->>> @main_help.regist_callback
-... def printconfig(config):
-...     print("1231")
-...     print(config)
-
->>> main(["help"])
-1231
-{}
-
 '''
 import os
 import sys
@@ -134,7 +97,38 @@ class EntryPoint:
         self._subcmds[subcmd.name] = subcmd
 
     def regist_sub(self, subcmdclz: type) -> "EntryPoint":
-        """注册子命令.
+        '''注册子命令.
+
+        Example:
+        >>> class ppm(EntryPoint):
+        ...     """ppm <subcmd> [<args>]
+        ...     ppm工具的子命令有:
+        ...         工具自身相关:
+        ...         help              展示ppm的帮助说明
+        ...         version           展示ppm的版本
+        ...         reset             将ppm工具的设置初始化
+        ...         cache             管理ppm的缓存
+        ...     """
+        ...     epilog = ''
+        ...     description = '项目脚手架'
+        >>> main = ppm()
+        >>> class help(EntryPoint):
+        ...     """帮助信息.
+        ...     ppm help <subcommand>
+        ...     ppm工具的子命令有:
+        ...         工具自身相关:
+        ...         help              展示ppm的帮助说明
+        ...         version           展示ppm的版本
+        ...         reset             将ppm工具的设置初始化
+        ...         cache             管理ppm的缓存
+        ...     """
+        ...     description='查看子命令的帮助说明'
+        >>> main_help = main.regist_sub(help)
+        >>> @main_help.regist_callback
+        ... def printconfig(config):
+        ...     print(config)
+        >>> main(["help"])
+        {}
 
         Args:
             subcmdclz (EntryPoint): 子命令的定义类
@@ -142,7 +136,7 @@ class EntryPoint:
         Returns:
             [EntryPoint]: 注册类的实例
 
-        """
+        '''
         instance = subcmdclz()
         self.regist_subcmd(instance)
         return instance
@@ -196,7 +190,35 @@ class EntryPoint:
             sys.exit(1)
 
     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
-        """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
+        '''默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.
+
+        Example:
+        >>> import argparse
+        >>> from typing import Sequence, Dict, Any
+        >>> class ppm(EntryPoint):
+        ...     """ppm <subcmd> [<args>]"""
+        ...     epilog = ""
+        ...     description = "项目脚手架"
+        ...     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+        ...         """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
+        ...         parser.add_argument('a', type=int, help='a')
+        ...         args = parser.parse_args(argv)
+        ...         return vars(args)
+        >>> main = ppm()
+        >>> @main.regist_callback
+        ... def app(config):
+        ...     print(config)
+        >>> main(["123"])
+        {'a': 123}
+
+        Args:
+            parser (argparse.ArgumentParser): 命令行解析对象
+            argv (Sequence[str]): 待解析的参数列表
+
+        Returns:
+            Dict[str, Any]: 配置
+
+        '''
         return {}
 
     def _parse_env_args_by_type(self, value_str: str, info: Dict[str, Any]) -> Any:
@@ -265,6 +287,33 @@ class EntryPoint:
 
         如果是列表型的数据,那么使用`,`分隔,如果是object型的数据,那么使用`key:value;key:value`的形式分隔
 
+        Example:
+        >>> import os
+        >>> class ppm(EntryPoint):
+        ...     schema = {
+        ...     "$schema": "http://json-schema.org/draft-07/schema#",
+        ...      "examples":[
+        ...             {
+        ...                 "a": 123.1
+        ...             },
+        ...         ],
+        ...         "type": "object",
+        ...         "properties": {
+        ...             "a": {
+        ...                 "type": "number"
+        ...             }
+        ...         },
+        ...         "required": [ "a"]
+        ...     }
+        >>> main = ppm()
+        >>> @main.regist_callback
+        ... def app(config):
+        ...     print(config)
+        >>> os.environ['PPM_A']="123.1"
+        >>> main([])
+        {'a': 123.1}
+
+
         Returns:
             Dict[str,Any]: 环境变量中解析出来的参数.
 
@@ -288,6 +337,16 @@ class EntryPoint:
         目前只支持json格式的配置文件.
         指定的配置文件路径队列中第一个json格式且存在的配置文件将被读取解析.
         一旦读取到了配置后面的路径将被忽略.
+
+        Example:
+        >>> class ppm(EntryPoint):
+        ...     default_config_file_paths=["./test_config.json"]
+        >>> main = ppm()
+        >>> @main.regist_callback
+        ... def app(config):
+        ...     print(config)
+        >>> main([])
+        {'a': 1}
 
         Args:
             argv (Sequence[str]): 配置的可能路径
@@ -316,6 +375,8 @@ class EntryPoint:
     def validat_config(self) -> bool:
         """校验配置.
 
+        在定义好schema后才会进行校验.
+
         Returns:
             bool: 是否通过校验
 
@@ -338,16 +399,54 @@ class EntryPoint:
             callback(self.config)
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
-        """解析参数.
+        '''解析参数.
 
         解析顺序: 指定的文件->环境变量->命令行参数.
 
         执行顺序: 解析配置->校验配置->执行回调
 
+        Example:
+        >>> import os
+        >>> import argparse
+        >>> from typing import Sequence, Dict, Any
+        >>> class ppm(EntryPoint):
+        ...     """ppm <subcmd> [<args>]"""
+        ...     schema = {
+        ...         "$schema": "http://json-schema.org/draft-07/schema#",
+        ...         "examples":[
+        ...             {
+        ...                 "a": 123.1
+        ...             },
+        ...         ],
+        ...         "type": "object",
+        ...         "properties": {
+        ...             "a": {
+        ...                 "type": "number"
+        ...             }
+        ...         },
+        ...         "required": [ "a"]
+        ...     }
+        ...     default_config_file_paths=["./test_config.json"]
+        ...     epilog = ""
+        ...     description = "项目脚手架"
+        ...     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+        ...         """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
+        ...         parser.add_argument('a', type=float, help='a')
+        ...         args = parser.parse_args(argv)
+        ...         return vars(args)
+        >>> main = ppm()
+        >>> @main.regist_callback
+        ... def app(config):
+        ...     print(config)
+        >>> os.environ['PPM_A']="123.1"
+        >>> main(["123.34"])
+        {'a': 123.34}
+
+
         Args:
             argv (Sequence[str]): 命令行参数.
 
-        """
+        '''
         file_config = self.parse_configfile_args()
         self._config.update(file_config)
         env_config = self.parse_env_args()
@@ -356,3 +455,8 @@ class EntryPoint:
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_callback()
+        else:
+            sys.exit(1)
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True)

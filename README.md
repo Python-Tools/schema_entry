@@ -61,11 +61,47 @@
 
 #### 从配置文件中读取配置参数
 
+默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
+
 ```python
+from pathlib import Path
+from entry_tree import EntryPoint
+
+class ppm(EntryPoint):
+    default_config_file_paths=[
+        "/test_config.json",
+        str(Path.Home().joinpath(".test_config.json")),
+        "./test_config.json"
+    ]
 
 ```
 
 #### 从环境变量中读取配置参数
+
+要从环境变量中读取配置必须设置`schema`字段,`EntryPoint`会按照其中`properties`字段定义的字段范围和字段类型解析环境变量.
+
+环境变量key的规则为`前缀_字段名的大写`.前缀的默认值为`...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写`.
+我们也可以通过设定`env_prefix`字段来替换默认前缀,替换的前缀依然会被转化为大写.
+
+```python
+class ppm(EntryPoint):
+    env_prefix = "app"
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "examples":[
+            {
+                "a": 123.1
+            },
+        ],
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "number"
+            }
+        },
+        "required": [ "a"]
+    }
+```
 
 
 #### 从命令行参数中获取配置参数
