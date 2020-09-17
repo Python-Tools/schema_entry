@@ -1,6 +1,6 @@
 {
 
-    "project-name": "entry-try",
+    "project-name": "entry_tree",
     "project-type": "module",
     "remote_registry": "https://github.com/Python-Tools/entry-tree.git",
     "license": "MIT",
