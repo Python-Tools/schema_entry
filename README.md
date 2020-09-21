@@ -18,9 +18,9 @@
 + 根据子类的`schema字段`和`env_prefix字段`自动构造环境变量的读取规则.
 + 根据子类的`default_config_file_paths字段`自动按顺序读取json格式配置文件中的参数.
 + 根据`schema字段`校验配置
-+ 使用装饰器`regist_callback`注册获取到配置后执行的函数
-+ + 通过覆写`parse_commandline_args`方法来定义命令行参数的读取
-+ + 入口节点可以通过方法`regist_sub`注册子节点
++ 使用装饰器`regist_runner`注册获取到配置后执行的函数
++ 通过覆写`parse_commandline_args`方法来定义命令行参数的读取
++ 入口节点可以通过方法`regist_sub`注册子节点
 
 # 安装
 
@@ -83,6 +83,7 @@ class ppm(EntryPoint):
 环境变量key的规则为`前缀_字段名的大写`.前缀的默认值为`...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写`.
 我们也可以通过设定`env_prefix`字段来替换默认前缀,替换的前缀依然会被转化为大写.
 
+
 ```python
 class ppm(EntryPoint):
     env_prefix = "app"
@@ -103,14 +104,69 @@ class ppm(EntryPoint):
     }
 ```
 
+如果我们不希望从环境变量中解析配置,那么也可以设置`parse_env`为`False`
 
 #### 从命令行参数中获取配置参数
 
+从命令行参数中获取配置我们就需要复写方法`def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]`来实现了.
+
+注意参数`parser`是已经创建好了但还未定义flag的命令行参数解析器,这个解析器的`useage`,`epilog`和`description`会由类中定义的docstring,`epilog`和`description`决定;`argv`则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).
+
+```python
+class ppm(EntryPoint):
+    """ppm <subcmd> [<args>]"""
+    epilog = ""
+    description = "项目脚手架"
+    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+        """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
+        parser.add_argument('a', type=int, help='a')
+        args = parser.parse_args(argv)
+        return vars(args)
+```
+
 #### 配置的读取顺序
+
+配置的读取顺序为`配置文件`->`环境变量`->`命令行参数`
+
+```python
+class ppm(EntryPoint):
+    """ppm <subcmd> [<args>]"""
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "examples":[
+            {
+                "a": 123.1
+            },
+        ],
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "number"
+            }
+        },
+        "required": [ "a"]
+    }
+    default_config_file_paths=["./test_config.json"]
+    epilog = ""
+    description = "项目脚手架"
+    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+        """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
+        parser.add_argument('a', type=float, help='a')
+        args = parser.parse_args(argv)
+        return vars(args)
+```
+
+像上面的定义,我们就会先查看`./test_config.json`,再查看环境变量,最后看定义好的命令行参数.
 
 #### 校验配置
 
+只要定义了`schema`那么默认我们就会校验配置是否符合定义.如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
+
 #### 注册入口的执行函数
+
+可以通过装饰器`regist_runner`来注册入口真正要执行的函数.同时可以通过装饰器`regist_before_running`和`regist_after_running`来注册在执行入口函数前后要执行的钩子.钩子和执行函数之间使用上下文参数`ctx`来传递中间值.
+
+
 
 #### 直接从节点对象中获取配置
 

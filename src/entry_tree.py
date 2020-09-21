@@ -17,9 +17,11 @@ import warnings
 import argparse
 import functools
 from pathlib import Path
-from typing import Callable, Sequence, List, Dict, Any, Optional
-
+from typing import Callable, Sequence, List, Dict, Any, Optional, Tuple
+from contextvars import ContextVar
 from jsonschema import validate
+
+CTX: ContextVar[Any] = ContextVar('ctx', default=None)
 
 
 def _get_parent_tree(c: "EntryPoint", result: List[str]) -> None:
@@ -53,17 +55,23 @@ class EntryPoint:
     parent: Optional["EntryPoint"] = None
 
     schema: Optional[Dict[str, Any]] = None
+    verify_schema: bool = True
 
     default_config_file_paths: Sequence[str] = []
     env_prefix: Optional[str] = None
+    parse_env: bool = True
 
     _subcmds: Dict[str, "EntryPoint"]
-    _callbacks: List[Callable[[Dict[str, Any]], None]]
+    _before_running: List[Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]]
+    _after_running: List[Callable[[ContextVar[Any]], ContextVar[Any]]]
+    _runner: Optional[Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]]
     _config: Dict[str, Any]
 
     def __init__(self) -> None:
         self._subcmds = {}
-        self._callbacks = []
+        self._runner = None
+        self._before_running = []
+        self._after_running = []
         self._config = {}
 
     @property
@@ -124,9 +132,10 @@ class EntryPoint:
         ...     """
         ...     description='查看子命令的帮助说明'
         >>> main_help = main.regist_sub(help)
-        >>> @main_help.regist_callback
-        ... def printconfig(config):
+        >>> @main_help.regist_runner
+        ... def printconfig(config,ctx):
         ...     print(config)
+        ...     return ctx
         >>> main(["help"])
         {}
 
@@ -141,7 +150,7 @@ class EntryPoint:
         self.regist_subcmd(instance)
         return instance
 
-    def regist_callback(self, func: Callable[[Dict[str, Any]], None]) -> Callable[[Dict[str, Any]], None]:
+    def regist_runner(self, func: Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]) -> Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -151,10 +160,42 @@ class EntryPoint:
 
         """
         @functools.wraps(func)
-        def warp(config: Dict[str, Any]) -> None:
-            return func(config)
+        def warp(config: Dict[str, Any], ctx: ContextVar[Any]) -> ContextVar[Any]:
+            return func(config, ctx)
 
-        self._callbacks.append(warp)
+        self._runner = warp
+        return warp
+
+    def regist_before_running(self, func: Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]) -> Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]:
+        """注册函数在解析参数成功后执行.
+
+        执行顺序按被注册的顺序来.
+
+        Args:
+            func (Callable[[Dict[str,Any]],Dict[str, Any]]): 待执行的参数.
+
+        """
+        @functools.wraps(func)
+        def warp(config: Dict[str, Any], ctx: ContextVar[Any]) -> Tuple[Dict[str, Any], ContextVar[Any]]:
+            return func(config, ctx)
+
+        self._before_running.append(warp)
+        return warp
+
+    def regist_after_running(self, func: Callable[[ContextVar[Any]], ContextVar[Any]]) -> Callable[[ContextVar[Any]], ContextVar[Any]]:
+        """注册函数在解析参数成功后执行.
+
+        执行顺序按被注册的顺序来.
+
+        Args:
+            func (Callable[[None],None]): 待执行的参数.
+
+        """
+        @functools.wraps(func)
+        def warp(ctx: ContextVar[Any]) -> ContextVar[Any]:
+            return func(ctx)
+
+        self._after_running.append(warp)
         return warp
 
     def __call__(self, argv: Sequence[str]) -> None:
@@ -205,9 +246,10 @@ class EntryPoint:
         ...         args = parser.parse_args(argv)
         ...         return vars(args)
         >>> main = ppm()
-        >>> @main.regist_callback
-        ... def app(config):
+        >>> @main.regist_runner
+        ... def app(config,ctx):
         ...     print(config)
+        ...     return ctx
         >>> main(["123"])
         {'a': 123}
 
@@ -282,7 +324,7 @@ class EntryPoint:
     def parse_env_args(self) -> Dict[str, Any]:
         """从环境变量中读取配置.
 
-        必须设定json schema才能从环境变量中读取配置.
+        必须设定json schema,且parse_env为True才能从环境变量中读取配置.
         程序会读取schema结构,并解析其中的`properties`字段.如果没有定义schema则不会解析环境变量.
 
         如果是列表型的数据,那么使用`,`分隔,如果是object型的数据,那么使用`key:value;key:value`的形式分隔
@@ -306,9 +348,10 @@ class EntryPoint:
         ...         "required": [ "a"]
         ...     }
         >>> main = ppm()
-        >>> @main.regist_callback
-        ... def app(config):
+        >>> @main.regist_runner
+        ... def app(config,ctx):
         ...     print(config)
+        ...     return ctx
         >>> os.environ['PPM_A']="123.1"
         >>> main([])
         {'a': 123.1}
@@ -319,7 +362,7 @@ class EntryPoint:
 
         """
         properties: Dict[str, Any]
-        if self.schema:
+        if self.schema and self.parse_env:
             properties = self.schema.get("properties", {})
             result = {}
             for key, info in properties.items():
@@ -342,9 +385,10 @@ class EntryPoint:
         >>> class ppm(EntryPoint):
         ...     default_config_file_paths=["./test_config.json"]
         >>> main = ppm()
-        >>> @main.regist_callback
-        ... def app(config):
+        >>> @main.regist_runner
+        ... def app(config,ctx):
         ...     print(config)
+        ...     return ctx
         >>> main([])
         {'a': 1}
 
@@ -375,13 +419,14 @@ class EntryPoint:
     def validat_config(self) -> bool:
         """校验配置.
 
-        在定义好schema后才会进行校验.
+        在定义好schema,解析到config并且verify_schema为True后才会进行校验.
+
 
         Returns:
             bool: 是否通过校验
 
         """
-        if self.schema and self.config:
+        if self.schema and self.config and self.verify_schema:
             try:
                 validate(instance=self.config, schema=self.schema)
             except Exception as e:
@@ -393,10 +438,19 @@ class EntryPoint:
             warnings.warn("必须有schema和config才能校验.")
             return True
 
-    def do_callback(self) -> None:
-        """执行回调."""
-        for callback in self._callbacks:
-            callback(self.config)
+    def do_run(self) -> None:
+        """执行入口函数.
+        
+        Example:
+        
+        """
+        config = self.config
+        ctx = CTX
+        for callback in self._before_running:
+            config, ctx = callback(config, ctx)
+        self._runner(config, ctx)
+        for callback in self._after_running:
+            ctx = callback(ctx)
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         '''解析参数.
@@ -435,9 +489,10 @@ class EntryPoint:
         ...         args = parser.parse_args(argv)
         ...         return vars(args)
         >>> main = ppm()
-        >>> @main.regist_callback
-        ... def app(config):
+        >>> @main.regist_runner
+        ... def app(config,ctx):
         ...     print(config)
+        ...     return ctx
         >>> os.environ['PPM_A']="123.1"
         >>> main(["123.34"])
         {'a': 123.34}
@@ -454,9 +509,11 @@ class EntryPoint:
         cmd_config = self.parse_commandline_args(parser, argv)
         self._config.update(cmd_config)
         if self.validat_config():
-            self.do_callback()
+            self.do_run()
         else:
             sys.exit(1)
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
