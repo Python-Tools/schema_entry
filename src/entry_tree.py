@@ -18,10 +18,7 @@ import argparse
 import functools
 from pathlib import Path
 from typing import Callable, Sequence, List, Dict, Any, Optional, Tuple
-from contextvars import ContextVar
 from jsonschema import validate
-
-CTX: ContextVar[Any] = ContextVar('ctx', default=None)
 
 
 def _get_parent_tree(c: "EntryPoint", result: List[str]) -> None:
