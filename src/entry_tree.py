@@ -59,9 +59,7 @@ class EntryPoint:
     parse_env: bool = True
 
     _subcmds: Dict[str, "EntryPoint"]
-    _before_running: List[Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]]
-    _after_running: List[Callable[[ContextVar[Any]], ContextVar[Any]]]
-    _runner: Optional[Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]]
+    _runner: Optional[Callable[[Dict[str, Any]]]]
     _config: Dict[str, Any]
 
     def __init__(self) -> None:
@@ -147,7 +145,7 @@ class EntryPoint:
         self.regist_subcmd(instance)
         return instance
 
-    def regist_runner(self, func: Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]) -> Callable[[Dict[str, Any], ContextVar[Any]], ContextVar[Any]]:
+    def regist_runner(self, func):
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -157,43 +155,12 @@ class EntryPoint:
 
         """
         @functools.wraps(func)
-        def warp(config: Dict[str, Any], ctx: ContextVar[Any]) -> ContextVar[Any]:
+        def warp(config: Dict[str, Any],) ->None:
             return func(config, ctx)
 
         self._runner = warp
         return warp
 
-    def regist_before_running(self, func: Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]) -> Callable[[Dict[str, Any], ContextVar[Any]], Tuple[Dict[str, Any], ContextVar[Any]]]:
-        """注册函数在解析参数成功后执行.
-
-        执行顺序按被注册的顺序来.
-
-        Args:
-            func (Callable[[Dict[str,Any]],Dict[str, Any]]): 待执行的参数.
-
-        """
-        @functools.wraps(func)
-        def warp(config: Dict[str, Any], ctx: ContextVar[Any]) -> Tuple[Dict[str, Any], ContextVar[Any]]:
-            return func(config, ctx)
-
-        self._before_running.append(warp)
-        return warp
-
-    def regist_after_running(self, func: Callable[[ContextVar[Any]], ContextVar[Any]]) -> Callable[[ContextVar[Any]], ContextVar[Any]]:
-        """注册函数在解析参数成功后执行.
-
-        执行顺序按被注册的顺序来.
-
-        Args:
-            func (Callable[[None],None]): 待执行的参数.
-
-        """
-        @functools.wraps(func)
-        def warp(ctx: ContextVar[Any]) -> ContextVar[Any]:
-            return func(ctx)
-
-        self._after_running.append(warp)
-        return warp
 
     def __call__(self, argv: Sequence[str]) -> None:
         """执行命令.
