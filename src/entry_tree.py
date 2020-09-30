@@ -1,4 +1,4 @@
-'''入口树的构造工具.
+"""入口树的构造工具.
 
 这个基类的设计目的是为了配置化入口的定义.
 通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.
@@ -9,7 +9,7 @@
 入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.
 他们将参数传递给下一级节点,直到尾部可以执行为止.
 
-'''
+"""
 import os
 import sys
 import json
@@ -44,6 +44,136 @@ def get_parent_tree(c: "EntryPoint") -> List[str]:
     return list(reversed(result_list))
 
 
+SUPPORT_SCHEMA = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "minProperties": 1,
+            "patternProperties": {
+                "^\w+$": {
+                    "oneOf": [{
+                        "type": "object",
+                        "additionalProperties":False,
+                        "required": ["type"],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "const": "string"
+                            },
+                            "default": {
+                                "type": "string",
+                            },
+                            "const":{
+                                "type": "string"
+                            },
+                            "enum":{
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "description":{
+                                "type": "string"
+                            }
+                        }
+                    },{
+                        "type": "object",
+                        "additionalProperties":False,
+                        "required": ["type"],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "const": "number"
+                            },
+                            "default": {
+                                "type": "number",
+                            },
+                            "const":{
+                                "type": "number"
+                            },
+                            "enum":{
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                }
+                            },
+                            "description":{
+                                "type": "string"
+                            }
+                        }
+                    }, {
+                        "type": "object",
+                        "additionalProperties":False,
+                        "required": ["type"],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "const": "integer"
+                            },
+                            "default": {
+                                "type": "integer",
+                            },
+                            "const":{
+                                "type": "integer"
+                            },
+                            "enum":{
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            },
+                            "description":{
+                                "type": "string"
+                            }
+                        }
+                    },{
+                        "type": "object",
+                        "additionalProperties":False,
+                        "required": ["type"],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "const": "array"
+                            },
+                            "item":{
+                                "type": "object",
+                                "required": ["type"],
+                                "additionalProperties":False,
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum":["string","number","integer"]
+                                    }
+                                }
+                            },
+                            "description":{
+                                "type": "string"
+                            }
+                        }
+                    }
+                    ]
+
+                }
+            }
+        },
+        "type": {
+            "type": "string",
+            "const": "object"
+        },
+        "required": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+
+    },
+    "required": ["properties", "type"]
+}
+
+
 class EntryPoint:
     """入口类基类."""
 
@@ -59,16 +189,16 @@ class EntryPoint:
     parse_env: bool = True
 
     _subcmds: Dict[str, "EntryPoint"]
-    _main: Optional[Callable[[Dict[str, Any]],None]]
+    _main: Optional[Callable[[Dict[str, Any]], None]]
     _config: Dict[str, Any]
 
-
-    def _check_schema(self)->None:
+    def _check_schema(self) -> None:
         if self.schema is not None:
-            if self.schema.get("type") != "object":
-                raise AttributeError("定义的schema必须最外层为")
-            if not self.schema.get("properties"):
-                raise AttributeError("定义的schema必须最外层定义properties")
+            try:
+                validate(instance=self.schema, schema=SUPPORT_SCHEMA)
+            except Exception as e:
+                warnings.warn(str(e))
+                sys.exit(1)
 
     def __init__(self) -> None:
         self._check_schema()
@@ -76,7 +206,7 @@ class EntryPoint:
         self._main = None
         self._config = {}
 
-    @property
+    @ property
     def name(self) -> str:
         """实例的名字.
 
@@ -84,14 +214,14 @@ class EntryPoint:
         """
         return self.__class__.__name__
 
-    @property
+    @ property
     def prog(self) -> str:
         """命令路径."""
         parent_list = get_parent_tree(self)
         parent_list.append(self.name)
         return " ".join(parent_list)
 
-    @property
+    @ property
     def config(self) -> Dict[str, Any]:
         """执行配置.
 
@@ -155,7 +285,7 @@ class EntryPoint:
         self.regist_subcmd(instance)
         return instance
 
-    def as_main(self, func:Callable[[Dict[str, Any]],None])->Callable[[Dict[str, Any]],None]:
+    def as_main(self, func: Callable[[Dict[str, Any]], None]) -> Callable[[Dict[str, Any]], None]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -164,13 +294,12 @@ class EntryPoint:
             func (Callable[[Dict[str,Any]],None]): 待执行的参数.
 
         """
-        @functools.wraps(func)
-        def warp(config: Dict[str, Any]) ->None:
+        @ functools.wraps(func)
+        def warp(config: Dict[str, Any]) -> None:
             return func(config)
 
         self._main = warp
         return warp
-
 
     def __call__(self, argv: Sequence[str]) -> None:
         """执行命令.
@@ -204,24 +333,22 @@ class EntryPoint:
             parser.print_help()
             sys.exit(1)
 
-
-
-    def _parse_commandline_args_by_schema(self, parser: argparse.ArgumentParser, argv: Sequence[str])->Dict[str, Any]:
+    def _parse_commandline_args_by_schema(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            result:Dict[str,Any] = {}
+            result: Dict[str, Any] = {}
             properties = self.schema.get("properties", {})
             required = self.schema.get("required", [])
-            for key,prop in properties.items():
-                _const =  prop.get("const")
+            for key, prop in properties.items():
+                _const = prop.get("const")
                 if _const:
                     result.update({
-                        key:_const
+                        key: _const
                     })
                     continue
-                kwargs:Dict[str,Any] = {}
-                _type =  prop.get("type")
+                kwargs: Dict[str, Any] = {}
+                _type = prop.get("type")
                 if not _type:
                     print(f"{key}因没有定义类型无法解析")
                     continue
@@ -240,28 +367,65 @@ class EntryPoint:
                         })
                     elif _type == "null":
                         result.update({
-                            key:None
+                            key: None
                         })
                         continue
                     elif _type == "boolean":
                         kwargs.update({
-                            "type": str
+                            "action": "store_true"
                         })
                     elif _type == "array":
                         kwargs.update({
-                            "type": str
+                            "action": "append"
                         })
-                    elif _type == "object":
-                        kwargs.update({
-                            "type": str
-                        })
-                _default =  prop.get("default")
-                _enum =  prop.get("enum")
-                _description = prop.get("description")
-                
+                        sub_prop = prop.get("items")
+                        sub_type = sub_prop.get("type")
+                        if sub_type == "number":
+                            kwargs.update({
+                                "type": float
+                            })
+                        elif sub_type == "string":
+                            kwargs.update({
+                                "type": str
+                            })
+                        elif sub_type == "integer":
+                            kwargs.update({
+                                "type": int
+                            })
+                        else:
+                            print("array类型的参数必须指定类型为number,integer或者string")
+                            continue
 
-                parser.add_argument(f"--{key}", type=int, help='a')
-            return {}
+                    elif _type == "object":
+                        print("暂不支持object类型")
+                        continue
+                    else:
+                        print("未知的类型")
+                        continue
+                _default = prop.get("default")
+                if _default:
+                    kwargs.update({
+                        "default": _default
+                    })
+                _enum = prop.get("enum")
+                if _enum:
+                    kwargs.update({
+                        "choices": _enum
+                    })
+
+                _description = prop.get("description")
+                if _description:
+                    kwargs.update({
+                        "help": _description
+                    })
+                if key in required:
+                    kwargs.update({
+                        "required": True
+                    })
+                parser.add_argument(f"--{key}", **kwargs)
+            args = parser.parse_args(argv)
+            result.update(vars(args))
+            return result
 
     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
         '''默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.
@@ -476,9 +640,9 @@ class EntryPoint:
 
     def do_main(self) -> None:
         """执行入口函数.
-        
+
         Example:
-        
+
         """
         if self._main is None:
             print("未注册main函数")
