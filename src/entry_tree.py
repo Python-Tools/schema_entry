@@ -17,7 +17,7 @@ import warnings
 import argparse
 import functools
 from pathlib import Path
-from typing import Callable, Sequence, List, Dict, Any, Optional, Tuple
+from typing import Callable, Sequence, List, Dict, Any, Optional
 from jsonschema import validate
 
 
@@ -59,14 +59,21 @@ class EntryPoint:
     parse_env: bool = True
 
     _subcmds: Dict[str, "EntryPoint"]
-    _runner: Optional[Callable[[Dict[str, Any]]]]
+    _main: Optional[Callable[[Dict[str, Any]],None]]
     _config: Dict[str, Any]
 
+
+    def _check_schema(self)->None:
+        if self.schema is not None:
+            if self.schema.get("type") != "object":
+                raise AttributeError("定义的schema必须最外层为")
+            if not self.schema.get("properties"):
+                raise AttributeError("定义的schema必须最外层定义properties")
+
     def __init__(self) -> None:
+        self._check_schema()
         self._subcmds = {}
-        self._runner = None
-        self._before_running = []
-        self._after_running = []
+        self._main = None
         self._config = {}
 
     @property
@@ -86,7 +93,10 @@ class EntryPoint:
 
     @property
     def config(self) -> Dict[str, Any]:
-        """执行配置."""
+        """执行配置.
+
+        配置为只读数据.
+        """
         return self._config
 
     def regist_subcmd(self, subcmd: "EntryPoint") -> None:
@@ -127,7 +137,7 @@ class EntryPoint:
         ...     """
         ...     description='查看子命令的帮助说明'
         >>> main_help = main.regist_sub(help)
-        >>> @main_help.regist_runner
+        >>> @main_help.as_main
         ... def printconfig(config,ctx):
         ...     print(config)
         ...     return ctx
@@ -145,7 +155,7 @@ class EntryPoint:
         self.regist_subcmd(instance)
         return instance
 
-    def regist_runner(self, func):
+    def as_main(self, func:Callable[[Dict[str, Any]],None])->Callable[[Dict[str, Any]],None]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -155,10 +165,10 @@ class EntryPoint:
 
         """
         @functools.wraps(func)
-        def warp(config: Dict[str, Any],) ->None:
-            return func(config, ctx)
+        def warp(config: Dict[str, Any]) ->None:
+            return func(config)
 
-        self._runner = warp
+        self._main = warp
         return warp
 
 
@@ -194,6 +204,65 @@ class EntryPoint:
             parser.print_help()
             sys.exit(1)
 
+
+
+    def _parse_commandline_args_by_schema(self, parser: argparse.ArgumentParser, argv: Sequence[str])->Dict[str, Any]:
+        if self.schema is None:
+            raise AttributeError("此处不该被执行")
+        else:
+            result:Dict[str,Any] = {}
+            properties = self.schema.get("properties", {})
+            required = self.schema.get("required", [])
+            for key,prop in properties.items():
+                _const =  prop.get("const")
+                if _const:
+                    result.update({
+                        key:_const
+                    })
+                    continue
+                kwargs:Dict[str,Any] = {}
+                _type =  prop.get("type")
+                if not _type:
+                    print(f"{key}因没有定义类型无法解析")
+                    continue
+                else:
+                    if _type == "number":
+                        kwargs.update({
+                            "type": float
+                        })
+                    elif _type == "string":
+                        kwargs.update({
+                            "type": str
+                        })
+                    elif _type == "integer":
+                        kwargs.update({
+                            "type": int
+                        })
+                    elif _type == "null":
+                        result.update({
+                            key:None
+                        })
+                        continue
+                    elif _type == "boolean":
+                        kwargs.update({
+                            "type": str
+                        })
+                    elif _type == "array":
+                        kwargs.update({
+                            "type": str
+                        })
+                    elif _type == "object":
+                        kwargs.update({
+                            "type": str
+                        })
+                _default =  prop.get("default")
+                _enum =  prop.get("enum")
+                _description = prop.get("description")
+                
+
+                parser.add_argument(f"--{key}", type=int, help='a')
+            return {}
+
     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
         '''默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.
 
@@ -210,7 +279,7 @@ class EntryPoint:
         ...         args = parser.parse_args(argv)
         ...         return vars(args)
         >>> main = ppm()
-        >>> @main.regist_runner
+        >>> @main.as_main
         ... def app(config,ctx):
         ...     print(config)
         ...     return ctx
@@ -225,7 +294,10 @@ class EntryPoint:
             Dict[str, Any]: 配置
 
         '''
-        return {}
+        if self.schema is not None:
+            self._parse_commandline_args_by_schema(parser, argv)
+        else:
+            return {}
 
     def _parse_env_args_by_type(self, value_str: str, info: Dict[str, Any]) -> Any:
         t = info.get("type")
@@ -312,7 +384,7 @@ class EntryPoint:
         ...         "required": [ "a"]
         ...     }
         >>> main = ppm()
-        >>> @main.regist_runner
+        >>> @main.as_main
         ... def app(config,ctx):
         ...     print(config)
         ...     return ctx
@@ -349,7 +421,7 @@ class EntryPoint:
         >>> class ppm(EntryPoint):
         ...     default_config_file_paths=["./test_config.json"]
         >>> main = ppm()
-        >>> @main.regist_runner
+        >>> @main.as_main
         ... def app(config,ctx):
         ...     print(config)
         ...     return ctx
@@ -402,19 +474,18 @@ class EntryPoint:
             warnings.warn("必须有schema和config才能校验.")
             return True
 
-    def do_run(self) -> None:
+    def do_main(self) -> None:
         """执行入口函数.
         
         Example:
         
         """
-        config = self.config
-        ctx = CTX
-        for callback in self._before_running:
-            config, ctx = callback(config, ctx)
-        self._runner(config, ctx)
-        for callback in self._after_running:
-            ctx = callback(ctx)
+        if self._main is None:
+            print("未注册main函数")
+            sys.exit(1)
+        else:
+            config = self.config
+            self._main(config)
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         '''解析参数.
@@ -453,7 +524,7 @@ class EntryPoint:
         ...         args = parser.parse_args(argv)
         ...         return vars(args)
         >>> main = ppm()
-        >>> @main.regist_runner
+        >>> @main.as_main
         ... def app(config,ctx):
         ...     print(config)
         ...     return ctx
@@ -473,7 +544,7 @@ class EntryPoint:
         cmd_config = self.parse_commandline_args(parser, argv)
         self._config.update(cmd_config)
         if self.validat_config():
-            self.do_run()
+            self.do_main()
         else:
             sys.exit(1)
 
