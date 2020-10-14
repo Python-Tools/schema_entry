@@ -460,6 +460,7 @@ class EntryPoint:
         '''
         if self.schema is not None:
             self._parse_commandline_args_by_schema(parser, argv)
+            return {}
         else:
             return {}
 
