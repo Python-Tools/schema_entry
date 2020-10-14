@@ -36,7 +36,7 @@ jobs:
         
     - name: type hint check
       run: |
-        mypy --ignore-missing-imports --show-column-numbers --follow-imports=silent --check-untyped-defs --disallow-untyped-defs --no-implicit-optional --warn-unused-ignores  --html-report=typecheck -m src/entry_tree.py
+        mypy --ignore-missing-imports --show-column-numbers --follow-imports=silent --check-untyped-defs --disallow-untyped-defs --no-implicit-optional --warn-unused-ignores  --html-report=typecheck src/entry_tree.py
     - name: DocTest
       run: |
         python src/entry_tree.py
