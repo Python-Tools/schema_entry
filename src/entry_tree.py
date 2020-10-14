@@ -52,10 +52,10 @@ SUPPORT_SCHEMA = {
             "type": "object",
             "minProperties": 1,
             "patternProperties": {
-                "^\w+$": {
+                r"^\w+$": {
                     "oneOf": [{
                         "type": "object",
-                        "additionalProperties":False,
+                        "additionalProperties": False,
                         "required": ["type"],
                         "properties": {
                             "type": {
@@ -65,22 +65,22 @@ SUPPORT_SCHEMA = {
                             "default": {
                                 "type": "string",
                             },
-                            "const":{
+                            "const": {
                                 "type": "string"
                             },
-                            "enum":{
+                            "enum": {
                                 "type": "array",
                                 "items": {
                                     "type": "string"
                                 }
                             },
-                            "description":{
+                            "description": {
                                 "type": "string"
                             }
                         }
-                    },{
+                    }, {
                         "type": "object",
-                        "additionalProperties":False,
+                        "additionalProperties": False,
                         "required": ["type"],
                         "properties": {
                             "type": {
@@ -90,22 +90,22 @@ SUPPORT_SCHEMA = {
                             "default": {
                                 "type": "number",
                             },
-                            "const":{
+                            "const": {
                                 "type": "number"
                             },
-                            "enum":{
+                            "enum": {
                                 "type": "array",
                                 "items": {
                                     "type": "number"
                                 }
                             },
-                            "description":{
+                            "description": {
                                 "type": "string"
                             }
                         }
                     }, {
                         "type": "object",
-                        "additionalProperties":False,
+                        "additionalProperties": False,
                         "required": ["type"],
                         "properties": {
                             "type": {
@@ -115,36 +115,36 @@ SUPPORT_SCHEMA = {
                             "default": {
                                 "type": "integer",
                             },
-                            "const":{
+                            "const": {
                                 "type": "integer"
                             },
-                            "enum":{
+                            "enum": {
                                 "type": "array",
                                 "items": {
                                     "type": "integer"
                                 }
                             },
-                            "description":{
+                            "description": {
                                 "type": "string"
                             }
                         }
-                    },{
+                    }, {
                         "type": "object",
-                        "additionalProperties":False,
+                        "additionalProperties": False,
                         "required": ["type"],
                         "properties": {
                             "type": {
                                 "type": "string",
                                 "const": "array"
                             },
-                            "item":{
+                            "item": {
                                 "type": "object",
                                 "required": ["type"],
                                 "additionalProperties":False,
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "enum":["string","number","integer"]
+                                        "enum": ["string", "number", "integer"]
                                     }
                                 }
                             },
