@@ -1,7 +1,6 @@
 import sys
 import unittest
 from pathlib import Path
-
 module_import_path = find_module_import_path(Path(__file__),"entry-tree","src")
 print(module_import_path)
 if module_import_path not in sys.path:
