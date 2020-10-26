@@ -1,6 +1,6 @@
 # 简介
 
-入口树的构造工具.
+程序入口的构造工具.
 
 这个基类的设计目的是为了配置化入口的定义.通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.
 
@@ -10,15 +10,14 @@
 入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.
 他们将参数传递给下一级节点,直到尾部可以执行为止.
 
-
 # 特性
 
-+ 根据子类的名字构造命令
++ 根据子类的名字小写构造命令
 + 根据子类的docstring,`epilog字段`和`description字段`自动构造,命令行说明.
 + 根据子类的`schema字段`和`env_prefix字段`自动构造环境变量的读取规则.
 + 根据子类的`default_config_file_paths字段`自动按顺序读取json格式配置文件中的参数.
-+ 根据`schema字段`校验配置
-+ 使用装饰器`regist_runner`注册获取到配置后执行的函数
++ 根据`schema字段`构造命令行参数和配置校验
++ 使用装饰器`@as_main`注册获取到配置后执行的函数
 + 通过覆写`parse_commandline_args`方法来定义命令行参数的读取
 + 入口节点可以通过方法`regist_sub`注册子节点
 
@@ -30,7 +29,7 @@
 
 ## 动机
 
-`entry_tree`模块提供了一个基类`EntryPoint`用于构造复杂的程序入口.通常我们的程序入口参数有3个途径:
+`schema_entry`模块提供了一个基类`EntryPoint`用于构造复杂的程序入口.通常我们的程序入口参数有3个途径:
 
 1. 配置文件
 2. 环境变量
@@ -65,7 +64,7 @@
 
 ```python
 from pathlib import Path
-from entry_tree import EntryPoint
+from schema_entry import EntryPoint
 
 class ppm(EntryPoint):
     default_config_file_paths=[
@@ -82,7 +81,6 @@ class ppm(EntryPoint):
 
 环境变量key的规则为`前缀_字段名的大写`.前缀的默认值为`...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写`.
 我们也可以通过设定`env_prefix`字段来替换默认前缀,替换的前缀依然会被转化为大写.
-
 
 ```python
 class ppm(EntryPoint):

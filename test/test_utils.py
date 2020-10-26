@@ -21,12 +21,6 @@ class GetParentTreeTest(unittest.TestCase):
     def tearDownClass(cls) -> None:
         print("tearDown GetParentTree test context")
 
-    def setUp(self) -> None:
-        print("case setUp")
-
-    def tearDown(self) -> None:
-        print("case tearDown")
-
     def test_get_parent_tree(self) -> None:
         class A(EntryPoint):
             pass
@@ -50,12 +44,6 @@ class ParseValueStringBySchemaTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         print("tearDown ParseValueStringBySchema test context")
-
-    def setUp(self) -> None:
-        print("case setUp")
-
-    def tearDown(self) -> None:
-        print("case tearDown")
 
     def test_parse_int(self) -> None:
         schema = {
@@ -122,10 +110,7 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = argparse.ArgumentParser()
-        print("case setUp")
-
-    def tearDown(self) -> None:
-        print("case tearDown")
+        print("case self.parser setUp")
 
     def test_parse_int(self) -> None:
         schema = {
@@ -199,3 +184,11 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a=1.1", "--test-a=2.2", "--test-a=3.3"])
         self.assertDictEqual(vars(args), {"test_a": ["1.1", "2.2", "3.3"]})
+
+    def test_parse_noflag(self) -> None:
+        schema = {
+            "type": "string"
+        }
+        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser, noflag=True)
+        args = p.parse_args(["noflag"])
+        self.assertDictEqual(vars(args), {"test_a": "noflag"})

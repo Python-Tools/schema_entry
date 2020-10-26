@@ -22,12 +22,6 @@ class ProtocolTest(unittest.TestCase):
     def tearDownClass(cls) -> None:
         print("tearDown SUPPORT_SCHEMA test context")
 
-    def setUp(self) -> None:
-        print("case setUp")
-
-    def tearDown(self) -> None:
-        print("case tearDown")
-
     def test_base_type(self) -> None:
         target = {
             "$schema": "http://json-schema.org/draft-07/schema#",

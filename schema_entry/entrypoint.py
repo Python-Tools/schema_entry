@@ -17,7 +17,7 @@ import warnings
 import argparse
 import functools
 from pathlib import Path
-from typing import Callable, Sequence, Dict, Any
+from typing import Callable, Sequence, Dict, List, Any, Optional
 from jsonschema import validate
 
 from .protocol import SUPPORT_SCHEMA
@@ -28,14 +28,17 @@ from .entrypoint_base import EntryPointABC
 class EntryPoint(EntryPointABC):
     epilog = ""
     description = ""
-    parent = None
+    parent: Optional[EntryPointABC] = None
 
-    schema = None
+    schema: Optional[Dict[str, Any]] = None
     verify_schema = True
 
     default_config_file_paths: Sequence[str] = []
-    env_prefix = None
+    env_prefix: Optional[str] = None
     parse_env = True
+
+    argparse_check_required = False
+    argparse_noflag: Optional[str] = None
 
     def _check_schema(self) -> None:
         if self.schema is not None:
@@ -108,7 +111,8 @@ class EntryPoint(EntryPointABC):
             raise AttributeError("此处不该被执行")
         else:
             result: Dict[str, Any] = {}
-            properties = self.schema.get("properties", {})
+            properties: Dict[str, Any] = self.schema.get("properties", {})
+            requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
                 _const = prop.get("const")
                 if _const:
@@ -116,16 +120,25 @@ class EntryPoint(EntryPointABC):
                         key: _const
                     })
                     continue
-                parser = parse_schema_as_cmd(key, prop, parser)
+                required = False
+                noflag = False
+                if self.argparse_noflag == key:
+                    noflag = True
+                else:
+                    if self.argparse_check_required and key in requireds:
+                        required = True
+                parser = parse_schema_as_cmd(key, prop, parser, required, noflag)
             args = parser.parse_args(argv)
-            result.update(vars(args))
+            for key, value in vars(args).items():
+                if value is not None:
+                    result.update({
+                        key: value
+                    })
             return result
 
     def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
         if self.schema is not None:
-            self._parse_commandline_args_by_schema(parser, argv)
-            return {}
-
+            return self._parse_commandline_args_by_schema(parser, argv)
         return {}
 
     def _parse_env_args(self, key: str, info: Dict[str, Any]) -> Any:
@@ -201,6 +214,7 @@ class EntryPoint(EntryPointABC):
         env_config = self.parse_env_args()
         self._config.update(env_config)
         cmd_config = self.parse_commandline_args(parser, argv)
+        print(cmd_config)
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_main()

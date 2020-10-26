@@ -28,6 +28,8 @@ class EntryPointABC(abc.ABC):
     default_config_file_paths: Sequence[str]
     env_prefix: Optional[str]
     parse_env: bool
+    argparse_check_required: bool
+    argparse_noflag: Optional[str]
 
     _subcmds: Dict[str, "EntryPointABC"]
     _main: Optional[Callable[[Dict[str, Any]], None]]
