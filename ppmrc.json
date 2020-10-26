@@ -1,17 +1,17 @@
 {
 
-    "project-name": "entry_tree",
+    "project-name": "schema_entry",
     "project-type": "module",
     "remote_registry": "https://github.com/Python-Tools/entry-tree.git",
     "license": "MIT",
     "version": "4.0.0",
-    "url": "https://github.com/Python-Tools/entry-tree",
+    "url": "https://github.com/Python-Tools/schema_entry",
     "author": "hsz",
     "author-email": "hsz1273327@gmail.com",
-    "keywords": ["config","environment variable","command line arguments","config file"],
+    "keywords": ["config", "environment variable", "command line arguments", "config file"],
     "description": "",
     "python-env": "env",
     "scripts": {
-        "test": "python -m doctest -v entry_tree.py"
+        "test": "python -m doctest -v schema_entry.py"
     }
 }

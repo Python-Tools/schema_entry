@@ -5,38 +5,37 @@ name: Python package
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install devDependence
-      run: |
-        python -m pip install --upgrade pip
-        pip install mypy pycodestyle coverage lxml
-    - name: Install dependencies
-      run: |
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with pep8
-      run: |
-        pycodestyle --max-line-length=140 --ignore=E501 --first --statistics src/entry_tree.py
-        
-    - name: type hint check
-      run: |
-        mypy --ignore-missing-imports --show-column-numbers --follow-imports=silent --check-untyped-defs --disallow-untyped-defs --no-implicit-optional --warn-unused-ignores  --html-report=typecheck src/entry_tree.py
-    - name: DocTest
-      run: |
-        python src/entry_tree.py
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install devDependence
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy pycodestyle coverage lxml
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with pep8
+        run: |
+          pycodestyle --max-line-length=140 --ignore=E501 --first --statistics schema_entry
+
+      - name: type hint check
+        run: |
+          mypy --ignore-missing-imports --show-column-numbers --follow-imports=silent --check-untyped-defs --disallow-untyped-defs --no-implicit-optional --warn-unused-ignores  schema_entry
+      - name: DocTest
+        run: |
+          python -m unittest discover -v -s . -p *test*.py

@@ -1,48 +1,93 @@
-import sys
 import unittest
-from pathlib import Path
-module_import_path = find_module_import_path(Path(__file__),"entry-tree","src")
-print(module_import_path)
-if module_import_path not in sys.path:
-    sys.path.append(module_import_path)
+import jsonschema
+from jsonschema import validate
 
-from entry_tree import 
-
-def setUpModule():
-    print("[SetUp Submodule test]")
+from schema_entry.protocol import SUPPORT_SCHEMA
 
 
-def tearDownModule():
-    print("[TearDown Submodule test]")
+def setUpModule() -> None:
+    print("[SetUp Submodule schema_entry.protocol test]")
 
 
-class SubmoduletTest(unittest.TestCase):
+def tearDownModule() -> None:
+    print("[TearDown Submodule schema_entry.protocol test]")
+
+
+class ProtocolTest(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
-        print("setUp model test context")
+    def setUpClass(cls) -> None:
+        print("setUp SUPPORT_SCHEMA test context")
 
     @classmethod
-    def tearDownClass(cls):
-        print("tearDown model test context")
+    def tearDownClass(cls) -> None:
+        print("tearDown SUPPORT_SCHEMA test context")
 
-    def setUp(self):
-        print("instance setUp")
+    def setUp(self) -> None:
+        print("case setUp")
 
-    def tearDown(self):
-        print("instance tearDown")
+    def tearDown(self) -> None:
+        print("case tearDown")
 
-    def test_show(self):
-        print(show({"name":"new","type":"x"}))
-        assert show({"name":"new","type":"x"}) == "x----new"
+    def test_base_type(self) -> None:
+        target = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "string"
+                },
+                "b": {
+                    "type": "number"
+                },
+                "c": {
+                    "type": "boolean"
+                },
+                "d": {
+                    "type": "integer"
+                }
+            }
+        }
+        assert validate(target, SUPPORT_SCHEMA) is None
 
+    def test_array_type(self) -> None:
+        target = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "item": {
+                        "type": "number"
+                    }
+                },
+                "b": {
+                    "type": "array",
+                    "item": {
+                        "type": "string"
+                    }
+                },
+                "c": {
+                    "type": "array",
+                    "item": {
+                        "type": "integer"
+                    }
+                }
+            }
+        }
+        assert validate(target, SUPPORT_SCHEMA) is None
 
-def submodule_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(SubmoduletTest("test_show"))
-    return suite
-
-
-if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity=2)
-    test_suite = submodule_suite()
-    runner.run(test_suite)
+    def test_array_boolean(self) -> None:
+        target = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "item": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        }
+        with self.assertRaises(jsonschema.exceptions.ValidationError):
+            validate(target, SUPPORT_SCHEMA)

@@ -53,6 +53,20 @@ SUPPORT_SCHEMA = {
                                         "type": "string"
                                     }
                                 },
+                                "maxLength": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                "minLength": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                "pattern": {
+                                    "type": "string"
+                                },
+                                "format": {
+                                    "type": "string"
+                                },
                                 "description": {
                                     "type": "string"
                                 }
@@ -78,6 +92,20 @@ SUPPORT_SCHEMA = {
                                         "type": "number"
                                     }
                                 },
+                                "maximum": {
+                                    "type": "number",
+                                },
+                                "exclusiveMaximum": {
+                                    "type": "number",
+                                },
+                                "minimum": {
+                                    "type": "number",
+
+                                },
+                                "exclusiveMinimum": {
+                                    "type": "number",
+
+                                },
                                 "description": {
                                     "type": "string"
                                 }
@@ -102,6 +130,20 @@ SUPPORT_SCHEMA = {
                                     "items": {
                                         "type": "integer"
                                     }
+                                },
+                                "maximum": {
+                                    "type": "integer",
+                                },
+                                "exclusiveMaximum": {
+                                    "type": "integer",
+                                },
+                                "minimum": {
+                                    "type": "integer",
+
+                                },
+                                "exclusiveMinimum": {
+                                    "type": "integer",
+
                                 },
                                 "description": {
                                     "type": "string"
