@@ -39,3 +39,4 @@ jobs:
       - name: Unit Test
         run: |
           python -m coverage run --source=schema_entry -m unittest discover -v -s . -p *test*.py
+          python -m coverage report
