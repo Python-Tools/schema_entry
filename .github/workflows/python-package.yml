@@ -38,4 +38,4 @@ jobs:
           mypy --ignore-missing-imports --show-column-numbers --follow-imports=silent --check-untyped-defs --disallow-untyped-defs --no-implicit-optional --warn-unused-ignores schema_entry
       - name: Unit Test
         run: |
-          python -m coverage run --source=schema_entry unittest discover -v -s . -p *test*.py
+          python -m coverage run --source=schema_entry -m unittest discover -v -s . -p *test*.py
