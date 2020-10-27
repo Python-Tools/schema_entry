@@ -16,6 +16,7 @@ import json
 import warnings
 import argparse
 import functools
+from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Sequence, Dict, List, Any, Optional
 from jsonschema import validate
@@ -46,7 +47,8 @@ class EntryPoint(EntryPointABC):
                 validate(instance=self.schema, schema=SUPPORT_SCHEMA)
             except Exception as e:
                 warnings.warn(str(e))
-                sys.exit(1)
+                raise e
+                # sys.exit(1)
 
     def __init__(self) -> None:
         self._check_schema()
@@ -66,7 +68,7 @@ class EntryPoint(EntryPointABC):
 
     @ property
     def config(self) -> Dict[str, Any]:
-        return self._config
+        return deepcopy(self._config)
 
     def regist_subcmd(self, subcmd: EntryPointABC) -> None:
         subcmd.parent = self
@@ -77,10 +79,10 @@ class EntryPoint(EntryPointABC):
         self.regist_subcmd(instance)
         return instance
 
-    def as_main(self, func: Callable[[Dict[str, Any]], None]) -> Callable[[Dict[str, Any]], None]:
+    def as_main(self, func: Callable[..., None]) -> Callable[..., None]:
         @ functools.wraps(func)
-        def warp(config: Dict[str, Any]) -> None:
-            return func(config)
+        def warp(*args: Any, **kwargs: Any) -> None:
+            return func(*args, **kwargs)
 
         self._main = warp
         return warp
@@ -127,7 +129,7 @@ class EntryPoint(EntryPointABC):
                 else:
                     if self.argparse_check_required and key in requireds:
                         required = True
-                parser = parse_schema_as_cmd(key, prop, parser, required, noflag)
+                parser = parse_schema_as_cmd(key, prop, parser, required=required, noflag=noflag)
             args = parser.parse_args(argv)
             for key, value in vars(args).items():
                 if value is not None:
@@ -206,9 +208,19 @@ class EntryPoint(EntryPointABC):
             sys.exit(1)
         else:
             config = self.config
-            self._main(config)
+            self._main(**config)
+
+    def parse_default(self) -> Dict[str, Any]:
+        if self.schema:
+            prop = self.schema.get("properties")
+            if prop:
+                return {key: sch.get("default") for key, sch in prop.items() if sch.get("default")}
+            return {}
+        return {}
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+        default_config = self.parse_default()
+        self._config.update(default_config)
         file_config = self.parse_configfile_args()
         self._config.update(file_config)
         env_config = self.parse_env_args()

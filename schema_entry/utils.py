@@ -65,16 +65,12 @@ def parse_value_string_by_schema(schema: Dict[str, Any], value_str: str) -> Any:
         return value_str
 
 
-def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
+def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                            required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     kwargs: Dict[str, Any] = {}
     kwargs.update({
         "type": _type
     })
-    _default = schema.get("default")
-    if _default:
-        kwargs.update({
-            "default": _default
-        })
     _enum = schema.get("enum")
     if _enum:
         kwargs.update({
@@ -96,16 +92,19 @@ def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser
     return parser
 
 
-def _argparse_number_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
-    return _argparse_base_handdler(float, key, schema, parser, required, noflag)
+def _argparse_number_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                              required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
+    return _argparse_base_handdler(float, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_string_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
-    return _argparse_base_handdler(str, key, schema, parser, required, noflag)
+def _argparse_string_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                              required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
+    return _argparse_base_handdler(str, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
-    return _argparse_base_handdler(int, key, schema, parser, required, noflag)
+def _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                               required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
+    return _argparse_base_handdler(int, key, schema, parser, required=required, noflag=noflag)
 
 
 def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -113,11 +112,6 @@ def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argpars
     kwargs.update({
         "action": "store_true"
     })
-    _default = schema.get("default")
-    if _default:
-        kwargs.update({
-            "default": _default
-        })
     _description = schema.get("description")
     if _description:
         kwargs.update({
@@ -172,7 +166,8 @@ def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.
     return parser
 
 
-def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
+def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                        required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     """根据字段的模式解析命令行行为
 
     Args:
@@ -189,11 +184,11 @@ def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.Argum
     if not noflag:
         key = key.replace("_", "-")
     if _type == "number":
-        return _argparse_number_handdler(key, schema, parser, required, noflag)
+        return _argparse_number_handdler(key, schema, parser, required=required, noflag=noflag)
     elif _type == "string":
-        return _argparse_string_handdler(key, schema, parser, required, noflag)
+        return _argparse_string_handdler(key, schema, parser, required=required, noflag=noflag)
     elif _type == "integer":
-        return _argparse_integer_handdler(key, schema, parser, required, noflag)
+        return _argparse_integer_handdler(key, schema, parser, required=required, noflag=noflag)
     elif _type == "boolean":
         return _argparse_boolean_handdler(key, schema, parser)
     elif _type == "array":

@@ -50,19 +50,19 @@ class ProtocolTest(unittest.TestCase):
             "properties": {
                 "a": {
                     "type": "array",
-                    "item": {
+                    "items": {
                         "type": "number"
                     }
                 },
                 "b": {
                     "type": "array",
-                    "item": {
+                    "items": {
                         "type": "string"
                     }
                 },
                 "c": {
                     "type": "array",
-                    "item": {
+                    "items": {
                         "type": "integer"
                     }
                 }
@@ -77,7 +77,7 @@ class ProtocolTest(unittest.TestCase):
             "properties": {
                 "a": {
                     "type": "array",
-                    "item": {
+                    "items": {
                         "type": "boolean"
                     }
                 }

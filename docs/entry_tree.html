@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>模块介绍 &mdash; entry-tree 0.0.0 文档</title>
+  <title>模块entry_tree &mdash; schema_entry 0.0.0 文档</title>
   
 
   
@@ -35,8 +35,7 @@
 
     
     <link rel="index" title="索引" href="genindex.html" />
-    <link rel="search" title="搜索" href="search.html" />
-    <link rel="prev" title="0.0.0" href="Changelog.html" /> 
+    <link rel="search" title="搜索" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> entry-tree
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> schema_entry
           
 
           
@@ -91,14 +90,15 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#id2">特性</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#id3">安装</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#id4">文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#id5">使用介绍</a></li>
 </ul>
 <p class="caption"><span class="caption-text">版本变更:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Changelog.html">0.0.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">0.0.0</a></li>
 </ul>
 <p class="caption"><span class="caption-text">接口文档:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">模块介绍</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="schema_entry.html">schema_entry package</a></li>
 </ul>
 
             
@@ -114,7 +114,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">entry-tree</a>
+          <a href="index.html">schema_entry</a>
         
       </nav>
 
@@ -145,7 +145,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>模块介绍</li>
+      <li>模块entry_tree</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,250 +164,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-entry_tree">
-<span id="id1"></span><h1>模块介绍<a class="headerlink" href="#module-entry_tree" title="永久链接至标题">¶</a></h1>
-<p>入口树的构造工具.</p>
-<p>这个基类的设计目的是为了配置化入口的定义.
-通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.</p>
-<p>目前的实现可以依次从指定路径下的json文件,环境变量,命令行参数读取需要的数据.
-然后校验是否符合设定的json schema规定的模式,在符合模式后执行注册进去的回调函数.</p>
-<p>入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行.
-他们将参数传递给下一级节点,直到尾部可以执行为止.</p>
-<p>Example:
-&gt;&gt;&gt; class ppm(EntryPoint):
-...     &quot;&quot;&quot;ppm &lt;subcmd&gt; [&lt;args&gt;]
-...     ppm工具的子命令有:
-...         工具自身相关:
-...         help              展示ppm的帮助说明
-...         version           展示ppm的版本
-...         reset             将ppm工具的设置初始化
-...         cache             管理ppm的缓存
-...     &quot;&quot;&quot;
-...     epilog = ''
-...     description = '项目脚手架'</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">ppm</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">help</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;帮助信息.</span>
-<span class="gp">... </span><span class="sd">    ppm help &lt;subcommand&gt;</span>
-<span class="gp">... </span><span class="sd">    ppm工具的子命令有:</span>
-<span class="gp">... </span><span class="sd">        工具自身相关:</span>
-<span class="gp">... </span><span class="sd">        help              展示ppm的帮助说明</span>
-<span class="gp">... </span><span class="sd">        version           展示ppm的版本</span>
-<span class="gp">... </span><span class="sd">        reset             将ppm工具的设置初始化</span>
-<span class="gp">... </span><span class="sd">        cache             管理ppm的缓存</span>
-<span class="gp">... </span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;查看子命令的帮助说明&#39;</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">main_help</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span class="n">regist_sub</span><span class="p">(</span><span class="n">help</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nd">@main_help</span><span class="o">.</span><span class="n">regist_callback</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">printconfig</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1231&quot;</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="p">([</span><span class="s2">&quot;help&quot;</span><span class="p">])</span>
-<span class="go">1231</span>
-<span class="go">{}</span>
-</pre></div>
-</div>
-<dl class="class">
-<dt id="entry_tree.EntryPoint">
-<em class="property">class </em><code class="sig-prename descclassname">entry_tree.</code><code class="sig-name descname">EntryPoint</code><a class="reference internal" href="_modules/entry_tree.html#EntryPoint"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint" title="永久链接至目标">¶</a></dt>
-<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>入口类基类.</p>
-<dl class="method">
-<dt id="entry_tree.EntryPoint.config">
-<em class="property">property </em><code class="sig-name descname">config</code><a class="headerlink" href="#entry_tree.EntryPoint.config" title="永久链接至目标">¶</a></dt>
-<dd><p>执行配置.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.default_config_file_paths">
-<code class="sig-name descname">default_config_file_paths</code><em class="property">: Sequence[str]</em><em class="property"> = []</em><a class="headerlink" href="#entry_tree.EntryPoint.default_config_file_paths" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.description">
-<code class="sig-name descname">description</code><em class="property">: str</em><em class="property"> = ''</em><a class="headerlink" href="#entry_tree.EntryPoint.description" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.do_callback">
-<code class="sig-name descname">do_callback</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.do_callback"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.do_callback" title="永久链接至目标">¶</a></dt>
-<dd><p>执行回调.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.env_prefix">
-<code class="sig-name descname">env_prefix</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#entry_tree.EntryPoint.env_prefix" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.epilog">
-<code class="sig-name descname">epilog</code><em class="property">: str</em><em class="property"> = ''</em><a class="headerlink" href="#entry_tree.EntryPoint.epilog" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.name">
-<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#entry_tree.EntryPoint.name" title="永久链接至目标">¶</a></dt>
-<dd><p>实例的名字.</p>
-<p>实例名字就是它的构造类名.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional[EntryPoint]</em><em class="property"> = None</em><a class="headerlink" href="#entry_tree.EntryPoint.parent" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.parse_args">
-<code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param">parser: argparse.ArgumentParser, argv: Sequence[str]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.parse_args"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.parse_args" title="永久链接至目标">¶</a></dt>
-<dd><p>解析参数.</p>
-<p>解析顺序: 指定的文件-&gt;环境变量-&gt;命令行参数.</p>
-<p>执行顺序: 解析配置-&gt;校验配置-&gt;执行回调</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>argv</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) -- 命令行参数.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.parse_commandline_args">
-<code class="sig-name descname">parse_commandline_args</code><span class="sig-paren">(</span><em class="sig-param">parser: argparse.ArgumentParser, argv: Sequence[str]</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.parse_commandline_args"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.parse_commandline_args" title="永久链接至目标">¶</a></dt>
-<dd><p>默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.parse_configfile_args">
-<code class="sig-name descname">parse_configfile_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.parse_configfile_args"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.parse_configfile_args" title="永久链接至目标">¶</a></dt>
-<dd><p>从指定的配置文件队列中构造配置参数.</p>
-<p>目前只支持json格式的配置文件.
-指定的配置文件路径队列中第一个json格式且存在的配置文件将被读取解析.
-一旦读取到了配置后面的路径将被忽略.</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>argv</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) -- 配置的可能路径</p>
-</dd>
-<dt class="field-even">返回</dt>
-<dd class="field-even"><p>从配置文件中读取到的配置</p>
-</dd>
-<dt class="field-odd">返回类型</dt>
-<dd class="field-odd"><p>Dict[str,Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.parse_env_args">
-<code class="sig-name descname">parse_env_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.parse_env_args"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.parse_env_args" title="永久链接至目标">¶</a></dt>
-<dd><p>从环境变量中读取配置.</p>
-<p>必须设定json schema才能从环境变量中读取配置.
-程序会读取schema结构,并解析其中的`properties`字段.如果没有定义schema则不会解析环境变量.</p>
-<p>如果是列表型的数据,那么使用`,`分隔,如果是object型的数据,那么使用`key:value;key:value`的形式分隔</p>
-<dl class="field-list simple">
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>环境变量中解析出来的参数.</p>
-</dd>
-<dt class="field-even">返回类型</dt>
-<dd class="field-even"><p>Dict[str,Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.pass_args_to_sub">
-<code class="sig-name descname">pass_args_to_sub</code><span class="sig-paren">(</span><em class="sig-param">parser: argparse.ArgumentParser, argv: Sequence[str]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.pass_args_to_sub"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.pass_args_to_sub" title="永久链接至目标">¶</a></dt>
-<dd><p>解析复杂命令行参数并将参数传递至下一级.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.prog">
-<em class="property">property </em><code class="sig-name descname">prog</code><a class="headerlink" href="#entry_tree.EntryPoint.prog" title="永久链接至目标">¶</a></dt>
-<dd><p>命令路径.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.regist_callback">
-<code class="sig-name descname">regist_callback</code><span class="sig-paren">(</span><em class="sig-param">func: Callable[[Dict[str, Any]], None]</em><span class="sig-paren">)</span> &#x2192; Callable[[Dict[str, Any]], None]<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.regist_callback"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.regist_callback" title="永久链接至目标">¶</a></dt>
-<dd><p>注册函数在解析参数成功后执行.</p>
-<p>执行顺序按被注册的顺序来.</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>,</em><em>Any</em><em>]</em><em>]</em><em>,</em><em>None</em><em>]</em>) -- 待执行的参数.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.regist_sub">
-<code class="sig-name descname">regist_sub</code><span class="sig-paren">(</span><em class="sig-param">subcmdclz: type</em><span class="sig-paren">)</span> &#x2192; entry_tree.EntryPoint<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.regist_sub"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.regist_sub" title="永久链接至目标">¶</a></dt>
-<dd><p>注册子命令.</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>subcmdclz</strong> (<a class="reference internal" href="#entry_tree.EntryPoint" title="entry_tree.EntryPoint"><em>EntryPoint</em></a>) -- 子命令的定义类</p>
-</dd>
-<dt class="field-even">返回</dt>
-<dd class="field-even"><p>注册类的实例</p>
-</dd>
-<dt class="field-odd">返回类型</dt>
-<dd class="field-odd"><p>[<a class="reference internal" href="#entry_tree.EntryPoint" title="entry_tree.EntryPoint">EntryPoint</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.regist_subcmd">
-<code class="sig-name descname">regist_subcmd</code><span class="sig-paren">(</span><em class="sig-param">subcmd: entry_tree.EntryPoint</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.regist_subcmd"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.regist_subcmd" title="永久链接至目标">¶</a></dt>
-<dd><p>注册子命令.</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>subcmd</strong> (<a class="reference internal" href="#entry_tree.EntryPoint" title="entry_tree.EntryPoint"><em>EntryPoint</em></a>) -- 子命令的实例</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="entry_tree.EntryPoint.schema">
-<code class="sig-name descname">schema</code><em class="property">: Optional[Dict[str, Any]]</em><em class="property"> = None</em><a class="headerlink" href="#entry_tree.EntryPoint.schema" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="entry_tree.EntryPoint.validat_config">
-<code class="sig-name descname">validat_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/entry_tree.html#EntryPoint.validat_config"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.EntryPoint.validat_config" title="永久链接至目标">¶</a></dt>
-<dd><p>校验配置.</p>
-<dl class="field-list simple">
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>是否通过校验</p>
-</dd>
-<dt class="field-even">返回类型</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="entry_tree.get_parent_tree">
-<code class="sig-prename descclassname">entry_tree.</code><code class="sig-name descname">get_parent_tree</code><span class="sig-paren">(</span><em class="sig-param">c: entry_tree.EntryPoint</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/entry_tree.html#get_parent_tree"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#entry_tree.get_parent_tree" title="永久链接至目标">¶</a></dt>
-<dd><p>获取父节点树.</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>c</strong> (<a class="reference internal" href="#entry_tree.EntryPoint" title="entry_tree.EntryPoint"><em>EntryPoint</em></a>) -- 节点类</p>
-</dd>
-<dt class="field-even">返回</dt>
-<dd class="field-even"><p>父节点树</p>
-</dd>
-<dt class="field-odd">返回类型</dt>
-<dd class="field-odd"><p>List[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="entry-tree">
+<h1>模块entry_tree<a class="headerlink" href="#entry-tree" title="永久链接至标题">¶</a></h1>
 </div>
 
 
@@ -415,13 +173,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="Changelog.html" class="btn btn-neutral float-left" title="0.0.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
-      
-    </div>
   
 
   <hr/>

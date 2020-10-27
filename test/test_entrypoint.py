@@ -1,8 +1,9 @@
 import os
 import unittest
-import argparse
 from pathlib import Path
 from typing import Dict, Any
+import jsonschema.exceptions
+
 from schema_entry.entrypoint import EntryPoint
 
 
@@ -23,6 +24,30 @@ class LoadConfigTest(unittest.TestCase):
     def tearDownClass(cls) -> None:
         print("tearDown GetParentTree test context")
 
+    def test_load_default_config(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number",
+                        "default": 33.3
+                    }
+                },
+                "required": ["a_a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a_a: float) -> None:
+            pass
+
+        root([])
+        self.assertDictEqual(root.config, {
+            "a_a": 33.3
+        })
+
     def test_load_configfile(self) -> None:
         class Test_A(EntryPoint):
             default_config_file_paths = [
@@ -33,7 +58,7 @@ class LoadConfigTest(unittest.TestCase):
         root = Test_A()
 
         @root.as_main
-        def f(_: Dict[str, Any]) -> None:
+        def _(a: int) -> None:
             pass
         root([])
         self.assertDictEqual(root.config, {
@@ -42,41 +67,77 @@ class LoadConfigTest(unittest.TestCase):
 
     def test_load_ENV_config(self) -> None:
         class Test_A(EntryPoint):
+            env_prefix = "app"
             schema = {
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "examples": [
-                    {
-                        "a": 123.1
-                    },
-                ],
                 "type": "object",
                 "properties": {
-                    "a": {
+                    "a_a": {
                         "type": "number"
                     }
                 },
-                "required": ["a"]
+                "required": ["a_a"]
             }
         root = Test_A()
 
         @root.as_main
-        def f(_: Dict[str, Any]) -> None:
+        def _(a_a: float) -> None:
             pass
-        os.environ['TEST_A_A'] = "123.1"
+        os.environ['APP_A_A'] = "123.1"
         root([])
         self.assertDictEqual(root.config, {
-            "a": 123.1
+            "a_a": 123.1
         })
+
+    def test_schema_check(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a-a": {
+                        "type": "number"
+                    }
+                },
+                "required": ["a-a"]
+            }
+
+        with self.assertRaises(jsonschema.exceptions.ValidationError):
+            Test_A()
 
     def test_load_cmd_config(self) -> None:
         class Test_A(EntryPoint):
             schema = {
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "examples": [
-                    {
-                        "a": 123.1
-                    },
-                ],
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number"
+                    }
+                },
+                "required": ["a_a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a_a: float) -> None:
+            pass
+
+        root(["--a-a=321.5"])
+        self.assertDictEqual(root.config, {
+            "a_a": 321.5
+        })
+
+    def test_load_cmd_noflag_config(self) -> None:
+        class Test_A(EntryPoint):
+            default_config_file_paths = [
+                "/test_config.json",
+                str(Path.home().joinpath(".test_config.json")),
+                "./test_config.json"
+            ]
+            argparse_noflag = "a"
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
                 "type": "object",
                 "properties": {
                     "a": {
@@ -88,10 +149,108 @@ class LoadConfigTest(unittest.TestCase):
         root = Test_A()
 
         @root.as_main
-        def f(_: Dict[str, Any]) -> None:
+        def _(a: int) -> None:
             pass
 
-        root(["--a=321.5"])
+        root(["321.5"])
         self.assertDictEqual(root.config, {
             "a": 321.5
+        })
+
+    def test_load_config_order1(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a: int) -> None:
+            pass
+        os.environ['TEST_A_A'] = "2"
+        root(["--a=3"])
+        self.assertDictEqual(root.config, {
+            "a": 3
+        })
+
+    def test_load_config_order2(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a: int) -> None:
+            pass
+        root(["--a=3"])
+        self.assertDictEqual(root.config, {
+            "a": 3
+        })
+
+    def test_load_config_order3(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a: int) -> None:
+            pass
+        os.environ['TEST_A_A'] = "2"
+        root([])
+        self.assertDictEqual(root.config, {
+            "a": 2
+        })
+
+    def test_subcmd(self) -> None:
+        class A(EntryPoint):
+            pass
+
+        class B(EntryPoint):
+            pass
+
+        class C(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = A()
+        a_b_c = root.regist_sub(B).regist_sub(C)
+
+        @a_b_c.as_main
+        def _(a: int) -> None:
+            pass
+        os.environ['A_B_C_A'] = "2"
+        root(["b", "c"])
+        self.assertDictEqual(a_b_c.config, {
+            "a": 2
         })

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entry-tree 0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-15 17:53+0800\n"
+"POT-Creation-Date: 2020-10-27 19:20+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "简介"
 msgstr ""
 
 #: ../../document/README.md:3
-msgid "入口树的构造工具."
+msgid "程序入口的构造工具."
 msgstr ""
 
 #: ../../document/README.md:5
@@ -39,31 +39,279 @@ msgstr ""
 msgid "入口树中可以有中间节点,用于分解复杂命令行参数,中间节点不会执行. 他们将参数传递给下一级节点,直到尾部可以执行为止."
 msgstr ""
 
-#: ../../document/README.md:14
+#: ../../document/README.md:13
 msgid "特性"
 msgstr ""
 
+#: ../../document/README.md:15
+msgid "根据子类的名字小写构造命令"
+msgstr ""
+
 #: ../../document/README.md:16
-msgid "从默认文件路径,环境变量,命令行参数中获取配置参数"
+msgid "根据子类的docstring,epilog字段和description字段自动构造,命令行说明."
 msgstr ""
 
 #: ../../document/README.md:17
-msgid "通过jsonschema的定义构造环境变量的获取行为"
+msgid "根据子类的schema字段和env_prefix字段自动构造环境变量的读取规则."
 msgstr ""
 
 #: ../../document/README.md:18
-msgid "配置参数通过jsonschema进行检验"
+msgid "根据子类的default_config_file_paths字段自动按顺序读取json格式配置文件中的参数."
 msgstr ""
 
 #: ../../document/README.md:19
-msgid "可以构造多级命令行命令"
+msgid "根据schema字段构造命令行参数和配置校验"
+msgstr ""
+
+#: ../../document/README.md:20
+msgid "使用装饰器@as_main注册获取到配置后执行的函数"
 msgstr ""
 
 #: ../../document/README.md:21
+msgid "通过覆写parse_commandline_args方法来定义命令行参数的读取"
+msgstr ""
+
+#: ../../document/README.md:22
+msgid "入口节点可以通过方法regist_sub注册子节点"
+msgstr ""
+
+#: ../../document/README.md:24
 msgid "安装"
 msgstr ""
 
-#: ../../document/README.md:23
+#: ../../document/README.md:26
 msgid "文档"
 msgstr ""
+
+#: ../../document/README.md:28
+msgid "使用介绍"
+msgstr ""
+
+#: ../../document/README.md:30
+msgid "动机"
+msgstr ""
+
+#: ../../document/README.md:32
+msgid "schema_entry模块提供了一个基类EntryPoint用于构造复杂的程序入口.通常我们的程序入口参数有3个途径:"
+msgstr ""
+
+#: ../../document/README.md:34
+msgid "配置文件"
+msgstr ""
+
+#: ../../document/README.md:35
+msgid "环境变量"
+msgstr ""
+
+#: ../../document/README.md:36
+msgid "命令行参数"
+msgstr ""
+
+#: ../../document/README.md:38
+msgid ""
+"在docker广泛应用之前可能用的最多的是命令行参数.但在docker大行其道的现在,配置文件(docker "
+"config)和环境变量(environment字段)变得更加重要."
+msgstr ""
+
+#: ../../document/README.md:40
+msgid "随之而来的是参数的校验问题,python标准库argparse本身有不错的参数约束能力,但配置文件中的和环境变量中的参数就需要额外校验了."
+msgstr ""
+
+#: ../../document/README.md:42
+msgid "这个项目的目的是简化定义入口这个非常通用的业务,将代码尽量配置化."
+msgstr ""
+
+#: ../../document/README.md:44
+msgid "使用方法"
+msgstr ""
+
+#: ../../document/README.md:46
+msgid "首先我们来分析下一个入口形式."
+msgstr ""
+
+#: ../../document/README.md:48
+msgid "通常一个程序的入口可能简单也可能复杂,但无非两种"
+msgstr ""
+
+#: ../../document/README.md:50
+msgid ""
+"中间节点,比如docker stack, "
+"它本质上并不执行操作,它只是表示要执行的是关于子模块的操作.当单独执行这条命令时实际上它什么都没做,它下面的子命令git submodule "
+"add这类才是实际可以执行的节点.而我定义这种中间节点单独被执行应该打印其帮助说明文本."
+msgstr ""
+
+#: ../../document/README.md:51
+msgid "执行节点,比如docker run,这种就是可以执行的节点."
+msgstr ""
+
+#: ../../document/README.md:53
+msgid "执行节点"
+msgstr ""
+
+#: ../../document/README.md:55
+msgid "上面说过执行节点的任务有3个:"
+msgstr ""
+
+#: ../../document/README.md:57
+msgid "从配置文件,环境变量,命令行参数获取配置参数"
+msgstr ""
+
+#: ../../document/README.md:58
+msgid "[可选]校验配置参数是否符合要求"
+msgstr ""
+
+#: ../../document/README.md:59
+msgid "[可选]将配置作为参数引用到程序中."
+msgstr ""
+
+#: ../../document/README.md:61
+msgid "从配置文件中读取配置参数"
+msgstr ""
+
+#: ../../document/README.md:63
+msgid "默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取."
+msgstr ""
+
+#: ../../document/README.md:77
+msgid "通过定义schema字段进行参数校验"
+msgstr ""
+
+#: ../../document/README.md:79
+msgid "我们可以定义schema字段来激活校验功能"
+msgstr ""
+
+#: ../../document/README.md:100
+msgid "EntryPoint的子类会在解析获得参数后校验参数字典是否符合schema中定义的模式."
+msgstr ""
+
+#: ../../document/README.md:102
+msgid "当然schema字段也不能乱写,它的规则是json schema的一个子集:"
+msgstr ""
+
+#: ../../document/README.md:299
+msgid "简而言之就是:"
+msgstr ""
+
+#: ../../document/README.md:301
+msgid "最外层必须有properties和type字段且type字段必须为object,可以有required字段"
+msgstr ""
+
+#: ../../document/README.md:302
+msgid "最外层properties中的字段名必须是由数字,字母和_组成,"
+msgstr ""
+
+#: ../../document/README.md:303
+msgid "字段类型只能是string,boolean,number,integer,array之一"
+msgstr ""
+
+#: ../../document/README.md:304
+msgid "字段类型如果为array则内部必须要有items且items中必须有type字段,且该type字段的值必须为string,number,integer之一"
+msgstr ""
+
+#: ../../document/README.md:306
+msgid "如果我们不想校验,那么可以设置verify_schema为False强行关闭这个功能."
+msgstr ""
+
+#: ../../document/README.md:308
+msgid "从环境变量中读取配置参数"
+msgstr ""
+
+#: ../../document/README.md:310
+msgid "要从环境变量中读取配置必须设置schema字段,EntryPoint会按照其中properties字段定义的字段范围和字段类型解析环境变量."
+msgstr ""
+
+#: ../../document/README.md:312
+msgid ""
+"环境变量key的规则为前缀_字段名的大写.前缀的默认值为...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写. "
+"我们也可以通过设定env_prefix字段来替换默认前缀,替换的前缀依然会被转化为大写."
+msgstr ""
+
+#: ../../document/README.md:330
+msgid "如果我们不希望从环境变量中解析配置,那么也可以设置parse_env为False"
+msgstr ""
+
+#: ../../document/README.md:332
+msgid "从命令行参数中获取配置参数"
+msgstr ""
+
+#: ../../document/README.md:334
+msgid "当我们定义好schema后所有schema中定义好的参数都可以以--xxxx的形式从命令行中读取,需要注意schema中定义的字段中_会被修改为-."
+msgstr ""
+
+#: ../../document/README.md:336
+msgid "这个命令行读取是使用的标准库argparse,构造出的解析器中useage,epilog和description会由类中定义的docstring,epilog和description决定;argv则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数)."
+msgstr ""
+
+#: ../../document/README.md:338
+msgid ""
+"通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定schema中一项是没有--"
+"的那种配置,那么可以在定义类时指定argparse_noflag为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定argparse_check_required=True.需要注意如果一个字段被指定为了noflag那么它就是必填项了."
+msgstr ""
+
+#: ../../document/README.md:359
+msgid "配置的读取顺序"
+msgstr ""
+
+#: ../../document/README.md:361
+msgid "配置的读取顺序为schema中定义的default值->配置文件->环境变量->命令行参数,而覆盖顺序则是反过来."
+msgstr ""
+
+#: ../../document/README.md:363
+msgid "注册入口的执行函数"
+msgstr ""
+
+#: ../../document/README.md:365
+msgid "我们使用实例的装饰器方法as_main来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的**config"
+msgstr ""
+
+#: ../../document/README.md:377
+msgid "直接从节点对象中获取配置"
+msgstr ""
+
+#: ../../document/README.md:379
+msgid "节点对象的config属性会在每次调用时copy一份当前的配置值,config是不可写的."
+msgstr ""
+
+#: ../../document/README.md:385
+msgid "中间节点"
+msgstr ""
+
+#: ../../document/README.md:387
+msgid "中间节点并不能执行程序,它只是用于描述一个范围内的命令集合,因此它的作用就是充当help指令.我们定义中间节点并不能执行.但必须有至少一个子节点才是中间节点.因此即便一个节点定义了上面的配置,只要它有子节点就不会按上面的执行流程执行."
+msgstr ""
+
+#: ../../document/README.md:389
+msgid "利用中间节点我们可以构造出非常复杂的启动命令树."
+msgstr ""
+
+#: ../../document/README.md:391
+msgid "注册子节点"
+msgstr ""
+
+#: ../../document/README.md:393
+msgid "中间节点的注册有两个接口"
+msgstr ""
+
+#: ../../document/README.md:395
+msgid "regist_subcmd用于注册一个已经实例化的子节点"
+msgstr ""
+
+#: ../../document/README.md:411
+msgid "regist_sub用于注册一个子节点类,它会返回被注册的节点的一个实例"
+msgstr ""
+
+#~ msgid "入口树的构造工具."
+#~ msgstr ""
+
+#~ msgid "从默认文件路径,环境变量,命令行参数中获取配置参数"
+#~ msgstr ""
+
+#~ msgid "通过jsonschema的定义构造环境变量的获取行为"
+#~ msgstr ""
+
+#~ msgid "配置参数通过jsonschema进行检验"
+#~ msgstr ""
+
+#~ msgid "可以构造多级命令行命令"
+#~ msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entry-tree 0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-15 17:53+0800\n"
+"POT-Creation-Date: 2020-10-27 19:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgid "接口文档:"
 msgstr ""
 
 #: ../../document/index.rst:2
-msgid "欢迎使用entry_tree!"
+msgid "欢迎使用schema_entry!"
 msgstr ""
 
 #: ../../document/index.rst:23
@@ -48,4 +48,7 @@ msgstr ""
 #: ../../document/index.rst:27
 msgid ":ref:`search`"
 msgstr ""
+
+#~ msgid "欢迎使用entry_tree!"
+#~ msgstr ""
 

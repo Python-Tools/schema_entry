@@ -7,7 +7,7 @@ from typing import Callable, Sequence, Dict, Any, Optional
 class EntryPointABC(abc.ABC):
     """程序入口类
 
-    Attributes::
+    Attributes:
         epilog (str): 命令行展示介绍时的epilog部分
         description (str): 命令行展示介绍时的介绍部分
         parent (Optional["EntryPointABC"]): 入口节点的父节点.Default None
@@ -16,6 +16,8 @@ class EntryPointABC(abc.ABC):
         default_config_file_paths (Sequence[str]): 设置默认的配置文件位置.
         env_prefix (str): 设置环境变量的前缀
         parse_env (bool): 展示是否解析环境变量
+        argparse_check_required  (bool): 命令行参数是否解析必填项为必填项
+        argparse_noflag (Optional[str]): 命令行参数解析哪个字段为无`--`的参数
 
     """
     epilog: str
@@ -32,7 +34,7 @@ class EntryPointABC(abc.ABC):
     argparse_noflag: Optional[str]
 
     _subcmds: Dict[str, "EntryPointABC"]
-    _main: Optional[Callable[[Dict[str, Any]], None]]
+    _main: Optional[Callable[..., None]]
     _config: Dict[str, Any]
 
     @abc.abstractproperty

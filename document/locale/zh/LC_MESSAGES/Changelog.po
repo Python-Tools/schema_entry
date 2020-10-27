@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entry-tree 0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-15 17:53+0800\n"
+"POT-Creation-Date: 2020-10-27 19:20+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: ../../document/Changelog.md:1
+#: ../../document/CHANGELOG.md:1
 msgid "0.0.0"
 msgstr ""
 
-#: ../../document/Changelog.md:3
+#: ../../document/CHANGELOG.md:3
 msgid "新增功能"
 msgstr ""
 
-#: ../../document/Changelog.md:5
+#: ../../document/CHANGELOG.md:5
 msgid "实现了如下基本功能"
 msgstr ""
 
-#: ../../document/Changelog.md:6
-msgid "入口节点可以通过方法``"
+#: ../../document/CHANGELOG.md:6
+msgid "根据子类的名字构造命令"
 msgstr ""
+
+#: ../../document/CHANGELOG.md:7
+msgid "入口节点可以通过方法regist_sub和regist_subcmd注册子节点"
+msgstr ""
+
+#: ../../document/CHANGELOG.md:8
+msgid "根据子类的docstring,epilog字段和description字段自动构造,命令行说明."
+msgstr ""
+
+#: ../../document/CHANGELOG.md:9
+msgid "根据子类的schema字段和env_prefix字段自动构造环境变量的读取规则."
+msgstr ""
+
+#: ../../document/CHANGELOG.md:10
+msgid "根据子类的default_config_file_paths字段自动按顺序读取json格式配置文件中的参数."
+msgstr ""
+
+#: ../../document/CHANGELOG.md:11
+msgid "根据schema字段校验配置"
+msgstr ""
+
+#: ../../document/CHANGELOG.md:12
+msgid "根据schema字段构造命令行参数"
+msgstr ""
+
+#: ../../document/CHANGELOG.md:13
+msgid "使用装饰器as_main注册获取到配置后执行的函数"
+msgstr ""
+
+#~ msgid "入口节点可以通过方法``"
+#~ msgstr ""
 

@@ -1,4 +1,4 @@
-欢迎使用entry_tree!
+欢迎使用schema_entry!
 ======================================
 
 .. toctree::
@@ -11,13 +11,13 @@
    :maxdepth: 1
    :caption: 版本变更:
 
-   Changelog
+   CHANGELOG
 
 .. toctree::
    :maxdepth: 2
    :caption: 接口文档:
 
-   entry_tree
+   schema_entry
 
 索引与搜索
 ==================

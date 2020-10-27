@@ -9,6 +9,7 @@ SUPPORT_SCHEMA = {
         "properties": {
             "type": "object",
             "minProperties": 1,
+            "additionalProperties": False,
             "patternProperties": {
                 r"^\w+$": {
                     "oneOf": [
@@ -158,7 +159,7 @@ SUPPORT_SCHEMA = {
                                     "type": "string",
                                     "const": "array"
                                 },
-                                "item": {
+                                "items": {
                                     "type": "object",
                                     "required": ["type"],
                                     "additionalProperties":False,

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>简介 &mdash; entry-tree 0.0.0 文档</title>
+  <title>简介 &mdash; schema_entry 0.0.0 文档</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
-    <link rel="next" title="0.0.0" href="Changelog.html" />
-    <link rel="prev" title="欢迎使用entry_tree!" href="index.html" /> 
+    <link rel="next" title="0.0.0" href="CHANGELOG.html" />
+    <link rel="prev" title="欢迎使用schema_entry!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> entry-tree
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> schema_entry
           
 
           
@@ -92,14 +92,35 @@
 <li class="toctree-l1"><a class="reference internal" href="#id2">特性</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#id3">安装</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#id4">文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id5">使用介绍</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id6">动机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">使用方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">执行节点</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">从配置文件中读取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#schema">通过定义<code class="docutils literal notranslate"><span class="pre">schema字段进行参数校验</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">从环境变量中读取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">从命令行参数中获取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">配置的读取顺序</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">注册入口的执行函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">直接从节点对象中获取配置</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">中间节点</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id16">注册子节点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">版本变更:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Changelog.html">0.0.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">0.0.0</a></li>
 </ul>
 <p class="caption"><span class="caption-text">接口文档:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="entry_tree.html">模块介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_entry.html">schema_entry package</a></li>
 </ul>
 
             
@@ -115,7 +136,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">entry-tree</a>
+          <a href="index.html">schema_entry</a>
         
       </nav>
 
@@ -167,7 +188,7 @@
             
   <div class="section" id="id1">
 <h1>简介<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
-<p>入口树的构造工具.</p>
+<p>程序入口的构造工具.</p>
 <p>这个基类的设计目的是为了配置化入口的定义.通过继承和覆盖基类中的特定字段和方法来实现入口的参数配置读取.</p>
 <p>目前的实现可以依次从指定路径下的json文件,环境变量,命令行参数读取需要的数据.
 然后校验是否符合设定的json schema规定的模式,在符合模式后执行注册进去的回调函数.</p>
@@ -177,10 +198,14 @@
 <div class="section" id="id2">
 <h1>特性<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h1>
 <ul class="simple">
-<li><p>从默认文件路径,环境变量,命令行参数中获取配置参数</p></li>
-<li><p>通过jsonschema的定义构造环境变量的获取行为</p></li>
-<li><p>配置参数通过jsonschema进行检验</p></li>
-<li><p>可以构造多级命令行命令</p></li>
+<li><p>根据子类的名字小写构造命令</p></li>
+<li><p>根据子类的docstring,<code class="docutils literal notranslate"><span class="pre">epilog字段</span></code>和<code class="docutils literal notranslate"><span class="pre">description字段</span></code>自动构造,命令行说明.</p></li>
+<li><p>根据子类的<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>和<code class="docutils literal notranslate"><span class="pre">env_prefix字段</span></code>自动构造环境变量的读取规则.</p></li>
+<li><p>根据子类的<code class="docutils literal notranslate"><span class="pre">default_config_file_paths字段</span></code>自动按顺序读取json格式配置文件中的参数.</p></li>
+<li><p>根据<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>构造命令行参数和配置校验</p></li>
+<li><p>使用装饰器<code class="docutils literal notranslate"><span class="pre">&#64;as_main</span></code>注册获取到配置后执行的函数</p></li>
+<li><p>通过覆写<code class="docutils literal notranslate"><span class="pre">parse_commandline_args</span></code>方法来定义命令行参数的读取</p></li>
+<li><p>入口节点可以通过方法<code class="docutils literal notranslate"><span class="pre">regist_sub</span></code>注册子节点</p></li>
 </ul>
 </div>
 <div class="section" id="id3">
@@ -188,6 +213,386 @@
 </div>
 <div class="section" id="id4">
 <h1>文档<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h1>
+</div>
+<div class="section" id="id5">
+<h1>使用介绍<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id6">
+<h2>动机<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">schema_entry</span></code>模块提供了一个基类<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>用于构造复杂的程序入口.通常我们的程序入口参数有3个途径:</p>
+<ol class="simple">
+<li><p>配置文件</p></li>
+<li><p>环境变量</p></li>
+<li><p>命令行参数</p></li>
+</ol>
+<p>在docker广泛应用之前可能用的最多的是命令行参数.但在docker大行其道的现在,配置文件(docker config)和环境变量(environment字段)变得更加重要.</p>
+<p>随之而来的是参数的校验问题,python标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>本身有不错的参数约束能力,但配置文件中的和环境变量中的参数就需要额外校验了.</p>
+<p>这个项目的目的是简化定义入口这个非常通用的业务,将代码尽量配置化.</p>
+</div>
+<div class="section" id="id7">
+<h2>使用方法<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>首先我们来分析下一个入口形式.</p>
+<p>通常一个程序的入口可能简单也可能复杂,但无非两种</p>
+<ol class="simple">
+<li><p>中间节点,比如<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">stack</span></code>, 它本质上并不执行操作,它只是表示要执行的是关于子模块的操作.当单独执行这条命令时实际上它什么都没做,它下面的子命令<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">add</span></code>这类才是实际可以执行的节点.而我定义这种中间节点单独被执行应该打印其帮助说明文本.</p></li>
+<li><p>执行节点,比如<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code>,这种就是可以执行的节点.</p></li>
+</ol>
+<div class="section" id="id8">
+<h3>执行节点<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h3>
+<p>上面说过执行节点的任务有3个:</p>
+<ol class="simple">
+<li><p>从配置文件,环境变量,命令行参数获取配置参数</p></li>
+<li><p>[可选]校验配置参数是否符合要求</p></li>
+<li><p>[可选]将配置作为参数引用到程序中.</p></li>
+</ol>
+<div class="section" id="id9">
+<h4>从配置文件中读取配置参数<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h4>
+<p>默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">schema_entry</span> <span class="kn">import</span> <span class="n">EntryPoint</span>
+
+<span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">default_config_file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;/test_config.json&quot;</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;.test_config.json&quot;</span><span class="p">)),</span>
+        <span class="s2">&quot;./test_config.json&quot;</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="schema">
+<h4>通过定义<code class="docutils literal notranslate"><span class="pre">schema字段进行参数校验</span></code><a class="headerlink" href="#schema" title="永久链接至标题">¶</a></h4>
+<p>我们可以定义<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>来激活校验功能</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">default_config_file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;/test_config.json&quot;</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;.test_config.json&quot;</span><span class="p">)),</span>
+        <span class="s2">&quot;./test_config.json&quot;</span>
+    <span class="p">]</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>的子类会在解析获得参数后校验参数字典是否符合schema中定义的模式.</p>
+<p>当然schema字段也不能乱写,它的规则是json schema的一个子集:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span> {
+    &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;properties&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;minProperties&quot;: 1,
+            &quot;additionalProperties&quot;: false,
+            &quot;patternProperties&quot;: {
+                r&quot;^\w+$&quot;: {
+                    &quot;oneOf&quot;: [
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;boolean&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;boolean&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                }
+                            }
+                        },
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;string&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;string&quot;
+                                    }
+                                },
+                                &quot;maxLength&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                    &quot;minimum&quot;: 0
+                                },
+                                &quot;minLength&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                    &quot;minimum&quot;: 0
+                                },
+                                &quot;pattern&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;format&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                }
+                            }
+                        }, {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;number&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;number&quot;
+                                    }
+                                },
+                                &quot;maximum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;exclusiveMaximum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;minimum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+
+                                },
+                                &quot;exclusiveMinimum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                }
+                            }
+                        }, {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;integer&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;integer&quot;
+                                    }
+                                },
+                                &quot;maximum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;exclusiveMaximum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;minimum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+
+                                },
+                                &quot;exclusiveMinimum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                }
+                            }
+                        }, {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;array&quot;
+                                },
+                                &quot;items&quot;: {
+                                    &quot;type&quot;: &quot;object&quot;,
+                                    &quot;required&quot;: [&quot;type&quot;],
+                                    &quot;additionalProperties&quot;:false,
+                                    &quot;properties&quot;: {
+                                        &quot;type&quot;: {
+                                            &quot;type&quot;: &quot;string&quot;,
+                                            &quot;enum&quot;: [&quot;string&quot;, &quot;number&quot;, &quot;integer&quot;]
+                                        }
+                                    }
+                                },
+                                &quot;description&quot;:{
+                                    &quot;type&quot;: &quot;string&quot;
+                                }
+                            }
+                        }
+                    ]
+
+                }
+            }
+        },
+        &quot;type&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;const&quot;: &quot;object&quot;
+        },
+        &quot;required&quot;: {
+            &quot;type&quot;: &quot;array&quot;,
+            &quot;items&quot;: {
+                &quot;type&quot;: &quot;string&quot;
+            }
+        }
+
+    },
+    &quot;required&quot;: [&quot;properties&quot;, &quot;type&quot;]
+}
+</pre></div>
+</div>
+<p>简而言之就是:</p>
+<ol class="simple">
+<li><p>最外层必须有<code class="docutils literal notranslate"><span class="pre">properties</span></code>和<code class="docutils literal notranslate"><span class="pre">type</span></code>字段且<code class="docutils literal notranslate"><span class="pre">type</span></code>字段必须为<code class="docutils literal notranslate"><span class="pre">object</span></code>,可以有<code class="docutils literal notranslate"><span class="pre">required</span></code>字段</p></li>
+<li><p>最外层<code class="docutils literal notranslate"><span class="pre">properties</span></code>中的字段名必须是由<code class="docutils literal notranslate"><span class="pre">数字</span></code>,<code class="docutils literal notranslate"><span class="pre">字母</span></code>和<code class="docutils literal notranslate"><span class="pre">_</span></code>组成,</p></li>
+<li><p>字段类型只能是<code class="docutils literal notranslate"><span class="pre">string</span></code>,<code class="docutils literal notranslate"><span class="pre">boolean</span></code>,<code class="docutils literal notranslate"><span class="pre">number</span></code>,<code class="docutils literal notranslate"><span class="pre">integer</span></code>,<code class="docutils literal notranslate"><span class="pre">array</span></code>之一</p></li>
+<li><p>字段类型如果为<code class="docutils literal notranslate"><span class="pre">array</span></code>则内部必须要有<code class="docutils literal notranslate"><span class="pre">items</span></code>且<code class="docutils literal notranslate"><span class="pre">items</span></code>中必须有<code class="docutils literal notranslate"><span class="pre">type</span></code>字段,且该<code class="docutils literal notranslate"><span class="pre">type</span></code>字段的值必须为<code class="docutils literal notranslate"><span class="pre">string</span></code>,<code class="docutils literal notranslate"><span class="pre">number</span></code>,<code class="docutils literal notranslate"><span class="pre">integer</span></code>之一</p></li>
+</ol>
+<p>如果我们不想校验,那么可以设置<code class="docutils literal notranslate"><span class="pre">verify_schema</span></code>为<code class="docutils literal notranslate"><span class="pre">False</span></code>强行关闭这个功能.</p>
+</div>
+<div class="section" id="id10">
+<h4>从环境变量中读取配置参数<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h4>
+<p>要从环境变量中读取配置必须设置<code class="docutils literal notranslate"><span class="pre">schema</span></code>字段,<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>会按照其中<code class="docutils literal notranslate"><span class="pre">properties</span></code>字段定义的字段范围和字段类型解析环境变量.</p>
+<p>环境变量key的规则为<code class="docutils literal notranslate"><span class="pre">前缀_字段名的大写</span></code>.前缀的默认值为<code class="docutils literal notranslate"><span class="pre">...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写</span></code>.
+我们也可以通过设定<code class="docutils literal notranslate"><span class="pre">env_prefix</span></code>字段来替换默认前缀,替换的前缀依然会被转化为大写.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;app&quot;</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;a_a&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a_a&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>如果我们不希望从环境变量中解析配置,那么也可以设置<code class="docutils literal notranslate"><span class="pre">parse_env</span></code>为<code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="id11">
+<h4>从命令行参数中获取配置参数<a class="headerlink" href="#id11" title="永久链接至标题">¶</a></h4>
+<p>当我们定义好<code class="docutils literal notranslate"><span class="pre">schema</span></code>后所有schema中定义好的参数都可以以<code class="docutils literal notranslate"><span class="pre">--xxxx</span></code>的形式从命令行中读取,需要注意schema中定义的字段中<code class="docutils literal notranslate"><span class="pre">_</span></code>会被修改为<code class="docutils literal notranslate"><span class="pre">-</span></code>.</p>
+<p>这个命令行读取是使用的标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>,构造出的解析器中<code class="docutils literal notranslate"><span class="pre">useage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>会由类中定义的docstring,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>决定;<code class="docutils literal notranslate"><span class="pre">argv</span></code>则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).</p>
+<p>通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定<code class="docutils literal notranslate"><span class="pre">schema</span></code>中一项是没有<code class="docutils literal notranslate"><span class="pre">--</span></code>的那种配置,那么可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_noflag</span></code>为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_check_required=True</span></code>.需要注意如果一个字段被指定为了<code class="docutils literal notranslate"><span class="pre">noflag</span></code>那么它就是必填项了.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">argparse_noflag</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
+    <span class="n">argparse_check_required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h4>配置的读取顺序<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h4>
+<p>配置的读取顺序为<code class="docutils literal notranslate"><span class="pre">schema中定义的default值</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">配置文件</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">环境变量</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行参数</span></code>,而覆盖顺序则是反过来.</p>
+</div>
+<div class="section" id="id13">
+<h4>注册入口的执行函数<a class="headerlink" href="#id13" title="永久链接至标题">¶</a></h4>
+<p>我们使用实例的装饰器方法<code class="docutils literal notranslate"><span class="pre">as_main</span></code>来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的<code class="docutils literal notranslate"><span class="pre">**config</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Test_A</span><span class="p">()</span>
+<span class="nd">@root</span><span class="o">.</span><span class="n">as_main</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id14">
+<h4>直接从节点对象中获取配置<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
+<p>节点对象的<code class="docutils literal notranslate"><span class="pre">config</span></code>属性会在每次调用时copy一份当前的配置值,config是不可写的.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id15">
+<h3>中间节点<a class="headerlink" href="#id15" title="永久链接至标题">¶</a></h3>
+<p>中间节点并不能执行程序,它只是用于描述一个范围内的命令集合,因此它的作用就是充当<code class="docutils literal notranslate"><span class="pre">help</span></code>指令.我们定义中间节点并不能执行.但必须有至少一个子节点才是中间节点.因此即便一个节点定义了上面的配置,只要它有子节点就不会按上面的执行流程执行.</p>
+<p>利用中间节点我们可以构造出非常复杂的启动命令树.</p>
+<div class="section" id="id16">
+<h4>注册子节点<a class="headerlink" href="#id16" title="永久链接至标题">¶</a></h4>
+<p>中间节点的注册有两个接口</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">regist_subcmd</span></code>用于注册一个已经实例化的子节点</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">()</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">regist_subcmd</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">regist_sub</span></code>用于注册一个子节点类,它会返回被注册的节点的一个实例</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">regist_sub</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -198,10 +603,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Changelog.html" class="btn btn-neutral float-right" title="0.0.0" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="0.0.0" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="欢迎使用entry_tree!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="欢迎使用schema_entry!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
       
     </div>
   

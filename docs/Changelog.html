@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>0.0.0 &mdash; entry-tree 0.0.0 文档</title>
+  <title>0.0.0 &mdash; schema_entry 0.0.0 文档</title>
   
 
   
@@ -36,7 +36,7 @@
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
-    <link rel="next" title="模块介绍" href="entry_tree.html" />
+    <link rel="next" title="schema_entry package" href="schema_entry.html" />
     <link rel="prev" title="简介" href="README.html" /> 
 </head>
 
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> entry-tree
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> schema_entry
           
 
           
@@ -92,6 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#id2">特性</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#id3">安装</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#id4">文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#id5">使用介绍</a></li>
 </ul>
 <p class="caption"><span class="caption-text">版本变更:</span></p>
 <ul class="current">
@@ -102,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">接口文档:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="entry_tree.html">模块介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_entry.html">schema_entry package</a></li>
 </ul>
 
             
@@ -118,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">entry-tree</a>
+          <a href="index.html">schema_entry</a>
         
       </nav>
 
@@ -155,7 +156,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/Changelog.md.txt" rel="nofollow"> 查看页面源码</a>
+            <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> 查看页面源码</a>
           
         
       </li>
@@ -175,7 +176,14 @@
 <ul class="simple">
 <li><p>实现了如下基本功能</p>
 <ul>
-<li><p>入口节点可以通过方法``</p></li>
+<li><p>根据子类的名字构造命令</p></li>
+<li><p>入口节点可以通过方法<code class="docutils literal notranslate"><span class="pre">regist_sub</span></code>和<code class="docutils literal notranslate"><span class="pre">regist_subcmd</span></code>注册子节点</p></li>
+<li><p>根据子类的docstring,<code class="docutils literal notranslate"><span class="pre">epilog字段</span></code>和<code class="docutils literal notranslate"><span class="pre">description字段</span></code>自动构造,命令行说明.</p></li>
+<li><p>根据子类的<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>和<code class="docutils literal notranslate"><span class="pre">env_prefix字段</span></code>自动构造环境变量的读取规则.</p></li>
+<li><p>根据子类的<code class="docutils literal notranslate"><span class="pre">default_config_file_paths字段</span></code>自动按顺序读取json格式配置文件中的参数.</p></li>
+<li><p>根据<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>校验配置</p></li>
+<li><p>根据<code class="docutils literal notranslate"><span class="pre">schema字段</span></code>构造命令行参数</p></li>
+<li><p>使用装饰器<code class="docutils literal notranslate"><span class="pre">as_main</span></code>注册获取到配置后执行的函数</p></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +198,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="entry_tree.html" class="btn btn-neutral float-right" title="模块介绍" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="schema_entry.html" class="btn btn-neutral float-right" title="schema_entry package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="README.html" class="btn btn-neutral float-left" title="简介" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>

@@ -12,12 +12,12 @@
 #
 import os
 import sys
-sys.path.insert(0, 'C:\\Users\\hsz12\\Documents\\WORKSPACE\\PythonTools\\entry-tree\\src')
+sys.path.insert(0, 'C:\\Users\\hsz12\\Documents\\WORKSPACE\\PythonTools\\entry-tree')
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'entry-tree'
+project = 'schema_entry'
 copyright = '2020, hsz12'
 author = 'hsz12'
 

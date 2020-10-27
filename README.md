@@ -66,14 +66,244 @@
 from pathlib import Path
 from schema_entry import EntryPoint
 
-class ppm(EntryPoint):
-    default_config_file_paths=[
+class Test_A(EntryPoint):
+    default_config_file_paths = [
         "/test_config.json",
-        str(Path.Home().joinpath(".test_config.json")),
+        str(Path.home().joinpath(".test_config.json")),
         "./test_config.json"
     ]
-
 ```
+
+#### 通过定义`schema字段进行参数校验`
+
+我们可以定义`schema字段`来激活校验功能
+
+```python
+class Test_A(EntryPoint):
+    default_config_file_paths = [
+        "/test_config.json",
+        str(Path.home().joinpath(".test_config.json")),
+        "./test_config.json"
+    ]
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "integer"
+            }
+        },
+        "required": ["a"]
+    }
+```
+
+`EntryPoint`的子类会在解析获得参数后校验参数字典是否符合schema中定义的模式.
+
+当然schema字段也不能乱写,它的规则是json schema的一个子集:
+
+```json
+ {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": false,
+            "patternProperties": {
+                r"^\w+$": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "boolean"
+                                },
+                                "default": {
+                                    "type": "boolean",
+                                },
+                                "const": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "string"
+                                },
+                                "default": {
+                                    "type": "string",
+                                },
+                                "const": {
+                                    "type": "string"
+                                },
+                                "enum": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "maxLength": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                "minLength": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                "pattern": {
+                                    "type": "string"
+                                },
+                                "format": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }, {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "number"
+                                },
+                                "default": {
+                                    "type": "number",
+                                },
+                                "const": {
+                                    "type": "number"
+                                },
+                                "enum": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                },
+                                "maximum": {
+                                    "type": "number",
+                                },
+                                "exclusiveMaximum": {
+                                    "type": "number",
+                                },
+                                "minimum": {
+                                    "type": "number",
+
+                                },
+                                "exclusiveMinimum": {
+                                    "type": "number",
+
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }, {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "integer"
+                                },
+                                "default": {
+                                    "type": "integer",
+                                },
+                                "const": {
+                                    "type": "integer"
+                                },
+                                "enum": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "maximum": {
+                                    "type": "integer",
+                                },
+                                "exclusiveMaximum": {
+                                    "type": "integer",
+                                },
+                                "minimum": {
+                                    "type": "integer",
+
+                                },
+                                "exclusiveMinimum": {
+                                    "type": "integer",
+
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }, {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "array"
+                                },
+                                "items": {
+                                    "type": "object",
+                                    "required": ["type"],
+                                    "additionalProperties":false,
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["string", "number", "integer"]
+                                        }
+                                    }
+                                },
+                                "description":{
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    ]
+
+                }
+            }
+        },
+        "type": {
+            "type": "string",
+            "const": "object"
+        },
+        "required": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+
+    },
+    "required": ["properties", "type"]
+}
+```
+
+简而言之就是:
+
+1. 最外层必须有`properties`和`type`字段且`type`字段必须为`object`,可以有`required`字段
+2. 最外层`properties`中的字段名必须是由`数字`,`字母`和`_`组成,
+3. 字段类型只能是`string`,`boolean`,`number`,`integer`,`array`之一
+4. 字段类型如果为`array`则内部必须要有`items`且`items`中必须有`type`字段,且该`type`字段的值必须为`string`,`number`,`integer`之一
+
+如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
 
 #### 从环境变量中读取配置参数
 
@@ -83,22 +313,17 @@ class ppm(EntryPoint):
 我们也可以通过设定`env_prefix`字段来替换默认前缀,替换的前缀依然会被转化为大写.
 
 ```python
-class ppm(EntryPoint):
+class Test_A(EntryPoint):
     env_prefix = "app"
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "examples":[
-            {
-                "a": 123.1
-            },
-        ],
         "type": "object",
         "properties": {
-            "a": {
+            "a_a": {
                 "type": "number"
             }
         },
-        "required": [ "a"]
+        "required": ["a_a"]
     }
 ```
 
@@ -106,73 +331,92 @@ class ppm(EntryPoint):
 
 #### 从命令行参数中获取配置参数
 
-从命令行参数中获取配置我们就需要复写方法`def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]`来实现了.
+当我们定义好`schema`后所有schema中定义好的参数都可以以`--xxxx`的形式从命令行中读取,需要注意schema中定义的字段中`_`会被修改为`-`.
 
-注意参数`parser`是已经创建好了但还未定义flag的命令行参数解析器,这个解析器的`useage`,`epilog`和`description`会由类中定义的docstring,`epilog`和`description`决定;`argv`则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).
+这个命令行读取是使用的标准库`argparse`,构造出的解析器中`useage`,`epilog`和`description`会由类中定义的docstring,`epilog`和`description`决定;`argv`则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).
 
-```python
-class ppm(EntryPoint):
-    """ppm <subcmd> [<args>]"""
-    epilog = ""
-    description = "项目脚手架"
-    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
-        """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
-        parser.add_argument('a', type=int, help='a')
-        args = parser.parse_args(argv)
-        return vars(args)
-```
-
-#### 配置的读取顺序
-
-配置的读取顺序为`配置文件`->`环境变量`->`命令行参数`
+通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定`schema`中一项是没有`--`的那种配置,那么可以在定义类时指定`argparse_noflag`为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定`argparse_check_required=True`.需要注意如果一个字段被指定为了`noflag`那么它就是必填项了.
 
 ```python
-class ppm(EntryPoint):
-    """ppm <subcmd> [<args>]"""
+class Test_A(EntryPoint):
+    argparse_noflag = "a"
+    argparse_check_required=True
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "examples":[
-            {
-                "a": 123.1
-            },
-        ],
         "type": "object",
         "properties": {
             "a": {
                 "type": "number"
+            },
+            "b": {
+                "type": "number"
             }
         },
-        "required": [ "a"]
+        "required": ["a","b"]
     }
-    default_config_file_paths=["./test_config.json"]
-    epilog = ""
-    description = "项目脚手架"
-    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
-        """默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法."""
-        parser.add_argument('a', type=float, help='a')
-        args = parser.parse_args(argv)
-        return vars(args)
 ```
 
-像上面的定义,我们就会先查看`./test_config.json`,再查看环境变量,最后看定义好的命令行参数.
+#### 配置的读取顺序
 
-#### 校验配置
-
-只要定义了`schema`那么默认我们就会校验配置是否符合定义.如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
+配置的读取顺序为`schema中定义的default值`->`配置文件`->`环境变量`->`命令行参数`,而覆盖顺序则是反过来.
 
 #### 注册入口的执行函数
 
-可以通过装饰器`regist_runner`来注册入口真正要执行的函数.同时可以通过装饰器`regist_before_running`和`regist_after_running`来注册在执行入口函数前后要执行的钩子.钩子和执行函数之间使用上下文参数`ctx`来传递中间值.
+我们使用实例的装饰器方法`as_main`来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的`**config`
 
+```python
 
+root = Test_A()
+@root.as_main
+def main(a,b):
+    print(a)
+    print(b)
+
+```
 
 #### 直接从节点对象中获取配置
+
+节点对象的`config`属性会在每次调用时copy一份当前的配置值,config是不可写的.
+
+```python
+print(root.config)
+```
 
 ### 中间节点
 
 中间节点并不能执行程序,它只是用于描述一个范围内的命令集合,因此它的作用就是充当`help`指令.我们定义中间节点并不能执行.但必须有至少一个子节点才是中间节点.因此即便一个节点定义了上面的配置,只要它有子节点就不会按上面的执行流程执行.
 
+利用中间节点我们可以构造出非常复杂的启动命令树.
 
 #### 注册子节点
 
-#### 使用中间节点
+中间节点的注册有两个接口
+
++ `regist_subcmd`用于注册一个已经实例化的子节点
+
+    ```python
+    class A(EntryPoint):
+        pass
+
+    class B(EntryPoint):
+        pass
+
+    a = A()
+
+    b = B()
+
+    a.regist_subcmd(b)
+    ```
+
++ `regist_sub`用于注册一个子节点类,它会返回被注册的节点的一个实例
+
+    ```python
+    class A(EntryPoint):
+        pass
+
+    class B(EntryPoint):
+        pass
+
+    a = A()
+    b =a.regist_sub(B)
+    ```
