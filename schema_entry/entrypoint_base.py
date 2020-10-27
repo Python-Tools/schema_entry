@@ -9,7 +9,7 @@ class EntryPointABC(abc.ABC):
 
     Attributes:
         epilog (str): 命令行展示介绍时的epilog部分
-        description (str): 命令行展示介绍时的介绍部分
+        usage (str): 命令行展示介绍时的使用方法介绍
         parent (Optional["EntryPointABC"]): 入口节点的父节点.Default None
         schema (Optional[Dict[str, Any]]): 入口节点的设置需要满足的json schema对应字典.Default None
         verify_schema (bool): 获得设置后节点是否校验设置是否满足定义的json schema模式
@@ -21,7 +21,8 @@ class EntryPointABC(abc.ABC):
 
     """
     epilog: str
-    description: str
+    usage: str
+    _name: str
     parent: Optional["EntryPointABC"]
 
     schema: Optional[Dict[str, Any]]
@@ -75,7 +76,7 @@ class EntryPointABC(abc.ABC):
 
         '''
     @abc.abstractmethod
-    def as_main(self, func: Callable[[Dict[str, Any]], None]) -> Callable[[Dict[str, Any]], None]:
+    def as_main(self, func: Callable[..., None]) -> Callable[..., None]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.

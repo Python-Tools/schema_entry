@@ -26,17 +26,17 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
-    <link rel="next" title="0.0.0" href="CHANGELOG.html" />
+    <link rel="next" title="schema_entry package" href="schema_entry.html" />
     <link rel="prev" title="欢迎使用schema_entry!" href="index.html" /> 
 </head>
 
@@ -113,10 +113,6 @@
 </li>
 </ul>
 </li>
-</ul>
-<p class="caption"><span class="caption-text">版本变更:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">0.0.0</a></li>
 </ul>
 <p class="caption"><span class="caption-text">接口文档:</span></p>
 <ul>
@@ -513,7 +509,7 @@
 <p>通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定<code class="docutils literal notranslate"><span class="pre">schema</span></code>中一项是没有<code class="docutils literal notranslate"><span class="pre">--</span></code>的那种配置,那么可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_noflag</span></code>为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_check_required=True</span></code>.需要注意如果一个字段被指定为了<code class="docutils literal notranslate"><span class="pre">noflag</span></code>那么它就是必填项了.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
     <span class="n">argparse_noflag</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
-    <span class="n">argparse_check_required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">argparse_check_required</span><span class="o">=</span><span class="bp">True</span>
     <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
@@ -539,17 +535,17 @@
 <p>我们使用实例的装饰器方法<code class="docutils literal notranslate"><span class="pre">as_main</span></code>来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的<code class="docutils literal notranslate"><span class="pre">**config</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">root</span> <span class="o">=</span> <span class="n">Test_A</span><span class="p">()</span>
-<span class="nd">@root</span><span class="o">.</span><span class="n">as_main</span>
+<span class="nd">@root.as_main</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="id14">
 <h4>直接从节点对象中获取配置<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
 <p>节点对象的<code class="docutils literal notranslate"><span class="pre">config</span></code>属性会在每次调用时copy一份当前的配置值,config是不可写的.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -603,7 +599,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="0.0.0" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="schema_entry.html" class="btn btn-neutral float-right" title="schema_entry package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="欢迎使用schema_entry!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> 上一页</a>

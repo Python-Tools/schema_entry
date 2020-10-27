@@ -28,7 +28,8 @@ from .entrypoint_base import EntryPointABC
 
 class EntryPoint(EntryPointABC):
     epilog = ""
-    description = ""
+    usage = ""
+    _name = ""
     parent: Optional[EntryPointABC] = None
 
     schema: Optional[Dict[str, Any]] = None
@@ -58,7 +59,7 @@ class EntryPoint(EntryPointABC):
 
     @ property
     def name(self) -> str:
-        return self.__class__.__name__.lower()
+        return self._name if self._name else self.__class__.__name__.lower()
 
     @ property
     def prog(self) -> str:
@@ -88,23 +89,29 @@ class EntryPoint(EntryPointABC):
         return warp
 
     def __call__(self, argv: Sequence[str]) -> None:
+        if not self.usage:
+            if len(self._subcmds) == 0:
+                self.usage = f"{self.prog} [options]"
+            else:
+                self.usage = f"{self.prog} [subcmd]"
         parser = argparse.ArgumentParser(
             prog=self.prog,
             epilog=self.epilog,
-            description=self.description,
-            usage=self.__doc__)
+            description=self.__doc__,
+            usage=self.usage)
         if len(self._subcmds) != 0:
             self.pass_args_to_sub(parser, argv)
         else:
             self.parse_args(parser, argv)
 
     def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
-        parser.add_argument('subcmd', help='执行子命令')
+        scmds = list(self._subcmds.keys())
+        parser.add_argument('subcmd', help=f'执行子命令，可选的子命有{scmds}')
         args = parser.parse_args(argv[0:1])
         if self._subcmds.get(args.subcmd):
             self._subcmds[args.subcmd](argv[1:])
         else:
-            print(f'未知的子命令 {argv[1:]}')
+            print(f'未知的子命令 `{argv[0]}`')
             parser.print_help()
             sys.exit(1)
 
@@ -226,7 +233,6 @@ class EntryPoint(EntryPointABC):
         env_config = self.parse_env_args()
         self._config.update(env_config)
         cmd_config = self.parse_commandline_args(parser, argv)
-        print(cmd_config)
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_main()
