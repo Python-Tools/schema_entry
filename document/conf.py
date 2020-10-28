@@ -18,8 +18,8 @@ sys.path.insert(0, 'C:\\Users\\hsz12\\Documents\\WORKSPACE\\PythonTools\\entry-t
 # -- Project information -----------------------------------------------------
 
 project = 'schema_entry'
-copyright = '2020, hsz12'
-author = 'hsz12'
+copyright = '2020, hsz'
+author = 'hsz'
 
 # The short X.Y version
 version = '0.0.0'
