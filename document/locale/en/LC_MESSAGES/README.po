@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entry-tree 0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-28 21:56+0800\n"
+"POT-Creation-Date: 2020-10-29 00:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgid "根据子类的schema字段和env_prefix字段自动构造环境变量的
 msgstr ""
 
 #: ../../document/README.md:18
-msgid "根据子类的default_config_file_paths字段自动按顺序读取json格式配置文件中的参数."
+msgid "根据子类的default_config_file_paths字段自动按顺序读取json,yaml格式配置文件中的参数."
 msgstr ""
 
 #: ../../document/README.md:19
@@ -353,5 +353,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "这个命令行读取是使用的标准库argparse,构造出的解析器中useage,epilog和description会由类中定义的docstring,epilog和description决定;argv则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数)."
+#~ msgstr ""
+
+#~ msgid "根据子类的default_config_file_paths字段自动按顺序读取json格式配置文件中的参数."
 #~ msgstr ""
 

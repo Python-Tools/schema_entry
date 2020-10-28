@@ -6,7 +6,7 @@
 <body>
 <h2>schema_entry.entrypoint</h2>
 <table>
-<caption>schema_entry\entrypoint.py</caption>
+<caption>schema_entry/entrypoint.py</caption>
 <tbody><tr>
 <td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
 <span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
@@ -248,6 +248,11 @@
 <span id="L238" class="lineno"><a class="lineno" href="#L238">238</a></span>
 <span id="L239" class="lineno"><a class="lineno" href="#L239">239</a></span>
 <span id="L240" class="lineno"><a class="lineno" href="#L240">240</a></span>
+<span id="L241" class="lineno"><a class="lineno" href="#L241">241</a></span>
+<span id="L242" class="lineno"><a class="lineno" href="#L242">242</a></span>
+<span id="L243" class="lineno"><a class="lineno" href="#L243">243</a></span>
+<span id="L244" class="lineno"><a class="lineno" href="#L244">244</a></span>
+<span id="L245" class="lineno"><a class="lineno" href="#L245">245</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">"""入口树的构造工具.</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -271,6 +276,7 @@
 <span class="line-precise" title="No Anys on this line!">from pathlib import Path</span>
 <span class="line-precise" title="No Anys on this line!">from typing import Callable, Sequence, Dict, List, Any, Optional</span>
 <span class="line-any" title="No Anys on this line!">from jsonschema import validate</span>
+<span class="line-precise" title="No Anys on this line!">from yaml import load as yaml_load</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">from .protocol import SUPPORT_SCHEMA</span>
 <span class="line-precise" title="No Anys on this line!">from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd</span>
@@ -493,10 +499,18 @@ Explicit (x1)">    def parse_configfile_args(self) -&gt; Dict[str, Any]:</span>
 Explicit (x1)">            p = Path(p_str)</span>
 <span class="line-precise" title="No Anys on this line!">            if p.is_file():</span>
 <span class="line-precise" title="No Anys on this line!">                if p.suffix == ".json":</span>
-<span class="line-imprecise" title="Any Types on this line: 
-Explicit (x2)">                    with open(p, "r", encoding="utf-8") as f:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                    with open(p, "r", encoding="utf-8") as f:</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x13)">                        result = json.load(f)</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">                    return result</span>
+<span class="line-precise" title="No Anys on this line!">                elif p.suffix == ".yml":</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                    with open(p, "r", encoding="utf-8") as f:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)
+Unannotated (x1)">                        result = yaml_load(f)</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">                    return result</span>
 <span class="line-empty" title="No Anys on this line!">                else:</span>

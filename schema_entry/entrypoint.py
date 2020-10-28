@@ -20,6 +20,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Sequence, Dict, List, Any, Optional
 from jsonschema import validate
+from yaml import load as yaml_load
 
 from .protocol import SUPPORT_SCHEMA
 from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
@@ -189,6 +190,10 @@ class EntryPoint(EntryPointABC):
                 if p.suffix == ".json":
                     with open(p, "r", encoding="utf-8") as f:
                         result = json.load(f)
+                    return result
+                elif p.suffix == ".yml":
+                    with open(p, "r", encoding="utf-8") as f:
+                        result = yaml_load(f)
                     return result
                 else:
                     warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
