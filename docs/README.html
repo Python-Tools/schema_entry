@@ -91,22 +91,23 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">简介</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#id2">特性</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#id3">安装</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#id4">文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#id5">使用介绍</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id6">动机</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">使用方法</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id8">执行节点</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id9">从配置文件中读取配置参数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id4">使用介绍</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id5">动机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">使用方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">节点名</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">节点的帮助信息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">执行节点</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id10">从配置文件中读取配置参数</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#schema">通过定义<code class="docutils literal notranslate"><span class="pre">schema字段进行参数校验</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id10">从环境变量中读取配置参数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id11">从命令行参数中获取配置参数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id12">配置的读取顺序</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id13">注册入口的执行函数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id14">直接从节点对象中获取配置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">从环境变量中读取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">从命令行参数中获取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">配置的读取顺序</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">注册入口的执行函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">直接从节点对象中获取配置</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id15">中间节点</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id16">注册子节点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">中间节点</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id17">注册子节点</a></li>
 </ul>
 </li>
 </ul>
@@ -206,14 +207,14 @@
 </div>
 <div class="section" id="id3">
 <h1>安装<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install schema_entry
+</pre></div>
+</div>
 </div>
 <div class="section" id="id4">
-<h1>文档<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h1>
-</div>
+<h1>使用介绍<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id5">
-<h1>使用介绍<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h1>
-<div class="section" id="id6">
-<h2>动机<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<h2>动机<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">schema_entry</span></code>模块提供了一个基类<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>用于构造复杂的程序入口.通常我们的程序入口参数有3个途径:</p>
 <ol class="simple">
 <li><p>配置文件</p></li>
@@ -224,24 +225,40 @@
 <p>随之而来的是参数的校验问题,python标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>本身有不错的参数约束能力,但配置文件中的和环境变量中的参数就需要额外校验了.</p>
 <p>这个项目的目的是简化定义入口这个非常通用的业务,将代码尽量配置化.</p>
 </div>
-<div class="section" id="id7">
-<h2>使用方法<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id6">
+<h2>使用方法<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
 <p>首先我们来分析下一个入口形式.</p>
 <p>通常一个程序的入口可能简单也可能复杂,但无非两种</p>
 <ol class="simple">
 <li><p>中间节点,比如<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">stack</span></code>, 它本质上并不执行操作,它只是表示要执行的是关于子模块的操作.当单独执行这条命令时实际上它什么都没做,它下面的子命令<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">add</span></code>这类才是实际可以执行的节点.而我定义这种中间节点单独被执行应该打印其帮助说明文本.</p></li>
-<li><p>执行节点,比如<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code>,这种就是可以执行的节点.</p></li>
+<li><p>执行节点,比如<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code>,这种就是<code class="docutils literal notranslate"><span class="pre">可以执行的节点</span></code>.</p></li>
 </ol>
+<p>本模块的基本用法是:</p>
+<ol class="simple">
+<li><p>通过继承<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>类并覆写其中的字段来定义不同的节点</p></li>
+<li><p>通过实例化<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>的子类并使用其实例方法<code class="docutils literal notranslate"><span class="pre">regist_subcmd</span></code>或者<code class="docutils literal notranslate"><span class="pre">regist_sub</span></code>来定义不同节点的类型和节点的调用顺序</p></li>
+<li><p>使用<code class="docutils literal notranslate"><span class="pre">可以执行节点</span></code>的实例方法<code class="docutils literal notranslate"><span class="pre">as_main</span></code>(装饰器)来指定不同节点的入口函数.</p></li>
+<li><p>命令行中按<code class="docutils literal notranslate"><span class="pre">根节点</span></code>到<code class="docutils literal notranslate"><span class="pre">可以执行节点</span></code>的顺序输入构造命令,获取来自配置文件,环境变量,命令行参数中的参数,作为注册入口函数的参数调用入口函数.</p></li>
+</ol>
+<div class="section" id="id7">
+<h3>节点名<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
+<p>我们可以定义<code class="docutils literal notranslate"><span class="pre">_name</span></code>字段为节点命名,如果没有那么节点名则为子类类名的全小写形式.</p>
+</div>
 <div class="section" id="id8">
-<h3>执行节点<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h3>
+<h3>节点的帮助信息<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h3>
+<p>我们可以定义<code class="docutils literal notranslate"><span class="pre">usage</span></code>来定义用法帮助字符串,如果没有定义则会自动构造,中间节点会是<code class="docutils literal notranslate"><span class="pre">root</span> <span class="pre">subcmd</span> <span class="pre">...</span> <span class="pre">[subcmd]</span></code>;
+可执行节点会是<code class="docutils literal notranslate"><span class="pre">root</span> <span class="pre">subcmd</span> <span class="pre">...</span> <span class="pre">entry</span> <span class="pre">[options]</span></code></p>
+</div>
+<div class="section" id="id9">
+<h3>执行节点<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h3>
 <p>上面说过执行节点的任务有3个:</p>
 <ol class="simple">
 <li><p>从配置文件,环境变量,命令行参数获取配置参数</p></li>
 <li><p>[可选]校验配置参数是否符合要求</p></li>
 <li><p>[可选]将配置作为参数引用到程序中.</p></li>
 </ol>
-<div class="section" id="id9">
-<h4>从配置文件中读取配置参数<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id10">
+<h4>从配置文件中读取配置参数<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h4>
 <p>默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">schema_entry</span> <span class="kn">import</span> <span class="n">EntryPoint</span>
@@ -481,8 +498,8 @@
 </ol>
 <p>如果我们不想校验,那么可以设置<code class="docutils literal notranslate"><span class="pre">verify_schema</span></code>为<code class="docutils literal notranslate"><span class="pre">False</span></code>强行关闭这个功能.</p>
 </div>
-<div class="section" id="id10">
-<h4>从环境变量中读取配置参数<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id11">
+<h4>从环境变量中读取配置参数<a class="headerlink" href="#id11" title="永久链接至标题">¶</a></h4>
 <p>要从环境变量中读取配置必须设置<code class="docutils literal notranslate"><span class="pre">schema</span></code>字段,<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>会按照其中<code class="docutils literal notranslate"><span class="pre">properties</span></code>字段定义的字段范围和字段类型解析环境变量.</p>
 <p>环境变量key的规则为<code class="docutils literal notranslate"><span class="pre">前缀_字段名的大写</span></code>.前缀的默认值为<code class="docutils literal notranslate"><span class="pre">...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写</span></code>.
 我们也可以通过设定<code class="docutils literal notranslate"><span class="pre">env_prefix</span></code>字段来替换默认前缀,替换的前缀依然会被转化为大写.</p>
@@ -502,10 +519,10 @@
 </div>
 <p>如果我们不希望从环境变量中解析配置,那么也可以设置<code class="docutils literal notranslate"><span class="pre">parse_env</span></code>为<code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </div>
-<div class="section" id="id11">
-<h4>从命令行参数中获取配置参数<a class="headerlink" href="#id11" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id12">
+<h4>从命令行参数中获取配置参数<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h4>
 <p>当我们定义好<code class="docutils literal notranslate"><span class="pre">schema</span></code>后所有schema中定义好的参数都可以以<code class="docutils literal notranslate"><span class="pre">--xxxx</span></code>的形式从命令行中读取,需要注意schema中定义的字段中<code class="docutils literal notranslate"><span class="pre">_</span></code>会被修改为<code class="docutils literal notranslate"><span class="pre">-</span></code>.</p>
-<p>这个命令行读取是使用的标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>,构造出的解析器中<code class="docutils literal notranslate"><span class="pre">useage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>会由类中定义的docstring,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>决定;<code class="docutils literal notranslate"><span class="pre">argv</span></code>则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).</p>
+<p>这个命令行读取是使用的标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>,构造出的解析器中<code class="docutils literal notranslate"><span class="pre">useage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>会由类中定义的<code class="docutils literal notranslate"><span class="pre">usage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和docstring决定;<code class="docutils literal notranslate"><span class="pre">argv</span></code>则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).</p>
 <p>通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定<code class="docutils literal notranslate"><span class="pre">schema</span></code>中一项是没有<code class="docutils literal notranslate"><span class="pre">--</span></code>的那种配置,那么可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_noflag</span></code>为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_check_required=True</span></code>.需要注意如果一个字段被指定为了<code class="docutils literal notranslate"><span class="pre">noflag</span></code>那么它就是必填项了.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
     <span class="n">argparse_noflag</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
@@ -526,12 +543,12 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="id12">
-<h4>配置的读取顺序<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id13">
+<h4>配置的读取顺序<a class="headerlink" href="#id13" title="永久链接至标题">¶</a></h4>
 <p>配置的读取顺序为<code class="docutils literal notranslate"><span class="pre">schema中定义的default值</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">配置文件</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">环境变量</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行参数</span></code>,而覆盖顺序则是反过来.</p>
 </div>
-<div class="section" id="id13">
-<h4>注册入口的执行函数<a class="headerlink" href="#id13" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id14">
+<h4>注册入口的执行函数<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
 <p>我们使用实例的装饰器方法<code class="docutils literal notranslate"><span class="pre">as_main</span></code>来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的<code class="docutils literal notranslate"><span class="pre">**config</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">root</span> <span class="o">=</span> <span class="n">Test_A</span><span class="p">()</span>
@@ -542,20 +559,20 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="id14">
-<h4>直接从节点对象中获取配置<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id15">
+<h4>直接从节点对象中获取配置<a class="headerlink" href="#id15" title="永久链接至标题">¶</a></h4>
 <p>节点对象的<code class="docutils literal notranslate"><span class="pre">config</span></code>属性会在每次调用时copy一份当前的配置值,config是不可写的.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="id15">
-<h3>中间节点<a class="headerlink" href="#id15" title="永久链接至标题">¶</a></h3>
+<div class="section" id="id16">
+<h3>中间节点<a class="headerlink" href="#id16" title="永久链接至标题">¶</a></h3>
 <p>中间节点并不能执行程序,它只是用于描述一个范围内的命令集合,因此它的作用就是充当<code class="docutils literal notranslate"><span class="pre">help</span></code>指令.我们定义中间节点并不能执行.但必须有至少一个子节点才是中间节点.因此即便一个节点定义了上面的配置,只要它有子节点就不会按上面的执行流程执行.</p>
 <p>利用中间节点我们可以构造出非常复杂的启动命令树.</p>
-<div class="section" id="id16">
-<h4>注册子节点<a class="headerlink" href="#id16" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id17">
+<h4>注册子节点<a class="headerlink" href="#id17" title="永久链接至标题">¶</a></h4>
 <p>中间节点的注册有两个接口</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">regist_subcmd</span></code>用于注册一个已经实例化的子节点</p>
