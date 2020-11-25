@@ -72,7 +72,8 @@ SUPPORT_SCHEMA = {
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": False,
                             "required": ["type"],
@@ -111,7 +112,8 @@ SUPPORT_SCHEMA = {
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": False,
                             "required": ["type"],
@@ -150,7 +152,8 @@ SUPPORT_SCHEMA = {
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": False,
                             "required": ["type"],
@@ -165,7 +168,7 @@ SUPPORT_SCHEMA = {
                                         "type": ["string", "number", "integer"]
                                     }
                                 },
-                                "items": {
+                                "item": {
                                     "type": "object",
                                     "required": ["type"],
                                     "additionalProperties":False,
