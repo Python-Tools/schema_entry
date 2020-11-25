@@ -280,6 +280,12 @@ class Test_A(EntryPoint):
                                     "type": "string",
                                     "const": "array"
                                 },
+                                "default": {
+                                    "type": "array",
+                                    "item": {
+                                        "type": ["string", "number", "integer"]
+                                    }
+                                },
                                 "items": {
                                     "type": "object",
                                     "required": ["type"],

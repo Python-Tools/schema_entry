@@ -159,6 +159,12 @@ SUPPORT_SCHEMA = {
                                     "type": "string",
                                     "const": "array"
                                 },
+                                "default": {
+                                    "type": "array",
+                                    "item": {
+                                        "type": ["string", "number", "integer"]
+                                    }
+                                },
                                 "items": {
                                     "type": "object",
                                     "required": ["type"],
