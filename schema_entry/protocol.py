@@ -164,11 +164,11 @@ SUPPORT_SCHEMA = {
                                 },
                                 "default": {
                                     "type": "array",
-                                    "item": {
+                                    "items": {
                                         "type": ["string", "number", "integer"]
                                     }
                                 },
-                                "item": {
+                                "items": {
                                     "type": "object",
                                     "required": ["type"],
                                     "additionalProperties":False,
