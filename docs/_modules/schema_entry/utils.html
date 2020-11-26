@@ -1,18 +1,19 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh" >
+<html class="writer-html5" lang="zh-CN" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>schema_entry.utils &mdash; schema_entry 0.0.0 文档</title>
+  <title>schema_entry.utils &mdash; schema_entry 0.0.3 文档</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
 
   
   
@@ -30,6 +31,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/translations.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.0.0
+                0.0.3
               </div>
             
           
@@ -84,23 +86,8 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用指引:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html">简介</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id2">特性</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id3">安装</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id4">文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id5">使用介绍</a></li>
-</ul>
-<p class="caption"><span class="caption-text">版本变更:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">0.0.0</a></li>
-</ul>
-<p class="caption"><span class="caption-text">接口文档:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../schema_entry.html">schema_entry package</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -147,6 +134,8 @@
         
           <li><a href="../index.html">模块代码</a> &raquo;</li>
         
+          <li><a href="../schema_entry.html">schema_entry</a> &raquo;</li>
+        
       <li>schema_entry.utils</li>
     
     
@@ -173,15 +162,15 @@
 <span class="kn">from</span> <span class="nn">.entrypoint_base</span> <span class="kn">import</span> <span class="n">EntryPointABC</span>
 
 
-<span class="k">def</span> <span class="nf">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="_get_parent_tree"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._get_parent_tree">[文档]</a><span class="k">def</span> <span class="nf">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">_get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span>
+        <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="get_parent_tree"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.utils.get_parent_tree">[文档]</a><span class="k">def</span> <span class="nf">get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_parent_tree"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils.get_parent_tree">[文档]</a><span class="k">def</span> <span class="nf">get_parent_tree</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;获取父节点树.</span>
 
 <span class="sd">    Args:</span>
@@ -196,7 +185,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">result_list</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="parse_value_string_by_schema"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.utils.parse_value_string_by_schema">[文档]</a><span class="k">def</span> <span class="nf">parse_value_string_by_schema</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">value_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="parse_value_string_by_schema"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils.parse_value_string_by_schema">[文档]</a><span class="k">def</span> <span class="nf">parse_value_string_by_schema</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">value_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;根据schema的定义解析字符串的值.</span>
 
 <span class="sd">    Args:</span>
@@ -226,11 +215,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">parse_value_string_by_schema</span><span class="p">(</span><span class="n">item_info</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;不支持的数据类型</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;不支持的数据类型</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value_str</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_base_handdler</span><span class="p">(</span><span class="n">_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<div class="viewcode-block" id="_argparse_base_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_base_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_base_handdler</span><span class="p">(</span><span class="n">_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                             <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">noflag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
@@ -251,28 +240,28 @@
             <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="n">required</span>
         <span class="p">})</span>
     <span class="k">if</span> <span class="n">noflag</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">parser</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_number_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<div class="viewcode-block" id="_argparse_number_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_number_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_number_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                               <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">noflag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_string_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<div class="viewcode-block" id="_argparse_string_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_string_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_string_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                               <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">noflag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_integer_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<div class="viewcode-block" id="_argparse_integer_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_integer_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_integer_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                                <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">noflag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_argparse_base_handdler</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span> <span class="n">noflag</span><span class="o">=</span><span class="n">noflag</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_boolean_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
+<div class="viewcode-block" id="_argparse_boolean_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_boolean_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_boolean_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
         <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;store_true&quot;</span>
@@ -282,11 +271,11 @@
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="n">_description</span>
         <span class="p">})</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">parser</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
 
 
-<span class="k">def</span> <span class="nf">_argparse_array_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
+<div class="viewcode-block" id="_argparse_array_handdler"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils._argparse_array_handdler">[文档]</a><span class="k">def</span> <span class="nf">_argparse_array_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
     <span class="n">sub_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;items&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sub_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array params must have sub schema items&quot;</span><span class="p">)</span>
@@ -327,11 +316,11 @@
             <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="n">_enum</span>
         <span class="p">})</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">parser</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
 
 
-<div class="viewcode-block" id="parse_schema_as_cmd"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.utils.parse_schema_as_cmd">[文档]</a><span class="k">def</span> <span class="nf">parse_schema_as_cmd</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<div class="viewcode-block" id="parse_schema_as_cmd"><a class="viewcode-back" href="../../autoapi/schema_entry/utils/index.html#schema_entry.utils.parse_schema_as_cmd">[文档]</a><span class="k">def</span> <span class="nf">parse_schema_as_cmd</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                         <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">noflag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;根据字段的模式解析命令行行为</span>
 
@@ -359,7 +348,7 @@
     <span class="k">elif</span> <span class="n">_type</span> <span class="o">==</span> <span class="s2">&quot;array&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_argparse_array_handdler</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未支持的类型</span><span class="si">{_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未支持的类型</span><span class="si">{</span><span class="n">_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">parser</span></div>
 </pre></div>
 
@@ -374,7 +363,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; 版权所有 2020, hsz12
+        &copy; 版权所有 2020, hsz
 
     </p>
   </div>

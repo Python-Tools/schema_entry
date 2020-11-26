@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>schema_entry.utils &mdash; schema_entry 0.0.3 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> schema_entry
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.utils</span></code></a><ul>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#schema_entry.utils.get_parent_tree">get_parent_tree</a></li>
+<li><a class="reference internal" href="#schema_entry.utils.parse_value_string_by_schema">parse_value_string_by_schema</a></li>
+<li><a class="reference internal" href="#schema_entry.utils.parse_schema_as_cmd">parse_schema_as_cmd</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">schema_entry</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.utils</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/autoapi/schema_entry/utils/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-schema_entry.utils">
+<span id="schema-entry-utils"></span><h1><a class="reference internal" href="#module-schema_entry.utils" title="schema_entry.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.utils</span></code></a><a class="headerlink" href="#module-schema_entry.utils" title="永久链接至标题">¶</a></h1>
+<p>utils.</p>
+<p>模块需要的工具.</p>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="永久链接至标题">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="永久链接至标题">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.utils.get_parent_tree" title="schema_entry.utils.get_parent_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parent_tree</span></code></a>(c: EntryPointABC) → List[str]</p></td>
+<td><p>获取父节点树.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#schema_entry.utils.parse_value_string_by_schema" title="schema_entry.utils.parse_value_string_by_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_value_string_by_schema</span></code></a>(schema: Dict[str, Any], value_str: str) → Any</p></td>
+<td><p>根据schema的定义解析字符串的值.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.utils.parse_schema_as_cmd" title="schema_entry.utils.parse_schema_as_cmd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_schema_as_cmd</span></code></a>(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) → argparse.ArgumentParser</p></td>
+<td><p>根据字段的模式解析命令行行为</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="schema_entry.utils.get_parent_tree">
+<code class="sig-prename descclassname">schema_entry.utils.</code><code class="sig-name descname">get_parent_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n">EntryPointABC</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../../_modules/schema_entry/utils.html#get_parent_tree"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.utils.get_parent_tree" title="永久链接至目标">¶</a></dt>
+<dd><p>获取父节点树.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>c</strong> (<a class="reference internal" href="../entrypoint/index.html#schema_entry.entrypoint.EntryPoint" title="schema_entry.entrypoint.EntryPoint"><em>EntryPoint</em></a>) – 节点类</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>父节点树</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="schema_entry.utils.parse_value_string_by_schema">
+<code class="sig-prename descclassname">schema_entry.utils.</code><code class="sig-name descname">parse_value_string_by_schema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">schema</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">value_str</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../../../_modules/schema_entry/utils.html#parse_value_string_by_schema"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.utils.parse_value_string_by_schema" title="永久链接至目标">¶</a></dt>
+<dd><p>根据schema的定义解析字符串的值.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – 描述字符串值的json schema字典.</p></li>
+<li><p><strong>value_str</strong> (<em>str</em>) – 待解析的字符串.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>字段的值</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="schema_entry.utils.parse_schema_as_cmd">
+<code class="sig-prename descclassname">schema_entry.utils.</code><code class="sig-name descname">parse_schema_as_cmd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">schema</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">parser</span><span class="p">:</span> <span class="n">argparse.ArgumentParser</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">required</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">noflag</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; argparse.ArgumentParser<a class="reference internal" href="../../../_modules/schema_entry/utils.html#parse_schema_as_cmd"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.utils.parse_schema_as_cmd" title="永久链接至目标">¶</a></dt>
+<dd><p>根据字段的模式解析命令行行为</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – 字段名</p></li>
+<li><p><strong>schema</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – 字段的模式</p></li>
+<li><p><strong>parser</strong> (<em>argparse.ArgumentParser</em>) – 添加命令行解析的解析器</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>命令行的解析器</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>argparse.ArgumentParser</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, hsz
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="http://sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
