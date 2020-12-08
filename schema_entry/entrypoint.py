@@ -101,13 +101,30 @@ class EntryPoint(EntryPointABC):
             description=self.__doc__,
             usage=self.usage)
         if len(self._subcmds) != 0:
+            if self.epilog:
+                epilog = self.epilog
+            else:
+                epilog = "子命令描述:\n"+"\n".join([f"{subcmd}\t{ins.__doc__}" for subcmd,ins in self._subcmds.items()])
+                print(epilog)
+            parser = argparse.ArgumentParser(
+                prog=self.prog,
+                epilog=epilog,
+                description=self.__doc__,
+                usage=self.usage,
+                formatter_class=argparse.RawDescriptionHelpFormatter)
             self.pass_args_to_sub(parser, argv)
         else:
+            parser = argparse.ArgumentParser(
+                prog=self.prog,
+                epilog=self.epilog,
+                description=self.__doc__,
+                usage=self.usage)
             self.parse_args(parser, argv)
 
     def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         scmds = list(self._subcmds.keys())
-        parser.add_argument('subcmd', help=f'执行子命令，可选的子命有{scmds}')
+        scmdss = ",".join(scmds)
+        parser.add_argument('subcmd', help=f'执行子命令，可选的子命有{scmdss}')
         args = parser.parse_args(argv[0:1])
         if self._subcmds.get(args.subcmd):
             self._subcmds[args.subcmd](argv[1:])
@@ -159,10 +176,7 @@ class EntryPoint(EntryPointABC):
         key = key.replace("-", "_")
         env = os.environ.get(f"{env_prefix}_{key.upper()}")
         if not env:
-            if info.get("default"):
-                env = info.get("default")
-            else:
-                env = None
+            env = None
         else:
             env = parse_value_string_by_schema(info, env)
         return env
@@ -174,9 +188,10 @@ class EntryPoint(EntryPointABC):
             result = {}
             for key, info in properties.items():
                 value = self._parse_env_args(key, info)
-                result.update({
-                    key: value
-                })
+                if value is not None:
+                    result.update({
+                        key: value
+                    })
             return result
         else:
             return {}
@@ -202,16 +217,19 @@ class EntryPoint(EntryPointABC):
             return {}
 
     def validat_config(self) -> bool:
-        if self.schema and self.config and self.verify_schema:
-            try:
-                validate(instance=self.config, schema=self.schema)
-            except Exception as e:
-                warnings.warn(str(e))
-                return False
+        if self.verify_schema:
+            if self.schema and self.config:
+                try:
+                    validate(instance=self.config, schema=self.schema)
+                except Exception as e:
+                    warnings.warn(str(e))
+                    return False
+                else:
+                    return True
             else:
+                warnings.warn("必须有schema和config才能校验.")
                 return True
         else:
-            warnings.warn("必须有schema和config才能校验.")
             return True
 
     def do_main(self) -> None:
