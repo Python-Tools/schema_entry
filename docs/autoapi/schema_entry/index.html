@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>schema_entry &mdash; schema_entry 0.0.3 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> schema_entry
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry</span></code></a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#schema_entry.EntryPoint">EntryPoint</a><ul>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.epilog">epilog</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.usage">usage</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parent">parent</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.schema">schema</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.verify_schema">verify_schema</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.default_config_file_paths">default_config_file_paths</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.env_prefix">env_prefix</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_env">parse_env</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.argparse_check_required">argparse_check_required</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.argparse_noflag">argparse_noflag</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.name">name</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.prog">prog</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.config">config</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.regist_subcmd">regist_subcmd</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.regist_sub">regist_sub</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.as_main">as_main</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.__call__">__call__</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.pass_args_to_sub">pass_args_to_sub</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_commandline_args">parse_commandline_args</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_env_args">parse_env_args</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_configfile_args">parse_configfile_args</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.validat_config">validat_config</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.do_main">do_main</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_default">parse_default</a></li>
+<li><a class="reference internal" href="#schema_entry.EntryPoint.parse_args">parse_args</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">schema_entry</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/autoapi/schema_entry/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-schema_entry">
+<span id="schema-entry"></span><h1><a class="reference internal" href="#module-schema_entry" title="schema_entry"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry</span></code></a><a class="headerlink" href="#module-schema_entry" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="entrypoint/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.entrypoint</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="entrypoint_base/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.entrypoint_base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="protocol/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.protocol</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schema_entry.utils</span></code></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="永久链接至标题">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="永久链接至标题">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.EntryPoint" title="schema_entry.EntryPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EntryPoint</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="schema_entry.EntryPoint">
+<em class="property">class </em><code class="sig-prename descclassname">schema_entry.</code><code class="sig-name descname">EntryPoint</code><a class="reference internal" href="../../_modules/schema_entry/entrypoint.html#EntryPoint"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.EntryPoint" title="永久链接至目标">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="entrypoint_base/index.html#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">schema_entry.entrypoint_base.EntryPointABC</span></code></a></p>
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.epilog">
+<code class="sig-name descname">epilog</code><em class="property"> =</em><a class="headerlink" href="#schema_entry.EntryPoint.epilog" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.usage">
+<code class="sig-name descname">usage</code><em class="property"> =</em><a class="headerlink" href="#schema_entry.EntryPoint.usage" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.parent">
+<code class="sig-name descname">parent</code><em class="property"> :Optional[EntryPointABC]</em><a class="headerlink" href="#schema_entry.EntryPoint.parent" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.schema">
+<code class="sig-name descname">schema</code><em class="property"> :Optional[Dict[str, Any]]</em><a class="headerlink" href="#schema_entry.EntryPoint.schema" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.verify_schema">
+<code class="sig-name descname">verify_schema</code><em class="property"> = True</em><a class="headerlink" href="#schema_entry.EntryPoint.verify_schema" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.default_config_file_paths">
+<code class="sig-name descname">default_config_file_paths</code><em class="property"> :Sequence[str] = []</em><a class="headerlink" href="#schema_entry.EntryPoint.default_config_file_paths" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.env_prefix">
+<code class="sig-name descname">env_prefix</code><em class="property"> :Optional[str]</em><a class="headerlink" href="#schema_entry.EntryPoint.env_prefix" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.parse_env">
+<code class="sig-name descname">parse_env</code><em class="property"> = True</em><a class="headerlink" href="#schema_entry.EntryPoint.parse_env" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.argparse_check_required">
+<code class="sig-name descname">argparse_check_required</code><em class="property"> = False</em><a class="headerlink" href="#schema_entry.EntryPoint.argparse_check_required" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.EntryPoint.argparse_noflag">
+<code class="sig-name descname">argparse_noflag</code><em class="property"> :Optional[str]</em><a class="headerlink" href="#schema_entry.EntryPoint.argparse_noflag" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.name">
+<em class="property">property </em><code class="sig-name descname">name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#schema_entry.EntryPoint.name" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.prog">
+<em class="property">property </em><code class="sig-name descname">prog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#schema_entry.EntryPoint.prog" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.config">
+<em class="property">property </em><code class="sig-name descname">config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.config" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.regist_subcmd">
+<code class="sig-name descname">regist_subcmd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">subcmd</span><span class="p">:</span> <span class="n">EntryPointABC</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#schema_entry.EntryPoint.regist_subcmd" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.regist_sub">
+<code class="sig-name descname">regist_sub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">subcmdclz</span><span class="p">:</span> <span class="n">type</span></em><span class="sig-paren">)</span> &#x2192; EntryPointABC<a class="headerlink" href="#schema_entry.EntryPoint.regist_sub" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.as_main">
+<code class="sig-name descname">as_main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">…</span><span class="p">, </span>None<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Callable<span class="p">[</span><span class="p">…</span><span class="p">, </span>None<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.as_main" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.__call__">
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">argv</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#schema_entry.EntryPoint.__call__" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.pass_args_to_sub">
+<code class="sig-name descname">pass_args_to_sub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">parser</span><span class="p">:</span> <span class="n">argparse.ArgumentParser</span></em>, <em class="sig-param"><span class="n">argv</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#schema_entry.EntryPoint.pass_args_to_sub" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.parse_commandline_args">
+<code class="sig-name descname">parse_commandline_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">parser</span><span class="p">:</span> <span class="n">argparse.ArgumentParser</span></em>, <em class="sig-param"><span class="n">argv</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.parse_commandline_args" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.parse_env_args">
+<code class="sig-name descname">parse_env_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.parse_env_args" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.parse_configfile_args">
+<code class="sig-name descname">parse_configfile_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.parse_configfile_args" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.validat_config">
+<code class="sig-name descname">validat_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#schema_entry.EntryPoint.validat_config" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.do_main">
+<code class="sig-name descname">do_main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#schema_entry.EntryPoint.do_main" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.parse_default">
+<code class="sig-name descname">parse_default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#schema_entry.EntryPoint.parse_default" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.EntryPoint.parse_args">
+<code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">parser</span><span class="p">:</span> <span class="n">argparse.ArgumentParser</span></em>, <em class="sig-param"><span class="n">argv</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#schema_entry.EntryPoint.parse_args" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, hsz
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="http://sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

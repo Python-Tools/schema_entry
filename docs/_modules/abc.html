@@ -1,18 +1,19 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh" >
+<html class="writer-html5" lang="zh-CN" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>abc &mdash; schema_entry 0.0.0 文档</title>
+  <title>abc &mdash; schema_entry 0.0.3 文档</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
 
   
   
@@ -30,6 +31,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.0.0
+                0.0.3
               </div>
             
           
@@ -84,23 +86,8 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用指引:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../README.html">简介</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#id2">特性</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#id3">安装</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#id4">文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#id5">使用介绍</a></li>
-</ul>
-<p class="caption"><span class="caption-text">版本变更:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">0.0.0</a></li>
-</ul>
-<p class="caption"><span class="caption-text">接口文档:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../schema_entry.html">schema_entry package</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -309,14 +296,14 @@
 
         <span class="k">def</span> <span class="nf">_dump_registry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Debug helper to print the ABC registry.&quot;&quot;&quot;</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Class: </span><span class="si">{cls.__module__}</span><span class="s2">.</span><span class="si">{cls.__qualname__}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inv. counter: {get_cache_token()}&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Class: </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inv. counter: </span><span class="si">{</span><span class="n">get_cache_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
             <span class="p">(</span><span class="n">_abc_registry</span><span class="p">,</span> <span class="n">_abc_cache</span><span class="p">,</span> <span class="n">_abc_negative_cache</span><span class="p">,</span>
              <span class="n">_abc_negative_cache_version</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_dump</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_registry: </span><span class="si">{_abc_registry!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_cache: </span><span class="si">{_abc_cache!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_negative_cache: </span><span class="si">{_abc_negative_cache!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_negative_cache_version: </span><span class="si">{_abc_negative_cache_version!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_registry: </span><span class="si">{</span><span class="n">_abc_registry</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_cache: </span><span class="si">{</span><span class="n">_abc_cache</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_negative_cache: </span><span class="si">{</span><span class="n">_abc_negative_cache</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_abc_negative_cache_version: </span><span class="si">{</span><span class="n">_abc_negative_cache_version</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
                   <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_abc_registry_clear</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -346,7 +333,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; 版权所有 2020, hsz12
+        &copy; 版权所有 2020, hsz
 
     </p>
   </div>

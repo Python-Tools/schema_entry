@@ -1,18 +1,19 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh" >
+<html class="writer-html5" lang="zh-CN" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>schema_entry.entrypoint &mdash; schema_entry 0.0.0 文档</title>
+  <title>schema_entry.entrypoint &mdash; schema_entry 0.0.3 文档</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
 
   
   
@@ -30,6 +31,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/translations.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.0.0
+                0.0.3
               </div>
             
           
@@ -84,23 +86,8 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用指引:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html">简介</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id2">特性</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id3">安装</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id4">文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#id5">使用介绍</a></li>
-</ul>
-<p class="caption"><span class="caption-text">版本变更:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">0.0.0</a></li>
-</ul>
-<p class="caption"><span class="caption-text">接口文档:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../schema_entry.html">schema_entry package</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -147,6 +134,8 @@
         
           <li><a href="../index.html">模块代码</a> &raquo;</li>
         
+          <li><a href="../schema_entry.html">schema_entry</a> &raquo;</li>
+        
       <li>schema_entry.entrypoint</li>
     
     
@@ -185,15 +174,17 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">validate</span>
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">yaml_load</span>
 
 <span class="kn">from</span> <span class="nn">.protocol</span> <span class="kn">import</span> <span class="n">SUPPORT_SCHEMA</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">get_parent_tree</span><span class="p">,</span> <span class="n">parse_value_string_by_schema</span><span class="p">,</span> <span class="n">parse_schema_as_cmd</span>
 <span class="kn">from</span> <span class="nn">.entrypoint_base</span> <span class="kn">import</span> <span class="n">EntryPointABC</span>
 
 
-<div class="viewcode-block" id="EntryPoint"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint">[文档]</a><span class="k">class</span> <span class="nc">EntryPoint</span><span class="p">(</span><span class="n">EntryPointABC</span><span class="p">):</span>
+<div class="viewcode-block" id="EntryPoint"><a class="viewcode-back" href="../../autoapi/schema_entry/index.html#schema_entry.entrypoint.EntryPoint">[文档]</a><span class="k">class</span> <span class="nc">EntryPoint</span><span class="p">(</span><span class="n">EntryPointABC</span><span class="p">):</span>
     <span class="n">epilog</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EntryPointABC</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -206,13 +197,13 @@
     <span class="n">argparse_check_required</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">argparse_noflag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_check_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint._check_schema"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint._check_schema">[文档]</a>    <span class="k">def</span> <span class="nf">_check_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">SUPPORT_SCHEMA</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-                <span class="k">raise</span> <span class="n">e</span>
+                <span class="k">raise</span> <span class="n">e</span></div>
                 <span class="c1"># sys.exit(1)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -221,30 +212,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="o">@</span> <span class="nb">property</span>
+<div class="viewcode-block" id="EntryPoint.name"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.name">[文档]</a>    <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+<div class="viewcode-block" id="EntryPoint.prog"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.prog">[文档]</a>    <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">prog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">parent_list</span> <span class="o">=</span> <span class="n">get_parent_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">parent_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_list</span><span class="p">)</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+<div class="viewcode-block" id="EntryPoint.config"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.config">[文档]</a>    <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EntryPoint.regist_subcmd"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.regist_subcmd">[文档]</a>    <span class="k">def</span> <span class="nf">regist_subcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmd</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.regist_subcmd"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.regist_subcmd">[文档]</a>    <span class="k">def</span> <span class="nf">regist_subcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmd</span><span class="p">:</span> <span class="n">EntryPointABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">subcmd</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">[</span><span class="n">subcmd</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcmd</span></div>
 
-<div class="viewcode-block" id="EntryPoint.regist_sub"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.regist_sub">[文档]</a>    <span class="k">def</span> <span class="nf">regist_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmdclz</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntryPointABC</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.regist_sub"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.regist_sub">[文档]</a>    <span class="k">def</span> <span class="nf">regist_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcmdclz</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntryPointABC</span><span class="p">:</span>
         <span class="n">instance</span> <span class="o">=</span> <span class="n">subcmdclz</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">regist_subcmd</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">instance</span></div>
 
-<div class="viewcode-block" id="EntryPoint.as_main"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.as_main">[文档]</a>    <span class="k">def</span> <span class="nf">as_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint.as_main"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.as_main">[文档]</a>    <span class="k">def</span> <span class="nf">as_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="o">@</span> <span class="n">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">warp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -252,28 +243,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">warp</span>
         <span class="k">return</span> <span class="n">warp</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.__call__"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.__call__">[文档]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">usage</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">usage</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="si">}</span><span class="s2"> [options]&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">usage</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="si">}</span><span class="s2"> [subcmd]&quot;</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
             <span class="n">prog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="p">,</span>
             <span class="n">epilog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epilog</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">usage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+            <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span>
+            <span class="n">usage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">usage</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pass_args_to_sub</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EntryPoint.pass_args_to_sub"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.pass_args_to_sub">[文档]</a>    <span class="k">def</span> <span class="nf">pass_args_to_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;subcmd&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;执行子命令&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="EntryPoint.pass_args_to_sub"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.pass_args_to_sub">[文档]</a>    <span class="k">def</span> <span class="nf">pass_args_to_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">scmds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;subcmd&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;执行子命令，可选的子命有</span><span class="si">{</span><span class="n">scmds</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">subcmd</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_subcmds</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">subcmd</span><span class="p">](</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;未知的子命令 </span><span class="si">{argv[1:]}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;未知的子命令 `</span><span class="si">{</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
             <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_parse_commandline_args_by_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint._parse_commandline_args_by_schema"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint._parse_commandline_args_by_schema">[文档]</a>    <span class="k">def</span> <span class="nf">_parse_commandline_args_by_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;此处不该被执行&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -301,20 +298,20 @@
                     <span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
                         <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
                     <span class="p">})</span>
-            <span class="k">return</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="EntryPoint.parse_commandline_args"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.parse_commandline_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_commandline_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint.parse_commandline_args"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.parse_commandline_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_commandline_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_commandline_args_by_schema</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
-    <span class="k">def</span> <span class="nf">_parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint._parse_env_args"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint._parse_env_args">[文档]</a>    <span class="k">def</span> <span class="nf">_parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_prefix</span><span class="p">:</span>
             <span class="n">env_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_prefix</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">env_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prog</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
-        <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{env_prefix}</span><span class="s2">_{key.upper()}&quot;</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">env_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">env</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
                 <span class="n">env</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
@@ -322,9 +319,9 @@
                 <span class="n">env</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">env</span> <span class="o">=</span> <span class="n">parse_value_string_by_schema</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">env</span>
+        <span class="k">return</span> <span class="n">env</span></div>
 
-<div class="viewcode-block" id="EntryPoint.parse_env_args"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.parse_env_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint.parse_env_args"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.parse_env_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_env_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="n">properties</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_env</span><span class="p">:</span>
             <span class="n">properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="p">{})</span>
@@ -338,7 +335,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="EntryPoint.parse_configfile_args"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.parse_configfile_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_configfile_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint.parse_configfile_args"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.parse_configfile_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_configfile_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_config_file_paths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">p_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_config_file_paths</span><span class="p">:</span>
@@ -348,13 +345,17 @@
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">result</span>
+                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.yml&quot;</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">yaml_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">result</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;跳过不支持的配置格式的文件{str(p)}&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;跳过不支持的配置格式的文件</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;配置文件的指定路径都不可用.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="EntryPoint.validat_config"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.validat_config">[文档]</a>    <span class="k">def</span> <span class="nf">validat_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.validat_config"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.validat_config">[文档]</a>    <span class="k">def</span> <span class="nf">validat_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify_schema</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
@@ -367,7 +368,7 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;必须有schema和config才能校验.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="EntryPoint.do_main"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.do_main">[文档]</a>    <span class="k">def</span> <span class="nf">do_main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.do_main"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.do_main">[文档]</a>    <span class="k">def</span> <span class="nf">do_main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;未注册main函数&quot;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -375,7 +376,7 @@
             <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EntryPoint.parse_default"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.parse_default">[文档]</a>    <span class="k">def</span> <span class="nf">parse_default</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntryPoint.parse_default"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.parse_default">[文档]</a>    <span class="k">def</span> <span class="nf">parse_default</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">:</span>
             <span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">prop</span><span class="p">:</span>
@@ -383,7 +384,7 @@
             <span class="k">return</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="EntryPoint.parse_args"><a class="viewcode-back" href="../../schema_entry.html#schema_entry.entrypoint.EntryPoint.parse_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EntryPoint.parse_args"><a class="viewcode-back" href="../../autoapi/schema_entry/entrypoint/index.html#schema_entry.entrypoint.EntryPoint.parse_args">[文档]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">argv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">default_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_default</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_config</span><span class="p">)</span>
         <span class="n">file_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_configfile_args</span><span class="p">()</span>
@@ -391,7 +392,6 @@
         <span class="n">env_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_env_args</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">env_config</span><span class="p">)</span>
         <span class="n">cmd_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_commandline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">cmd_config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cmd_config</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validat_config</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_main</span><span class="p">()</span>
@@ -410,7 +410,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; 版权所有 2020, hsz12
+        &copy; 版权所有 2020, hsz
 
     </p>
   </div>

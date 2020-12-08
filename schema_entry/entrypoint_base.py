@@ -5,7 +5,7 @@ from typing import Callable, Sequence, Dict, Any, Optional
 
 
 class EntryPointABC(abc.ABC):
-    """程序入口类
+    """程序入口类.
 
     Attributes:
         epilog (str): 命令行展示介绍时的epilog部分

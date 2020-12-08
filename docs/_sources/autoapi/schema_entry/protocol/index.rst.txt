@@ -1,0 +1,21 @@
+:mod:`schema_entry.protocol`
+============================
+
+.. py:module:: schema_entry.protocol
+
+.. autoapi-nested-parse::
+
+   protocol.
+
+   用于定义模块支持的可以用于解析的json schema的模式.
+
+
+
+Module Contents
+---------------
+
+.. data:: SUPPORT_SCHEMA
+   
+
+   
+
