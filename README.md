@@ -123,7 +123,7 @@ class Test_A(EntryPoint):
 当然schema字段也不能乱写,它的规则是json schema的一个子集:
 
 ```json
- {
+{
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
@@ -132,7 +132,7 @@ class Test_A(EntryPoint):
             "minProperties": 1,
             "additionalProperties": false,
             "patternProperties": {
-                r"^\w+$": {
+                "^\\w+$": {
                     "oneOf": [
                         {
                             "type": "object",
@@ -193,7 +193,8 @@ class Test_A(EntryPoint):
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": false,
                             "required": ["type"],
@@ -232,7 +233,8 @@ class Test_A(EntryPoint):
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": false,
                             "required": ["type"],
@@ -271,7 +273,8 @@ class Test_A(EntryPoint):
                                     "type": "string"
                                 }
                             }
-                        }, {
+                        },
+                        {
                             "type": "object",
                             "additionalProperties": false,
                             "required": ["type"],
@@ -282,7 +285,7 @@ class Test_A(EntryPoint):
                                 },
                                 "default": {
                                     "type": "array",
-                                    "item": {
+                                    "items": {
                                         "type": ["string", "number", "integer"]
                                     }
                                 },
@@ -294,6 +297,9 @@ class Test_A(EntryPoint):
                                         "type": {
                                             "type": "string",
                                             "enum": ["string", "number", "integer"]
+                                        },
+                                        "enum":{
+                                          "type": "array"
                                         }
                                     }
                                 },
