@@ -105,7 +105,6 @@ class EntryPoint(EntryPointABC):
                 epilog = self.epilog
             else:
                 epilog = "子命令描述:\n" + "\n".join([f"{subcmd}\t{ins.__doc__}" for subcmd, ins in self._subcmds.items()])
-                print(epilog)
             parser = argparse.ArgumentParser(
                 prog=self.prog,
                 epilog=epilog,
