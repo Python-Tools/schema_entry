@@ -85,3 +85,33 @@ class ProtocolTest(unittest.TestCase):
         }
         with self.assertRaises(jsonschema.exceptions.ValidationError):
             validate(target, SUPPORT_SCHEMA)
+
+    def test_array_enum(self) -> None:
+        target = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "enum": [1.1, 2.2, 4.0]
+                    }
+                },
+                "b": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": ["1.1", "2.2", "4.0"]
+                    }
+                },
+                "c": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [1, 2, 4]
+                    }
+                }
+            }
+        }
+        assert validate(target, SUPPORT_SCHEMA) is None
