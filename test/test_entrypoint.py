@@ -343,3 +343,30 @@ class LoadConfigTest(unittest.TestCase):
         self.assertDictEqual(root.config, {
             "a": 2
         })
+
+    def test_load_array_cmd_config(self) -> None:
+        class Test_A(EntryPoint):
+            argparse_noflag = "a_a"
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "array",
+                        "item": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": ["a_a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a_a: float) -> None:
+            pass
+
+        root(["a", "b", "c"])
+        self.assertDictEqual(root.config, {
+            "a_a": ["a", "b", "c"]
+        })

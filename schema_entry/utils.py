@@ -121,7 +121,7 @@ def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argpars
     return parser
 
 
-def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, noflag: bool = False) -> argparse.ArgumentParser:
     sub_schema: Optional[Dict[str, Any]] = schema.get("items")
     if sub_schema is None:
         print("array params must have sub schema items")
@@ -143,9 +143,6 @@ def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.
         kwargs.update({
             "type": int
         })
-    kwargs.update({
-        "action": "append"
-    })
     _default = schema.get("default")
     if _default:
         kwargs.update({
@@ -162,7 +159,16 @@ def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.
             "choices": _enum
         })
 
-    parser.add_argument(f"--{key}", **kwargs)
+    if noflag:
+        kwargs.update({
+            "nargs": "+"
+        })
+        parser.add_argument(f"{key}", **kwargs)
+    else:
+        kwargs.update({
+            "action": "append"
+        })
+        parser.add_argument(f"--{key}", **kwargs)
     return parser
 
 
@@ -192,7 +198,7 @@ def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.Argum
     elif _type == "boolean":
         return _argparse_boolean_handdler(key, schema, parser)
     elif _type == "array":
-        return _argparse_array_handdler(key, schema, parser)
+        return _argparse_array_handdler(key, schema, parser, noflag=noflag)
     else:
         print(f"未支持的类型{_type}")
         return parser
