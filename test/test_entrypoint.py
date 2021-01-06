@@ -353,7 +353,7 @@ class LoadConfigTest(unittest.TestCase):
                 "properties": {
                     "a_a": {
                         "type": "array",
-                        "item": {
+                        "items": {
                             "type": "string"
                         }
                     }
