@@ -176,10 +176,13 @@ SUPPORT_SCHEMA = {
                                         "type": {
                                             "type": "string",
                                             "enum": ["string", "number", "integer"]
+                                        },
+                                        "enum":{
+                                            "type": "array"
                                         }
                                     }
                                 },
-                                "description":{
+                                "description": {
                                     "type": "string"
                                 }
                             }
