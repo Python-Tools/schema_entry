@@ -37,7 +37,7 @@ class EntryPoint(EntryPointABC):
     verify_schema = True
 
     default_config_file_paths: List[str] = []
-    config_file_only_get_need = False
+    config_file_only_get_need = True
     env_prefix = None
     parse_env = True
 

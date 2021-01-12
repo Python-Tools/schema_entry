@@ -346,7 +346,7 @@ class Test_A(EntryPoint):
 #### 从指定配置文件中读取配置
 
 我们可以使用字段`default_config_file_paths`指定从固定的几个路径中读取配置文件,配置文件支持`json`和`yaml`两种格式.
-我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`False`),
+我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`True`),
 当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
 
 默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
