@@ -1,7 +1,6 @@
 import os
 import unittest
 from pathlib import Path
-from typing import Dict, Any
 import jsonschema.exceptions
 
 from schema_entry.entrypoint import EntryPoint
@@ -168,7 +167,7 @@ class LoadConfigTest(unittest.TestCase):
         })
 
     def test_load_json_configfile_onlyneed(self) -> None:
-        class Test_A(EntryPoint):
+        class Test_A_onlyneed(EntryPoint):
             default_config_file_paths = [
                 "/test_config1.json",
                 str(Path.home().joinpath(".test_config1.json")),
@@ -185,7 +184,7 @@ class LoadConfigTest(unittest.TestCase):
                 },
                 "required": ["a"]
             }
-        root = Test_A()
+        root = Test_A_onlyneed()
 
         @root.as_main
         def _(a: int) -> None:

@@ -1,13 +1,7 @@
 """入口类的抽象基类."""
 import abc
 import argparse
-from typing import Callable, Sequence, Dict, Any, Optional, TypedDict, List
-
-
-class SchemaType(TypedDict):
-    type: str
-    properties: Dict[str, Any]
-    required: List[str]
+from typing import Callable, Sequence, Dict, Any, Optional, List, Union
 
 
 class EntryPointABC(abc.ABC):
@@ -31,7 +25,7 @@ class EntryPointABC(abc.ABC):
     _name: str
     parent: Optional["EntryPointABC"]
 
-    schema: Optional[SchemaType]
+    schema: Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
     verify_schema: bool
 
     default_config_file_paths: Sequence[str]
