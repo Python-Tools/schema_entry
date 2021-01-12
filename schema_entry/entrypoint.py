@@ -137,7 +137,6 @@ class EntryPoint(EntryPointABC):
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            
             properties: Dict[str, Any] = self.schema.get("properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
