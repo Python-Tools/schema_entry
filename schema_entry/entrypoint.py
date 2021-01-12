@@ -18,7 +18,7 @@ import argparse
 import functools
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, Sequence, Dict, List, Any, Optional
+from typing import Callable, Sequence, Dict, List, Any
 from jsonschema import validate
 from yaml import load as yaml_load
 
@@ -31,17 +31,18 @@ class EntryPoint(EntryPointABC):
     epilog = ""
     usage = ""
     _name = ""
-    parent: Optional[EntryPointABC] = None
+    parent = None
 
-    schema: Optional[Dict[str, Any]] = None
+    schema = None
     verify_schema = True
 
-    default_config_file_paths: Sequence[str] = []
-    env_prefix: Optional[str] = None
+    default_config_file_paths: List[str] = []
+    config_file_only_get_need = False
+    env_prefix = None
     parse_env = True
 
     argparse_check_required = False
-    argparse_noflag: Optional[str] = None
+    argparse_noflag = None
 
     def _check_schema(self) -> None:
         if self.schema is not None:
@@ -204,10 +205,24 @@ class EntryPoint(EntryPointABC):
                 if p.suffix == ".json":
                     with open(p, "r", encoding="utf-8") as f:
                         result = json.load(f)
+                    if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
+                        needs = list(self.schema.get("properties").keys())
+                        res = {}
+                        for key in needs:
+                            if result.get(key) is not None:
+                                res[key] = result.get(key)
+                        return res
                     return result
                 elif p.suffix == ".yml":
                     with open(p, "r", encoding="utf-8") as f:
                         result = yaml_load(f)
+                    if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
+                        needs = list(self.schema.get("properties").keys())
+                        res = {}
+                        for key in needs:
+                            if result.get(key) is not None:
+                                res[key] = result.get(key)
+                        return res
                     return result
                 else:
                     warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")

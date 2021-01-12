@@ -167,6 +167,34 @@ class LoadConfigTest(unittest.TestCase):
             "a": 1
         })
 
+    def test_load_json_configfile_onlyneed(self) -> None:
+        class Test_A(EntryPoint):
+            default_config_file_paths = [
+                "/test_config1.json",
+                str(Path.home().joinpath(".test_config1.json")),
+                "./test_config1.json"
+            ]
+            config_file_only_get_need = True
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "number"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a: int) -> None:
+            pass
+        root([])
+        self.assertDictEqual(root.config, {
+            "a": 1
+        })
+
     def test_load_yaml_configfile(self) -> None:
         class Test_A(EntryPoint):
             default_config_file_paths = [
