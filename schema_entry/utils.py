@@ -121,7 +121,8 @@ def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argpars
     return parser
 
 
-def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, noflag: bool = False) -> argparse.ArgumentParser:
+def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+                             noflag: bool = False) -> argparse.ArgumentParser:
     sub_schema: Optional[Dict[str, Any]] = schema.get("items")
     if sub_schema is None:
         print("array params must have sub schema items")

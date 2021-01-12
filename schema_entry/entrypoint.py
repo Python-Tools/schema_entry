@@ -18,7 +18,7 @@ import argparse
 import functools
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, Sequence, Dict, List, Any
+from typing import Callable, Sequence, Dict, List, Any, Tuple
 from jsonschema import validate
 from yaml import load as yaml_load
 
@@ -133,20 +133,20 @@ class EntryPoint(EntryPointABC):
             parser.print_help()
             sys.exit(1)
 
-    def _parse_commandline_args_by_schema(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+    def _make_commandline_parse_by_schema(self, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            result: Dict[str, Any] = {}
+            
             properties: Dict[str, Any] = self.schema.get("properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
-                _const = prop.get("const")
-                if _const:
-                    result.update({
-                        key: _const
-                    })
-                    continue
+                # _const = prop.get("const")
+                # if _const:
+                #     cmd_res.update({
+                #         key: _const
+                #     })
+                #     continue
                 required = False
                 noflag = False
                 if self.argparse_noflag == key:
@@ -155,18 +155,60 @@ class EntryPoint(EntryPointABC):
                     if self.argparse_check_required and key in requireds:
                         required = True
                 parser = parse_schema_as_cmd(key, prop, parser, required=required, noflag=noflag)
-            args = parser.parse_args(argv)
-            for key, value in vars(args).items():
+            return parser
+
+    def _parse_commandline_args_by_schema(self,
+                                          parser: argparse.ArgumentParser,
+                                          argv: Sequence[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        if self.schema:
+            parser = self._make_commandline_parse_by_schema(parser)
+        print("!!!!!!###")
+        args = parser.parse_args(argv)
+        config_file_res: Dict[str, Any] = {}
+        cmd_res: Dict[str, Any] = {}
+        print("!!!!!!!!!")
+        print(vars(args))
+        print("!!!!!!!!!")
+        for key, value in vars(args).items():
+            if key == "config":
+                print("!!!!!!!!!")
+                print("key:config")
+                print(f"value:{value}")
+                print("!!!!!!!!!")
+                if value:
+                    p = Path(value)
+                    if not p.is_file():
+                        warnings.warn(f"{str(p)}不是文件")
+                        continue
+                    if p.suffix == ".json":
+                        config_file_res = self.parse_json_configfile_args(p)
+                    elif p.suffix == ".yml":
+                        config_file_res = self.parse_yaml_configfile_args(p)
+                    else:
+                        warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
+                        continue
+                else:
+                    continue
+            else:
                 if value is not None:
-                    result.update({
+                    cmd_res.update({
                         key: value
                     })
-            return result
+        return config_file_res, cmd_res
 
-    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
-        if self.schema is not None:
-            return self._parse_commandline_args_by_schema(parser, argv)
-        return {}
+    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """解析命令行获得参数
+
+        Args:
+            parser (argparse.ArgumentParser): 命令行解析器
+            argv (Sequence[str]): 命令行参数序列
+
+        Returns:
+            Tuple[Dict[str, Any], Dict[str, Any]]: 命令行指定配置文件获得的参数,其他命令行参数获得的参数
+        """
+
+        parser.add_argument("-c", "--config", type=str, help='指定配置文件位置')
+        return self._parse_commandline_args_by_schema(parser, argv)
 
     def _parse_env_args(self, key: str, info: Dict[str, Any]) -> Any:
         if self.env_prefix:
@@ -196,34 +238,40 @@ class EntryPoint(EntryPointABC):
         else:
             return {}
 
+    def parse_json_configfile_args(self, p: Path) -> Dict[str, Any]:
+        with open(p, "r", encoding="utf-8") as f:
+            result = json.load(f)
+        if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
+            needs = list(self.schema.get("properties").keys())
+            res = {}
+            for key in needs:
+                if result.get(key) is not None:
+                    res[key] = result.get(key)
+            return res
+        return result
+
+    def parse_yaml_configfile_args(self, p: Path) -> Dict[str, Any]:
+        with open(p, "r", encoding="utf-8") as f:
+            result = yaml_load(f)
+        if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
+            needs = list(self.schema.get("properties").keys())
+            res = {}
+            for key in needs:
+                if result.get(key) is not None:
+                    res[key] = result.get(key)
+            return res
+        return result
+
     def parse_configfile_args(self) -> Dict[str, Any]:
-        if len(self.default_config_file_paths) == 0:
+        if not self.default_config_file_paths:
             return {}
         for p_str in self.default_config_file_paths:
             p = Path(p_str)
             if p.is_file():
                 if p.suffix == ".json":
-                    with open(p, "r", encoding="utf-8") as f:
-                        result = json.load(f)
-                    if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
-                        needs = list(self.schema.get("properties").keys())
-                        res = {}
-                        for key in needs:
-                            if result.get(key) is not None:
-                                res[key] = result.get(key)
-                        return res
-                    return result
+                    return self.parse_json_configfile_args(p)
                 elif p.suffix == ".yml":
-                    with open(p, "r", encoding="utf-8") as f:
-                        result = yaml_load(f)
-                    if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
-                        needs = list(self.schema.get("properties").keys())
-                        res = {}
-                        for key in needs:
-                            if result.get(key) is not None:
-                                res[key] = result.get(key)
-                        return res
-                    return result
+                    return self.parse_yaml_configfile_args(p)
                 else:
                     warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
         else:
@@ -263,13 +311,21 @@ class EntryPoint(EntryPointABC):
         return {}
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+        # 默认配置
         default_config = self.parse_default()
         self._config.update(default_config)
+        # 默认配置文件配置
         file_config = self.parse_configfile_args()
         self._config.update(file_config)
+        # 命令行指定配置文件配置
+        cmd_config_file_config, cmd_config = self.parse_commandline_args(parser, argv)
+        print("######")
+        print(cmd_config_file_config)
+        self._config.update(cmd_config_file_config)
+        # 环境变量配置
         env_config = self.parse_env_args()
         self._config.update(env_config)
-        cmd_config = self.parse_commandline_args(parser, argv)
+        # 命令行指定配置
         self._config.update(cmd_config)
         if self.validat_config():
             self.do_main()

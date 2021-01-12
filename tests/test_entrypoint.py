@@ -211,6 +211,19 @@ class LoadConfigTest(unittest.TestCase):
             "a": 1
         })
 
+    def test_load_json_configfile_cmd(self) -> None:
+        class Test_AC(EntryPoint):
+            verify_schema = False
+        root = Test_AC()
+
+        @root.as_main
+        def _(a: int) -> None:
+            pass
+        root(["-c", "test_config.json"])
+        self.assertDictEqual(root.config, {
+            "a": 1
+        })
+
     def test_load_ENV_config(self) -> None:
         class Test_A(EntryPoint):
             env_prefix = "app"

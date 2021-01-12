@@ -1,7 +1,7 @@
 """入口类的抽象基类."""
 import abc
 import argparse
-from typing import Callable, Sequence, Dict, Any, Optional, List, Union
+from typing import Callable, Sequence, Dict, Any, Optional, List, Union, Tuple
 
 
 class EntryPointABC(abc.ABC):
@@ -104,7 +104,7 @@ class EntryPointABC(abc.ABC):
         """解析复杂命令行参数并将参数传递至下一级."""
 
     @abc.abstractmethod
-    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Dict[str, Any]:
+    def parse_commandline_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         '''默认端点不会再做命令行解析,如果要做则需要在继承时覆盖此方法.
 
         Args:
@@ -112,7 +112,7 @@ class EntryPointABC(abc.ABC):
             argv (Sequence[str]): 待解析的参数列表
 
         Returns:
-            Dict[str, Any]: 配置
+            Tuple[Dict[str, Any], Dict[str, Any]]: 命令行指定配置文件获得配置,命令行其他flag获得的配置
 
         '''
 
