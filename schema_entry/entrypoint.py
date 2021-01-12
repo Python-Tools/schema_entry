@@ -141,12 +141,6 @@ class EntryPoint(EntryPointABC):
             properties: Dict[str, Any] = self.schema.get("properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
-                # _const = prop.get("const")
-                # if _const:
-                #     cmd_res.update({
-                #         key: _const
-                #     })
-                #     continue
                 required = False
                 noflag = False
                 if self.argparse_noflag == key:
