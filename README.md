@@ -79,22 +79,6 @@ pip install schema_entry
 2. [可选]校验配置参数是否符合要求
 3. [可选]将配置作为参数引用到程序中.
 
-#### 从配置文件中读取配置参数
-
-默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
-
-```python
-from pathlib import Path
-from schema_entry import EntryPoint
-
-class Test_A(EntryPoint):
-    default_config_file_paths = [
-        "/test_config.json",
-        str(Path.home().joinpath(".test_config.json")),
-        "./test_config.json"
-    ]
-```
-
 #### 通过定义`schema字段进行参数校验`
 
 我们可以定义`schema字段`来激活校验功能
@@ -337,6 +321,48 @@ class Test_A(EntryPoint):
 4. 字段类型如果为`array`则内部必须要有`items`且`items`中必须有`type`字段,且该`type`字段的值必须为`string`,`number`,`integer`之一
 
 如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
+
+#### 从定义的schema中获取默认配置
+
+我们在定义schema时可以在`"properties"`字段定义的模式描述中通过`default`字段指定描述字段的默认值
+
+```python
+class Test_A(EntryPoint):
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "a_a": {
+                "type": "number"
+                "default": 10.1
+            }
+        },
+        "required": ["a_a"]
+    }
+```
+
+这样即便没有其他输入这个参数也会有这个默认值兜底
+
+#### 从指定配置文件中读取配置
+
+我们可以使用字段`default_config_file_paths`指定从固定的几个路径中读取配置文件,配置文件支持`json`和`yaml`两种格式.
+我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`False`),
+当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
+
+默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
+
+```python
+from pathlib import Path
+from schema_entry import EntryPoint
+
+class Test_A(EntryPoint):
+
+    default_config_file_paths = [
+        "/test_config.json",
+        str(Path.home().joinpath(".test_config.json")),
+        "./test_config.json"
+    ]
+```
 
 #### 从环境变量中读取配置参数
 
