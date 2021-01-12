@@ -162,19 +162,11 @@ class EntryPoint(EntryPointABC):
                                           argv: Sequence[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         if self.schema:
             parser = self._make_commandline_parse_by_schema(parser)
-        print("!!!!!!###")
         args = parser.parse_args(argv)
         config_file_res: Dict[str, Any] = {}
         cmd_res: Dict[str, Any] = {}
-        print("!!!!!!!!!")
-        print(vars(args))
-        print("!!!!!!!!!")
         for key, value in vars(args).items():
             if key == "config":
-                print("!!!!!!!!!")
-                print("key:config")
-                print(f"value:{value}")
-                print("!!!!!!!!!")
                 if value:
                     p = Path(value)
                     if not p.is_file():
@@ -319,8 +311,6 @@ class EntryPoint(EntryPointABC):
         self._config.update(file_config)
         # 命令行指定配置文件配置
         cmd_config_file_config, cmd_config = self.parse_commandline_args(parser, argv)
-        print("######")
-        print(cmd_config_file_config)
         self._config.update(cmd_config_file_config)
         # 环境变量配置
         env_config = self.parse_env_args()
