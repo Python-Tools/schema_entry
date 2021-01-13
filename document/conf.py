@@ -10,24 +10,24 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import datetime
-import sphinx_rtd_theme
-import os
-from pathlib import Path
-import configparser
-config = configparser.ConfigParser(allow_no_value=True)
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
+
+
 # -- Project information -----------------------------------------------------
-with open(Path(__file__).parent.parent.joinpath("setup.cfg")) as f:
-    config.read_file(f)
-project = config.get("metadata", "name")
-author = config.get("metadata", "author")
-copyright = f'{datetime.date.today().year}, {author}'
+
+from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
+project = 'schema_entry'
+copyright = '2021, hsz'
+author = 'hsz'
 
 # The short X.Y version
-version = config.get("metadata", "version")
+version = '0.0.7'
 
 # The full version, including alpha/beta/rc tags
-release = config.get("metadata", "version")
+release = '0.0.7'
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,8 +36,9 @@ release = config.get("metadata", "version")
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.viewcode',
     'sphinx.ext.todo',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -60,7 +61,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-
+#
+html_theme = 'alabaster'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -74,18 +76,75 @@ html_static_path = ['_static']
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-extensions += ['sphinx.ext.autodoc', 'recommonmark', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax', 'sphinx_rtd_theme']
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    'logo_only': True,
-    'navigation_depth': 5,
-}
-locale_dirs = ['locale/']   # path is example but recommended.
-gettext_compact = False     # optional.
 
+# 不进行编译的文件/文件夹
+
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+
+# 设置不同后缀的文件使用不同解析器(这个需要后加)
+
+source_suffix = {
+
+    '.rst': 'restructuredtext'
+
+}
+
+# 主题
+
+extensions.append('sphinx_rtd_theme')
+
+html_theme = "sphinx_rtd_theme"
+
+html_theme_options = {
+
+    'logo_only': True,
+
+    'navigation_depth': 5,
+
+}
+
+
+# 使用插件支持markdowm
+
+
+extensions.append('recommonmark')
+
+# 针对`.md`为后缀的文件做markdown渲染
+
+source_suffix[".md"] = 'markdown'
+
+
+# 设置markdown渲染器的自定义项
+
+def setup(app):
+
+    github_doc_root = 'https://localhost:5000'
+
+    app.add_config_value('recommonmark_config', {
+
+        # 'url_resolver': lambda url: github_doc_root + url,
+
+        "enable_auto_toc_tree": True,
+
+        "auto_toc_tree_section": "目录",
+
+        'auto_toc_maxdepth': 2,
+
+        "enable_math": True,
+
+        'enable_eval_rst': True
+
+    }, True)
+
+    app.add_transform(AutoStructify)
+
+
+# autoapi-python
 extensions.append('autoapi.extension')
+
+extensions.append("sphinx.ext.napoleon")
+
 autoapi_type = 'python'
-autoapi_dirs = ['../schema_entry']
-autoapi_options = ['members', 'undoc-members', 'show-inheritance',
-                   'show-module-summary', 'special-members', 'imported-members']
-# autoapi_add_toctree_entry = False
+
+autoapi_dirs = ["C:\\Users\\hsz12\\Documents\\WORKSPACE\\PythonTools\\entry-tree\\schema_entry"]

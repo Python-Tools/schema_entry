@@ -1,2 +1,0 @@
-.. raw:: html
-  <a href="typecheck/index.html">testurl</a>
