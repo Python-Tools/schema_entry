@@ -349,6 +349,8 @@ class Test_A(EntryPoint):
 我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`True`),
 当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
 
+也可以通过设置`load_all_config_file = True`来按设定顺序读取全部预设的配置文件位置
+
 默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
 
 ```python

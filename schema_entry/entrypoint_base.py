@@ -14,6 +14,8 @@ class EntryPointABC(abc.ABC):
         schema (Optional[Dict[str, Any]]): 入口节点的设置需要满足的json schema对应字典.Default None
         verify_schema (bool): 获得设置后节点是否校验设置是否满足定义的json schema模式
         default_config_file_paths (Sequence[str]): 设置默认的配置文件位置.
+        config_file_only_get_need (bool): 设置是否只从配置文件中获取schema中定义的配置项
+        load_all_config_file (bool): 设置的默认配置文件全部加载.
         env_prefix (str): 设置环境变量的前缀
         parse_env (bool): 展示是否解析环境变量
         argparse_check_required  (bool): 命令行参数是否解析必填项为必填项
@@ -30,6 +32,7 @@ class EntryPointABC(abc.ABC):
 
     default_config_file_paths: Sequence[str]
     config_file_only_get_need: bool
+    load_all_config_file: bool
     env_prefix: Optional[str]
     parse_env: bool
     argparse_check_required: bool

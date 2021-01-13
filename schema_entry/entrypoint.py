@@ -38,6 +38,7 @@ class EntryPoint(EntryPointABC):
 
     default_config_file_paths: List[str] = []
     config_file_only_get_need = True
+    load_all_config_file = False
     env_prefix = None
     parse_env = True
 
@@ -250,18 +251,31 @@ class EntryPoint(EntryPointABC):
     def parse_configfile_args(self) -> Dict[str, Any]:
         if not self.default_config_file_paths:
             return {}
-        for p_str in self.default_config_file_paths:
-            p = Path(p_str)
-            if p.is_file():
-                if p.suffix == ".json":
-                    return self.parse_json_configfile_args(p)
-                elif p.suffix == ".yml":
-                    return self.parse_yaml_configfile_args(p)
-                else:
-                    warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
+        if not self.load_all_config_file:
+            for p_str in self.default_config_file_paths:
+                p = Path(p_str)
+                if p.is_file():
+                    if p.suffix == ".json":
+                        return self.parse_json_configfile_args(p)
+                    elif p.suffix == ".yml":
+                        return self.parse_yaml_configfile_args(p)
+                    else:
+                        warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
+            else:
+                warnings.warn("配置文件的指定路径都不可用.")
+                return {}
         else:
-            warnings.warn("配置文件的指定路径都不可用.")
-            return {}
+            result = {}
+            for p_str in self.default_config_file_paths:
+                p = Path(p_str)
+                if p.is_file():
+                    if p.suffix == ".json":
+                        result.update(self.parse_json_configfile_args(p))
+                    elif p.suffix == ".yml":
+                        result.update(self.parse_yaml_configfile_args(p))
+                    else:
+                        warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
+            return result
 
     def validat_config(self) -> bool:
         if self.verify_schema:
