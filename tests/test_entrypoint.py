@@ -224,6 +224,25 @@ class LoadConfigTest(unittest.TestCase):
             "a": 1
         })
 
+    def test_load_all_configfile(self) -> None:
+        class Test_AC(EntryPoint):
+            load_all_config_file = True
+            default_config_file_paths = [
+                "./test_config.json",
+                "./test_config1.json",
+                "./test_config2.json"
+            ]
+        root = Test_AC()
+
+        @root.as_main
+        def _(a: int, b: int, c: int, d: int) -> None:
+            assert a == 1
+            assert b == 2
+            assert c == 13
+            assert d == 43
+
+        root([])
+
     def test_load_ENV_config(self) -> None:
         class Test_A(EntryPoint):
             env_prefix = "app"
