@@ -1,4 +1,10 @@
-# 0.08
+# 0.0.9
+
+## 新特性
+
++ 可以使用`@regist_config_file_parser(config_file_name)`来注册如何解析特定命名的配置文件
+
+# 0.0.8
 
 ## 新特性
 

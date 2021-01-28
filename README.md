@@ -362,8 +362,17 @@ class Test_A(EntryPoint):
     default_config_file_paths = [
         "/test_config.json",
         str(Path.home().joinpath(".test_config.json")),
-        "./test_config.json"
+        "./test_config.json",
+        "./test_config_other.json"
     ]
+```
+
+##### 指定特定命名的配置文件的解析方式
+
+可以使用`@regist_config_file_parser(config_file_name)`来注册如何解析特定命名的配置文件.
+
+```python
+
 ```
 
 #### 从环境变量中读取配置参数
@@ -433,6 +442,29 @@ def main(a,b):
     print(a)
     print(b)
 
+```
+
+另一种指定入口函数的方法是重写子类的`do_main(self)->None`方法
+
+```python
+class Test_A(EntryPoint):
+    argparse_noflag = "a"
+    argparse_check_required=True
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "number"
+            },
+            "b": {
+                "type": "number"
+            }
+        },
+        "required": ["a","b"]
+    }
+    def do_main(self)->None:
+        print(self.config)
 ```
 
 #### 直接从节点对象中获取配置

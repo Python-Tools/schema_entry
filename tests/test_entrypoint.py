@@ -59,6 +59,25 @@ class CMDTest(unittest.TestCase):
 
         assert root.usage == "test_a [options]"
 
+    def test_override_do_main(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number",
+                        "default": 33.3
+                    }
+                },
+                "required": ["a_a"]
+            }
+            def do_main(self):
+                assert self.config["a_a"]==33.3
+        root = Test_A()
+        root([])
+
+
     def test_default_subcmd_usage(self) -> None:
         class A(EntryPoint):
             pass

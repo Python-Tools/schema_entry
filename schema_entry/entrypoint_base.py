@@ -1,6 +1,7 @@
 """入口类的抽象基类."""
 import abc
 import argparse
+from pathlib import Path
 from typing import Callable, Sequence, Dict, Any, Optional, List, Union, Tuple
 
 
@@ -40,6 +41,7 @@ class EntryPointABC(abc.ABC):
 
     _subcmds: Dict[str, "EntryPointABC"]
     _main: Optional[Callable[..., None]]
+    _config_file_parser_map: Dict[str, Callable[[Path], Dict[str, Any]]]
     _config: Dict[str, Any]
 
     @abc.abstractproperty
@@ -79,6 +81,19 @@ class EntryPointABC(abc.ABC):
             [EntryPointABC]: 注册类的实例
 
         '''
+
+    @abc.abstractmethod
+    def regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]:
+        '''注册特定配置文件名的解析方式.
+
+        Args:
+            file_name (str): 指定文件名
+
+        Returns:
+            Callable[[Callable[[Path], None]], Callable[[Path], None]]: 注册的解析函数
+
+        '''
+
     @abc.abstractmethod
     def as_main(self, func: Callable[..., None]) -> Callable[..., None]:
         """注册函数在解析参数成功后执行.
