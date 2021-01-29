@@ -18,7 +18,7 @@ import argparse
 import functools
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, Sequence, Dict, List, Any, Tuple
+from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional
 from jsonschema import validate
 from yaml import load as yaml_load
 
@@ -43,7 +43,8 @@ class EntryPoint(EntryPointABC):
     parse_env = True
 
     argparse_check_required = False
-    argparse_noflag = None
+    argparse_noflag: Optional[str] = None
+    _config_file_parser_map: Dict[str, Callable[[Path], Dict[str, Any]]] = {}
 
     def _check_schema(self) -> None:
         if self.schema is not None:
@@ -248,6 +249,15 @@ class EntryPoint(EntryPointABC):
             return res
         return result
 
+    def regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]:
+        def decorate(func: Callable[[Path], Dict[str, Any]]) -> Callable[[Path], Dict[str, Any]]:
+            @functools.wraps(func)
+            def wrap(p: Path) -> Dict[str, Any]:
+                return func(p)
+            self._config_file_parser_map[file_name] = func
+            return wrap
+        return decorate
+
     def parse_configfile_args(self) -> Dict[str, Any]:
         if not self.default_config_file_paths:
             return {}
@@ -255,6 +265,10 @@ class EntryPoint(EntryPointABC):
             for p_str in self.default_config_file_paths:
                 p = Path(p_str)
                 if p.is_file():
+                    parfunc = self._config_file_parser_map.get(p.name)
+                    if parfunc:
+                        print("&&&&&&")
+                        return parfunc(p)
                     if p.suffix == ".json":
                         return self.parse_json_configfile_args(p)
                     elif p.suffix == ".yml":
@@ -269,12 +283,17 @@ class EntryPoint(EntryPointABC):
             for p_str in self.default_config_file_paths:
                 p = Path(p_str)
                 if p.is_file():
-                    if p.suffix == ".json":
-                        result.update(self.parse_json_configfile_args(p))
-                    elif p.suffix == ".yml":
-                        result.update(self.parse_yaml_configfile_args(p))
+                    parfunc = self._config_file_parser_map.get(p.name)
+                    if parfunc:
+                        print("&&&&&&@@@")
+                        result.update(parfunc(p))
                     else:
-                        warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
+                        if p.suffix == ".json":
+                            result.update(self.parse_json_configfile_args(p))
+                        elif p.suffix == ".yml":
+                            result.update(self.parse_yaml_configfile_args(p))
+                        else:
+                            warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
             return result
 
     def validat_config(self) -> bool:

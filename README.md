@@ -347,7 +347,7 @@ class Test_A(EntryPoint):
 
 我们可以使用字段`default_config_file_paths`指定从固定的几个路径中读取配置文件,配置文件支持`json`和`yaml`两种格式.
 我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`True`),
-当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
+ 当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
 
 也可以通过设置`load_all_config_file = True`来按设定顺序读取全部预设的配置文件位置
 
@@ -362,8 +362,53 @@ class Test_A(EntryPoint):
     default_config_file_paths = [
         "/test_config.json",
         str(Path.home().joinpath(".test_config.json")),
-        "./test_config.json"
+        "./test_config.json",
+        "./test_config_other.json"
     ]
+```
+
+##### 指定特定命名的配置文件的解析方式
+
+可以使用`@regist_config_file_parser(config_file_name)`来注册如何解析特定命名的配置文件.这一特性可以更好的定制化配置文件的读取
+
+```python
+class Test_AC(EntryPoint):
+    load_all_config_file = True
+    default_config_file_paths = [
+        "./test_config.json",
+        "./test_config1.json",
+        "./test_other_config2.json"
+    ]
+root = Test_AC()
+
+@root.regist_config_file_parser("test_other_config2.json")
+def _1(p: Path) -> Dict[str, Any]:
+    with open(p) as f:
+        temp = json.load(f)
+    return {k.lower(): v for k, v in temp.items()}
+
+```
+
+如果想在定义子类时固定好,也可以定义`_config_file_parser_map:Dict[str,Callable[[Path], Dict[str, Any]]]`
+
+```python
+def test_other_config2_parser( p: Path) -> Dict[str, Any]:
+    with open(p) as f:
+        temp = json.load(f)
+    return {k.lower(): v for k, v in temp.items()}
+class Test_AC(EntryPoint):
+    load_all_config_file = True
+    default_config_file_paths = [
+        "./test_config.json",
+        "./test_config1.json",
+        "./test_other_config2.json"
+    ]
+    _config_file_parser_map = {
+        "test_other_config2.json": test_other_config2_parser
+    }
+
+root = Test_AC()
+
 ```
 
 #### 从环境变量中读取配置参数
@@ -433,6 +478,29 @@ def main(a,b):
     print(a)
     print(b)
 
+```
+
+另一种指定入口函数的方法是重写子类的`do_main(self)->None`方法
+
+```python
+class Test_A(EntryPoint):
+    argparse_noflag = "a"
+    argparse_check_required=True
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "number"
+            },
+            "b": {
+                "type": "number"
+            }
+        },
+        "required": ["a","b"]
+    }
+    def do_main(self)->None:
+        print(self.config)
 ```
 
 #### 直接从节点对象中获取配置
