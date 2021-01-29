@@ -1,6 +1,8 @@
 import os
+import json
 import unittest
 from pathlib import Path
+from typing import Dict, Any
 import jsonschema.exceptions
 
 from schema_entry.entrypoint import EntryPoint
@@ -52,7 +54,7 @@ class CMDTest(unittest.TestCase):
         root = Test_A()
 
         @root.as_main
-        def _(a_a: float) -> None:
+        def _(**kwargs: Any) -> None:
             pass
 
         root([])
@@ -72,11 +74,11 @@ class CMDTest(unittest.TestCase):
                 },
                 "required": ["a_a"]
             }
-            def do_main(self):
-                assert self.config["a_a"]==33.3
+
+            def do_main(self) -> None:
+                assert self.config["a_a"] == 33.3
         root = Test_A()
         root([])
-
 
     def test_default_subcmd_usage(self) -> None:
         class A(EntryPoint):
@@ -255,6 +257,59 @@ class LoadConfigTest(unittest.TestCase):
 
         @root.as_main
         def _(a: int, b: int, c: int, d: int) -> None:
+            assert a == 1
+            assert b == 2
+            assert c == 13
+            assert d == 43
+
+        root([])
+
+    def test_load_configfile_with_custom_parser(self) -> None:
+        class Test_AC(EntryPoint):
+            load_all_config_file = True
+            default_config_file_paths = [
+                "./test_config.json",
+                "./test_config1.json",
+                "./test_other_config2.json"
+            ]
+        root = Test_AC()
+
+        @root.regist_config_file_parser("test_other_config2.json")
+        def _1(p: Path) -> Dict[str, Any]:
+            with open(p) as f:
+                temp = json.load(f)
+            return {k.lower(): v for k, v in temp.items()}
+
+        @root.as_main
+        def _2(a: int, b: int, c: int, d: int) -> None:
+            assert a == 1
+            assert b == 2
+            assert c == 13
+            assert d == 43
+
+        root([])
+
+    def test_load_configfile_with_custom_parser_in_class(self) -> None:
+        def test_other_config2_parser( p: Path) -> Dict[str, Any]:
+            with open(p) as f:
+                temp = json.load(f)
+            return {k.lower(): v for k, v in temp.items()}
+        class Test_AC(EntryPoint):
+            load_all_config_file = True
+            default_config_file_paths = [
+                "./test_config.json",
+                "./test_config1.json",
+                "./test_other_config2.json"
+            ]
+            _config_file_parser_map = {
+                "test_other_config2.json": test_other_config2_parser
+            }
+
+
+        root = Test_AC()
+
+        @root.as_main
+        def _2(a: int, b: int, c: int, d: int) -> None:
             assert a == 1
             assert b == 2
             assert c == 13
