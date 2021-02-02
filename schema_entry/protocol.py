@@ -30,6 +30,13 @@ SUPPORT_SCHEMA = {
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -70,6 +77,13 @@ SUPPORT_SCHEMA = {
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -110,6 +124,13 @@ SUPPORT_SCHEMA = {
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -150,6 +171,13 @@ SUPPORT_SCHEMA = {
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -184,6 +212,13 @@ SUPPORT_SCHEMA = {
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         }

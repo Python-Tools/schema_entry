@@ -290,10 +290,11 @@ class LoadConfigTest(unittest.TestCase):
         root([])
 
     def test_load_configfile_with_custom_parser_in_class(self) -> None:
-        def test_other_config2_parser( p: Path) -> Dict[str, Any]:
+        def test_other_config2_parser(p: Path) -> Dict[str, Any]:
             with open(p) as f:
                 temp = json.load(f)
             return {k.lower(): v for k, v in temp.items()}
+
         class Test_AC(EntryPoint):
             load_all_config_file = True
             default_config_file_paths = [
@@ -304,7 +305,6 @@ class LoadConfigTest(unittest.TestCase):
             _config_file_parser_map = {
                 "test_other_config2.json": test_other_config2_parser
             }
-
 
         root = Test_AC()
 
@@ -376,6 +376,30 @@ class LoadConfigTest(unittest.TestCase):
             pass
 
         root(["--a-a=321.5"])
+        self.assertDictEqual(root.config, {
+            "a_a": 321.5
+        })
+
+    def test_load_short_cmd_config(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number",
+                        "title": "a"
+                    }
+                },
+                "required": ["a_a"]
+            }
+        root = Test_A()
+
+        @root.as_main
+        def _(a_a: float) -> None:
+            pass
+
+        root(["-a", "321.5"])
         self.assertDictEqual(root.config, {
             "a_a": 321.5
         })

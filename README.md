@@ -114,13 +114,13 @@ class Test_A(EntryPoint):
         "properties": {
             "type": "object",
             "minProperties": 1,
-            "additionalProperties": false,
+            "additionalProperties": False,
             "patternProperties": {
                 "^\\w+$": {
                     "oneOf": [
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": False,
                             "required": ["type"],
                             "properties": {
                                 "type": {
@@ -135,6 +135,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -175,6 +182,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -215,6 +229,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -255,6 +276,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -276,19 +304,26 @@ class Test_A(EntryPoint):
                                 "items": {
                                     "type": "object",
                                     "required": ["type"],
-                                    "additionalProperties":false,
+                                    "additionalProperties": false,
                                     "properties": {
                                         "type": {
                                             "type": "string",
                                             "enum": ["string", "number", "integer"]
                                         },
                                         "enum":{
-                                          "type": "array"
+                                            "type": "array"
                                         }
                                     }
                                 },
-                                "description":{
+                                "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         }
@@ -319,6 +354,7 @@ class Test_A(EntryPoint):
 2. 最外层`properties`中的字段名必须是由`数字`,`字母`和`_`组成,
 3. 字段类型只能是`string`,`boolean`,`number`,`integer`,`array`之一
 4. 字段类型如果为`array`则内部必须要有`items`且`items`中必须有`type`字段,且该`type`字段的值必须为`string`,`number`,`integer`之一
+
 
 如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
 
@@ -438,6 +474,7 @@ class Test_A(EntryPoint):
 #### 从命令行参数中获取配置参数
 
 当我们定义好`schema`后所有schema中定义好的参数都可以以`--xxxx`的形式从命令行中读取,需要注意schema中定义的字段中`_`会被修改为`-`.
+如果定义的字段模式中含有`title`字段,则使用title字段作为命令行缩写即`-x`的形式
 
 这个命令行读取是使用的标准库`argparse`,构造出的解析器中`useage`,`epilog`和`description`会由类中定义的`usage`,`epilog`和docstring决定;`argv`则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).
 
@@ -461,6 +498,8 @@ class Test_A(EntryPoint):
         "required": ["a","b"]
     }
 ```
+
+命令行中默认使用`-c`/`--config`来指定读取配置文件,它的读取行为受上面介绍的从自定义配置文件中读取配置的设置影响.
 
 #### 配置的读取顺序
 

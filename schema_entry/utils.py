@@ -88,7 +88,11 @@ def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser
     if noflag:
         parser.add_argument(f"{key}", **kwargs)
     else:
-        parser.add_argument(f"--{key}", **kwargs)
+        if schema.get("title"):
+            short = schema["title"][0]
+            parser.add_argument(f"-{short}", f"--{key}", **kwargs)
+        else:
+            parser.add_argument(f"--{key}", **kwargs)
     return parser
 
 
@@ -117,7 +121,11 @@ def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argpars
         kwargs.update({
             "help": _description
         })
-    parser.add_argument(f"--{key}", **kwargs)
+    if schema.get("title"):
+        short = schema["title"][0]
+        parser.add_argument(f"-{short}", f"--{key}", **kwargs)
+    else:
+        parser.add_argument(f"--{key}", **kwargs)
     return parser
 
 
@@ -169,7 +177,11 @@ def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.
         kwargs.update({
             "action": "append"
         })
-        parser.add_argument(f"--{key}", **kwargs)
+        if schema.get("title"):
+            short = schema["title"][0]
+            parser.add_argument(f"-{short}", f"--{key}", **kwargs)
+        else:
+            parser.add_argument(f"--{key}", **kwargs)
     return parser
 
 
