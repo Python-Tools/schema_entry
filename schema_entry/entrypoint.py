@@ -285,7 +285,6 @@ class EntryPoint(EntryPointABC):
                 if p.is_file():
                     parfunc = self._config_file_parser_map.get(p.name)
                     if parfunc:
-                        print("&&&&&&@@@")
                         result.update(parfunc(p))
                     else:
                         if p.suffix == ".json":
