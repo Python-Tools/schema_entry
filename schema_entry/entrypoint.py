@@ -225,28 +225,32 @@ class EntryPoint(EntryPointABC):
         else:
             return {}
 
-    def parse_json_configfile_args(self, p: Path) -> Dict[str, Any]:
-        with open(p, "r", encoding="utf-8") as f:
-            result = json.load(f)
+    def file_config_filter(self, file_param: Dict[str, Any]) -> Dict[str, Any]:
+        """根据条件筛选从文件中获得的参数.
+
+        Args:
+            file_param (Dict[str, Any]): 文件中获得的全量参数
+
+        Returns:
+            Dict[str, Any]: 筛选过后的参数
+        """
         if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
             needs = list(self.schema.get("properties").keys())
             res = {}
             for key in needs:
-                if result.get(key) is not None:
-                    res[key] = result.get(key)
+                if file_param.get(key) is not None:
+                    res[key] = file_param.get(key)
             return res
+        return file_param
+
+    def parse_json_configfile_args(self, p: Path) -> Dict[str, Any]:
+        with open(p, "r", encoding="utf-8") as f:
+            result = json.load(f)
         return result
 
     def parse_yaml_configfile_args(self, p: Path) -> Dict[str, Any]:
         with open(p, "r", encoding="utf-8") as f:
             result = yaml_load(f)
-        if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
-            needs = list(self.schema.get("properties").keys())
-            res = {}
-            for key in needs:
-                if result.get(key) is not None:
-                    res[key] = result.get(key)
-            return res
         return result
 
     def regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]:
@@ -267,12 +271,11 @@ class EntryPoint(EntryPointABC):
                 if p.is_file():
                     parfunc = self._config_file_parser_map.get(p.name)
                     if parfunc:
-                        print("&&&&&&")
-                        return parfunc(p)
+                        return self.file_config_filter(parfunc(p))
                     if p.suffix == ".json":
-                        return self.parse_json_configfile_args(p)
+                        return self.file_config_filter(self.parse_json_configfile_args(p))
                     elif p.suffix == ".yml":
-                        return self.parse_yaml_configfile_args(p)
+                        return self.file_config_filter(self.parse_yaml_configfile_args(p))
                     else:
                         warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
             else:
@@ -285,12 +288,12 @@ class EntryPoint(EntryPointABC):
                 if p.is_file():
                     parfunc = self._config_file_parser_map.get(p.name)
                     if parfunc:
-                        result.update(parfunc(p))
+                        result.update(self.file_config_filter(parfunc(p)))
                     else:
                         if p.suffix == ".json":
-                            result.update(self.parse_json_configfile_args(p))
+                            result.update(self.file_config_filter(self.parse_json_configfile_args(p)))
                         elif p.suffix == ".yml":
-                            result.update(self.parse_yaml_configfile_args(p))
+                            result.update(self.file_config_filter(self.parse_yaml_configfile_args(p)))
                         else:
                             warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
             return result
