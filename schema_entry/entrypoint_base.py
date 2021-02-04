@@ -2,7 +2,8 @@
 import abc
 import argparse
 from pathlib import Path
-from typing import Callable, Sequence, Dict, Any, Optional, List, Union, Tuple
+from typing import Callable, Sequence, Dict, Any, Optional, Tuple
+from .utils import SchemaType
 
 
 class EntryPointABC(abc.ABC):
@@ -28,7 +29,7 @@ class EntryPointABC(abc.ABC):
     _name: str
     parent: Optional["EntryPointABC"]
 
-    schema: Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
+    schema: Optional[SchemaType]  # Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
     verify_schema: bool
 
     default_config_file_paths: Sequence[str]
@@ -71,7 +72,7 @@ class EntryPointABC(abc.ABC):
 
         """
     @abc.abstractmethod
-    def regist_sub(self, subcmdclz: type) -> "EntryPointABC":
+    def regist_sub(self, subcmdclz: type, **kwargs: Any) -> "EntryPointABC":
         '''注册子命令.
 
         Args:

@@ -23,7 +23,7 @@ from jsonschema import validate
 from yaml import load as yaml_load
 
 from .protocol import SUPPORT_SCHEMA
-from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
+from .utils import SchemaType, get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
 from .entrypoint_base import EntryPointABC
 
 
@@ -55,7 +55,77 @@ class EntryPoint(EntryPointABC):
                 raise e
                 # sys.exit(1)
 
-    def __init__(self) -> None:
+    def __init__(self, *,
+                 description: Optional[str] = None,
+                 epilog: Optional[str] = None,
+                 usage: Optional[str] = None,
+                 name: Optional[str] = None,
+                 schema: Optional[SchemaType] = None,
+                 verify_schema: Optional[bool] = None,
+                 default_config_file_paths: Optional[List[str]] = None,
+                 config_file_only_get_need: Optional[bool] = None,
+                 load_all_config_file: Optional[bool] = None,
+                 env_prefix: Optional[str] = None,
+                 parse_env: Optional[bool] = None,
+                 argparse_check_required: Optional[bool] = None,
+                 argparse_noflag: Optional[str] = None,
+                 config_file_parser_map: Optional[Dict[str, Callable[[Path], Dict[str, Any]]]] = None,
+                 main: Optional[Callable[..., None]] = None
+                 ) -> None:
+        """初始化时定义配置.
+
+        使用这一特性我们就可以不用继承也可以定义节点了.这一特性比较适合用于那些非叶子节点.
+
+        Args:
+            description (Optional[str], optional): 节点命令行的描述信息. Defaults to None.
+            epilog (Optional[str], optional): 节点命令行的epilog信息. Defaults to None.
+            usage (Optional[str], optional): 节点命令行的usage信息. Defaults to None.
+            name (Optional[str], optional): 节点的name属性. Defaults to None.
+            schema (Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]], optional): 节点的校验json schema. Defaults to None.
+            verify_schema (Optional[bool], optional): 配置是否校验schema. Defaults to None.
+            default_config_file_paths (Optional[List[str]], optional): 默认配置文件路径列表. Defaults to None.
+            config_file_only_get_need (Optional[bool], optional): 设置是否在加载配置文件时只获取schema中定义的内容. Defaults to None.
+            load_all_config_file (Optional[bool], optional): 是否尝试加载全部指定的配置文件路径下的配置文件. Defaults to None.
+            env_prefix (Optional[str], optional): 设置环境变量的前缀. Defaults to None.
+            parse_env (Optional[bool], optional): 设置是否加载环境变量. Defaults to None.
+            argparse_check_required (Optional[bool], optional): 设置是否构造叶子节点命令行时指定schema中定义为必须的参数项为必填项. Defaults to None.
+            argparse_noflag (Optional[str], optional): 指定命令行中noflag的参数. Defaults to None.
+            config_file_parser_map (Optional[Dict[str, Callable[[Path], Dict[str, Any]]]], optional): 设置自定义配置文件名的解析映射. Defaults to None.
+            main (Optional[Callable[..., None]], optional): 设置作为入口的执行函数. Defaults to None.
+        """
+        if description is not None:
+            self.__doc__ = description
+        if epilog is not None:
+            self.epilog = epilog
+        if usage is not None:
+            self.usage = usage
+        if name is not None:
+            self._name = name
+        if schema is not None:
+            self.schema = schema
+        if verify_schema is not None:
+            self.verify_schema = verify_schema
+        if default_config_file_paths is not None:
+            self.default_config_file_paths = default_config_file_paths
+        if config_file_only_get_need is not None:
+            self.config_file_only_get_need = config_file_only_get_need
+        if load_all_config_file is not None:
+            self.load_all_config_file = load_all_config_file
+        if env_prefix is not None:
+            self.env_prefix = env_prefix
+        if parse_env is not None:
+            self.parse_env = parse_env
+        if argparse_check_required is not None:
+            self.argparse_check_required = argparse_check_required
+        if argparse_noflag is not None:
+            self.argparse_noflag = argparse_noflag
+        if config_file_parser_map is not None:
+            self._config_file_parser_map = config_file_parser_map
+        if config_file_parser_map is not None:
+            self._config_file_parser_map = config_file_parser_map
+        if main is not None:
+            self._main = main
+
         self._check_schema()
         self._subcmds = {}
         self._main = None
@@ -79,8 +149,8 @@ class EntryPoint(EntryPointABC):
         subcmd.parent = self
         self._subcmds[subcmd.name] = subcmd
 
-    def regist_sub(self, subcmdclz: type) -> EntryPointABC:
-        instance = subcmdclz()
+    def regist_sub(self, subcmdclz: type, **kwargs: Any) -> EntryPointABC:
+        instance = subcmdclz(**kwargs)
         self.regist_subcmd(instance)
         return instance
 
@@ -139,7 +209,7 @@ class EntryPoint(EntryPointABC):
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            properties: Dict[str, Any] = self.schema.get("properties", {})
+            properties: Dict[str, Dict[str, Any]] = self.schema.get("properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
                 required = False
@@ -235,7 +305,7 @@ class EntryPoint(EntryPointABC):
             Dict[str, Any]: 筛选过后的参数
         """
         if self.config_file_only_get_need and self.schema is not None and self.schema.get("properties") is not None:
-            needs = list(self.schema.get("properties").keys())
+            needs = list(self.schema["properties"].keys())
             res = {}
             for key in needs:
                 if file_param.get(key) is not None:

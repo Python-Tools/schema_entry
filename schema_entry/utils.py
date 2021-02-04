@@ -5,7 +5,14 @@
 import warnings
 import argparse
 from typing import List, Dict, Any, Optional
+from mypy_extensions import TypedDict
 from .entrypoint_base import EntryPointABC
+
+
+class SchemaType(TypedDict):
+    required: List[str]
+    type: str
+    properties: Dict[str, Dict[str, Any]]
 
 
 def _get_parent_tree(c: EntryPointABC, result: List[str]) -> None:
