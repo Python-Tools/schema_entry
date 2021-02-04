@@ -2,8 +2,14 @@
 import abc
 import argparse
 from pathlib import Path
-from typing import Callable, Sequence, Dict, Any, Optional, Tuple
-from .utils import SchemaType
+from typing import Callable, Sequence, Dict, Any, Optional, Tuple, List
+from mypy_extensions import TypedDict
+
+
+class SchemaType(TypedDict):
+    required: List[str]
+    type: str
+    properties: Dict[str, Dict[str, Any]]
 
 
 class EntryPointABC(abc.ABC):

@@ -23,8 +23,8 @@ from jsonschema import validate
 from yaml import load as yaml_load
 
 from .protocol import SUPPORT_SCHEMA
-from .utils import SchemaType, get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
-from .entrypoint_base import EntryPointABC
+from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
+from .entrypoint_base import SchemaType, EntryPointABC
 
 
 class EntryPoint(EntryPointABC):
@@ -125,10 +125,12 @@ class EntryPoint(EntryPointABC):
             self._config_file_parser_map = config_file_parser_map
         if main is not None:
             self._main = main
+        else:
+            self._main = None
 
         self._check_schema()
         self._subcmds = {}
-        self._main = None
+
         self._config = {}
 
     @ property

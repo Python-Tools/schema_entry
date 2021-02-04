@@ -130,7 +130,7 @@ class LoadConfigTest(unittest.TestCase):
                 str(Path.home().joinpath(".test_config.json")),
                 "./test_config.json"
             ],
-            main=lambda a_a: None)
+            main=lambda a: None)
         root([])
         self.assertDictEqual(root.config, {
             "a": 1
@@ -155,7 +155,7 @@ class LoadConfigTest(unittest.TestCase):
                 },
                 "required": ["a"]
             },
-            main=lambda a_a: None
+            main=lambda a: None
         )
         root([])
         self.assertDictEqual(root.config, {
@@ -170,7 +170,7 @@ class LoadConfigTest(unittest.TestCase):
                 str(Path.home().joinpath(".test_config.yml")),
                 "./test_config.yml"
             ],
-            main=lambda a_a: None
+            main=lambda a: None
         )
 
         root([])
