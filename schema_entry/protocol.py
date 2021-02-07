@@ -26,7 +26,7 @@ SUPPORT_SCHEMA = {
                                     "type": "boolean",
                                 },
                                 "const": {
-                                    "type": "string"
+                                    "type": "boolean"
                                 },
                                 "description": {
                                     "type": "string"
