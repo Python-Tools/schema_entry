@@ -5,7 +5,7 @@
 import warnings
 import argparse
 from typing import List, Dict, Any, Optional
-from .entrypoint_base import EntryPointABC
+from .entrypoint_base import EntryPointABC, PropertyType, ItemType
 
 
 def _get_parent_tree(c: EntryPointABC, result: List[str]) -> None:
@@ -31,7 +31,7 @@ def get_parent_tree(c: EntryPointABC) -> List[str]:
     return list(reversed(result_list))
 
 
-def parse_value_string_by_schema(schema: Dict[str, Any], value_str: str) -> Any:
+def parse_value_string_by_schema(schema: Any, value_str: str) -> Any:
     """根据schema的定义解析字符串的值.
 
     Args:
@@ -65,7 +65,7 @@ def parse_value_string_by_schema(schema: Dict[str, Any], value_str: str) -> Any:
         return value_str
 
 
-def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def _argparse_base_handdler(_type: Any, key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                             required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     kwargs: Dict[str, Any] = {}
     kwargs.update({
@@ -96,22 +96,22 @@ def _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser
     return parser
 
 
-def _argparse_number_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def _argparse_number_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                               required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     return _argparse_base_handdler(float, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_string_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def _argparse_string_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                               required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     return _argparse_base_handdler(str, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def _argparse_integer_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                                required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     return _argparse_base_handdler(int, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+def _argparse_boolean_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     kwargs: Dict[str, Any] = {}
     kwargs.update({
         "action": "store_true"
@@ -129,9 +129,9 @@ def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argpars
     return parser
 
 
-def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def _argparse_array_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                              noflag: bool = False) -> argparse.ArgumentParser:
-    sub_schema: Optional[Dict[str, Any]] = schema.get("items")
+    sub_schema: Optional[ItemType] = schema.get("items")
     if sub_schema is None:
         print("array params must have sub schema items")
         return parser
@@ -185,13 +185,13 @@ def _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.
     return parser
 
 
-def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
+def parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *,
                         required: bool = False, noflag: bool = False) -> argparse.ArgumentParser:
     """根据字段的模式解析命令行行为
 
     Args:
         key (str): 字段名
-        schema (Dict[str, Any]): 字段的模式
+        schema (PropertyType): 字段的模式
         parser (argparse.ArgumentParser): 添加命令行解析的解析器
 
     Returns:

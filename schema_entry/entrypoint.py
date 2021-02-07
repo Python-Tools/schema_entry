@@ -258,7 +258,7 @@ class EntryPoint(EntryPointABC):
                                 if key not in self.schema["required"]:
                                     value = None
                 except Exception as e:
-                    pass
+                    warnings.warn(str(e))
                 finally:
                     if value is not None:
                         cmd_res.update({
@@ -280,7 +280,7 @@ class EntryPoint(EntryPointABC):
         parser.add_argument("-c", "--config", type=str, help='指定配置文件位置')
         return self._parse_commandline_args_by_schema(parser, argv)
 
-    def _parse_env_args(self, key: str, info: Dict[str, Any]) -> Any:
+    def _parse_env_args(self, key: str, info: PropertyType) -> Any:
         if self.env_prefix:
             env_prefix = self.env_prefix.upper()
         else:
