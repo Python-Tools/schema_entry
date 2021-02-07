@@ -111,9 +111,7 @@ def _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argpars
     return _argparse_base_handdler(int, key, schema, parser, required=required, noflag=noflag)
 
 
-def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
-                               required: bool = False) -> argparse.ArgumentParser:
-    #if required:
+def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     kwargs: Dict[str, Any] = {}
     kwargs.update({
         "action": "store_true"
@@ -211,7 +209,7 @@ def parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.Argum
     elif _type == "integer":
         return _argparse_integer_handdler(key, schema, parser, required=required, noflag=noflag)
     elif _type == "boolean":
-        return _argparse_boolean_handdler(key, schema, parser, required=required)
+        return _argparse_boolean_handdler(key, schema, parser)
     elif _type == "array":
         return _argparse_array_handdler(key, schema, parser, noflag=noflag)
     else:
