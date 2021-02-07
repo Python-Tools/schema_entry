@@ -24,7 +24,7 @@ from yaml import load as yaml_load
 
 from .protocol import SUPPORT_SCHEMA
 from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
-from .entrypoint_base import SchemaType, EntryPointABC
+from .entrypoint_base import SchemaType, PropertyType, EntryPointABC
 
 
 class EntryPoint(EntryPointABC):
@@ -211,7 +211,7 @@ class EntryPoint(EntryPointABC):
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            properties: Dict[str, Dict[str, Any]] = self.schema.get("properties", {})
+            properties: Dict[str, PropertyType] = self.schema.get("properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
                 required = False
