@@ -354,9 +354,35 @@ class LoadConfigTest(unittest.TestCase):
             },
             main=lambda a_a, b_b: None
         )
-        root(["--a-a"])
+        root([])
         self.assertDictEqual(root.config, {
             "a_a": True,
+            "b_b": "1234"
+        })
+
+    def test_load_not_required_boolean_cmd_config3(self) -> None:
+        root = EntryPoint(
+            name="test_a",
+            schema={
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "boolean",
+                        "default": True
+                    },
+                    "b_b": {
+                        "type": "string",
+                        "default": "1234"
+                    }
+                },
+                "required": ["a_a"]
+            },
+            main=lambda a_a, b_b: None
+        )
+        root([])
+        self.assertDictEqual(root.config, {
+            "a_a": False,
             "b_b": "1234"
         })
 
