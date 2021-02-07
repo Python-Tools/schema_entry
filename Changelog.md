@@ -3,6 +3,7 @@
 ## bug修复
 
 + 修复了`boolean`型参数必须使用命令行设置为True否则一定被false覆盖的问题
++ 修复了`boolean`型参数的`const`定义需要取值类型为string的bug
 
 # 0.1.2
 
