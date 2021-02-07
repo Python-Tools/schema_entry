@@ -113,21 +113,21 @@ def _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argpars
 
 def _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *,
                                required: bool = False) -> argparse.ArgumentParser:
-    if required:
-        kwargs: Dict[str, Any] = {}
+    #if required:
+    kwargs: Dict[str, Any] = {}
+    kwargs.update({
+        "action": "store_true"
+    })
+    _description = schema.get("description")
+    if _description:
         kwargs.update({
-            "action": "store_true"
+            "help": _description
         })
-        _description = schema.get("description")
-        if _description:
-            kwargs.update({
-                "help": _description
-            })
-        if schema.get("title"):
-            short = schema["title"][0]
-            parser.add_argument(f"-{short}", f"--{key}", **kwargs)
-        else:
-            parser.add_argument(f"--{key}", **kwargs)
+    if schema.get("title"):
+        short = schema["title"][0]
+        parser.add_argument(f"-{short}", f"--{key}", **kwargs)
+    else:
+        parser.add_argument(f"--{key}", **kwargs)
     return parser
 
 

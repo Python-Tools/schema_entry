@@ -2,14 +2,28 @@
 import abc
 import argparse
 from pathlib import Path
-from typing import Callable, Sequence, Dict, Any, Optional, Tuple, List
+from typing import Callable, Sequence, Dict, Any, Optional, Tuple, List, Union
 from mypy_extensions import TypedDict
+
+
+class ItemType(TypedDict):
+    type: str
+    enum: List[Union[int, float, str]]
+
+
+class PropertyType(TypedDict):
+    type: str
+    title: str
+    description: str
+    enum: List[Union[int, float, str]]
+    default: Union[int, float, str, bool]
+    items: ItemType
 
 
 class SchemaType(TypedDict):
     required: List[str]
     type: str
-    properties: Dict[str, Dict[str, Any]]
+    properties: Dict[str, PropertyType]
 
 
 class EntryPointABC(abc.ABC):
