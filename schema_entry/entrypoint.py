@@ -252,11 +252,12 @@ class EntryPoint(EntryPointABC):
                 try:
                     if self.schema is not None and self.schema.get("properties") is not None:
                         if self.schema["properties"].get(key) is not None and self.schema["properties"][key]["type"] == "boolean":
-                            if self.schema.get("required") is None:
-                                value = None
-                            else:
-                                if key not in self.schema["required"]:
+                            if value is False:
+                                if self.schema.get("required") is None:
                                     value = None
+                                else:
+                                    if key not in self.schema["required"]:
+                                        value = None
                 except Exception as e:
                     warnings.warn(str(e))
                 finally:
