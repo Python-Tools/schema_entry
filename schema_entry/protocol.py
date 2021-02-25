@@ -206,7 +206,10 @@ SUPPORT_SCHEMA = {
                                             "enum": ["string", "number", "integer"]
                                         },
                                         "enum":{
-                                            "type": "array"
+                                            "type": "array",
+                                            "items": {
+                                                "type": ["string", "number", "integer"]
+                                            }
                                         }
                                     }
                                 },
