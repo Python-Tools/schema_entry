@@ -28,7 +28,7 @@ Classes
 
 
 
-.. py:class:: EntryPoint
+.. py:class:: EntryPoint(*, description: Optional[str] = None, epilog: Optional[str] = None, usage: Optional[str] = None, name: Optional[str] = None, schema: Optional[SchemaType] = None, verify_schema: Optional[bool] = None, default_config_file_paths: Optional[List[str]] = None, config_file_only_get_need: Optional[bool] = None, load_all_config_file: Optional[bool] = None, env_prefix: Optional[str] = None, parse_env: Optional[bool] = None, argparse_check_required: Optional[bool] = None, argparse_noflag: Optional[str] = None, config_file_parser_map: Optional[Dict[str, Callable[[Path], Dict[str, Any]]]] = None, main: Optional[Callable[..., None]] = None)
 
    Bases: :class:`schema_entry.entrypoint_base.EntryPointABC`
 
@@ -69,6 +69,18 @@ Classes
       设置默认的配置文件位置.
 
       :type: Sequence[str]
+
+   .. attribute:: config_file_only_get_need
+
+      设置是否只从配置文件中获取schema中定义的配置项
+
+      :type: bool
+
+   .. attribute:: load_all_config_file
+
+      设置的默认配置文件全部加载.
+
+      :type: bool
 
    .. attribute:: env_prefix
 
@@ -134,6 +146,11 @@ Classes
 
       
 
+   .. attribute:: load_all_config_file
+      :annotation: = False
+
+      
+
    .. attribute:: env_prefix
       
 
@@ -150,7 +167,12 @@ Classes
       
 
    .. attribute:: argparse_noflag
+      :annotation: :Optional[str]
+
       
+
+   .. attribute:: _config_file_parser_map
+      :annotation: :Dict[str, Callable[[Path], Dict[str, Any]]]
 
       
 
@@ -187,7 +209,7 @@ Classes
       :type subcmd: EntryPointABC
 
 
-   .. method:: regist_sub(self, subcmdclz: type) -> EntryPointABC
+   .. method:: regist_sub(self, subcmdclz: type, **kwargs: Any) -> EntryPointABC
 
       注册子命令.
 
@@ -244,7 +266,7 @@ Classes
       :rtype: Tuple[Dict[str, Any], Dict[str, Any]]
 
 
-   .. method:: _parse_env_args(self, key: str, info: Dict[str, Any]) -> Any
+   .. method:: _parse_env_args(self, key: str, info: PropertyType) -> Any
 
 
    .. method:: parse_env_args(self) -> Dict[str, Any]
@@ -260,10 +282,32 @@ Classes
       :rtype: Dict[str,Any]
 
 
+   .. method:: file_config_filter(self, file_param: Dict[str, Any]) -> Dict[str, Any]
+
+      根据条件筛选从文件中获得的参数.
+
+      :param file_param: 文件中获得的全量参数
+      :type file_param: Dict[str, Any]
+
+      :returns: 筛选过后的参数
+      :rtype: Dict[str, Any]
+
+
    .. method:: parse_json_configfile_args(self, p: Path) -> Dict[str, Any]
 
 
    .. method:: parse_yaml_configfile_args(self, p: Path) -> Dict[str, Any]
+
+
+   .. method:: regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]
+
+      注册特定配置文件名的解析方式.
+
+      :param file_name: 指定文件名
+      :type file_name: str
+
+      :returns: 注册的解析函数
+      :rtype: Callable[[Callable[[Path], None]], Callable[[Path], None]]
 
 
    .. method:: parse_configfile_args(self) -> Dict[str, Any]
@@ -308,9 +352,9 @@ Classes
 
       在加载完配置后校验是否满足schema的要求.
 
-      :param parser: [description]
+      :param parser: 命令行参数解析器
       :type parser: argparse.ArgumentParser
-      :param argv: [description]
+      :param argv: 命令行参数序列
       :type argv: Sequence[str]
 
 

@@ -46,7 +46,7 @@ Functions
    :rtype: List[str]
 
 
-.. function:: parse_value_string_by_schema(schema: Dict[str, Any], value_str: str) -> Any
+.. function:: parse_value_string_by_schema(schema: Any, value_str: str) -> Any
 
    根据schema的定义解析字符串的值.
 
@@ -59,32 +59,32 @@ Functions
    :rtype: Any
 
 
-.. function:: _argparse_base_handdler(_type: Any, key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: _argparse_base_handdler(_type: Any, key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
 
 
-.. function:: _argparse_number_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: _argparse_number_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
 
 
-.. function:: _argparse_string_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: _argparse_string_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
 
 
-.. function:: _argparse_integer_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: _argparse_integer_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
 
 
-.. function:: _argparse_boolean_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser) -> argparse.ArgumentParser
+.. function:: _argparse_boolean_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser) -> argparse.ArgumentParser
 
 
-.. function:: _argparse_array_handdler(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: _argparse_array_handdler(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, noflag: bool = False) -> argparse.ArgumentParser
 
 
-.. function:: parse_schema_as_cmd(key: str, schema: Dict[str, Any], parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
+.. function:: parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.ArgumentParser, *, required: bool = False, noflag: bool = False) -> argparse.ArgumentParser
 
    根据字段的模式解析命令行行为
 
    :param key: 字段名
    :type key: str
    :param schema: 字段的模式
-   :type schema: Dict[str, Any]
+   :type schema: PropertyType
    :param parser: 添加命令行解析的解析器
    :type parser: argparse.ArgumentParser
 

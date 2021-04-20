@@ -210,6 +210,6 @@ class EntryPointABC(abc.ABC):
         在加载完配置后校验是否满足schema的要求.
 
         Args:
-            parser (argparse.ArgumentParser): [description]
-            argv (Sequence[str]): [description]
+            parser (argparse.ArgumentParser): 命令行参数解析器
+            argv (Sequence[str]): 命令行参数序列
         """

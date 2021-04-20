@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>schema_entry.entrypoint_base &mdash; schema_entry 0.0.7 文档</title>
+  <title>schema_entry.entrypoint_base &mdash; schema_entry  文档</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.7
+                0.1.4
               </div>
             
           
@@ -93,14 +93,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../README.html#id2">特性</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../README.html#id3">安装</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../README.html#id4">使用介绍</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">0.0.7</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id3">0.0.6</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id5">0.0.5</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id7">0.0.4</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id10">0.0.3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id12">0.0.2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id14">0.0.1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id16">0.0.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">0.1.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id3">0.1.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id4">0.1.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id6">0.1.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id8">0.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id10">0.0.9</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id12">0.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id14">0.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id16">0.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id19">0.0.5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id21">0.0.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id24">0.0.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id26">0.0.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id28">0.0.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html#id30">0.0.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
 </ul>
 
@@ -182,11 +189,138 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EntryPointABC</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.entrypoint_base.ItemType" title="schema_entry.entrypoint_base.ItemType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ItemType</span></code></a></p></td>
+<td><p>dict() -&gt; new empty dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#schema_entry.entrypoint_base.PropertyType" title="schema_entry.entrypoint_base.PropertyType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PropertyType</span></code></a></p></td>
+<td><p>dict() -&gt; new empty dictionary</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#schema_entry.entrypoint_base.SchemaType" title="schema_entry.entrypoint_base.SchemaType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SchemaType</span></code></a></p></td>
+<td><p>dict() -&gt; new empty dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EntryPointABC</span></code></a></p></td>
 <td><p>程序入口类.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py class">
+<dt id="schema_entry.entrypoint_base.ItemType">
+<em class="property">class </em><code class="sig-prename descclassname">schema_entry.entrypoint_base.</code><code class="sig-name descname">ItemType</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#ItemType"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.ItemType" title="永久链接至目标">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mypy_extensions.TypedDict</span></code></p>
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object’s</p>
+<blockquote>
+<div><p>(key, value) pairs</p>
+</div></blockquote>
+<dl>
+<dt>dict(iterable) -&gt; new dictionary initialized as if via:</dt><dd><p>d = {}
+for k, v in iterable:</p>
+<blockquote>
+<div><p>d[k] = v</p>
+</div></blockquote>
+</dd>
+<dt>dict(<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs) -&gt; new dictionary initialized with the name=value pairs</dt><dd><p>in the keyword argument list.  For example:  dict(one=1, two=2)</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.ItemType.type">
+<code class="sig-name descname">type</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#ItemType.type"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.ItemType.type" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.ItemType.enum">
+<code class="sig-name descname">enum</code><em class="property"> :List[Union[int, float, str]]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#ItemType.enum"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.ItemType.enum" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="schema_entry.entrypoint_base.PropertyType">
+<em class="property">class </em><code class="sig-prename descclassname">schema_entry.entrypoint_base.</code><code class="sig-name descname">PropertyType</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType" title="永久链接至目标">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mypy_extensions.TypedDict</span></code></p>
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object’s</p>
+<blockquote>
+<div><p>(key, value) pairs</p>
+</div></blockquote>
+<dl>
+<dt>dict(iterable) -&gt; new dictionary initialized as if via:</dt><dd><p>d = {}
+for k, v in iterable:</p>
+<blockquote>
+<div><p>d[k] = v</p>
+</div></blockquote>
+</dd>
+<dt>dict(<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs) -&gt; new dictionary initialized with the name=value pairs</dt><dd><p>in the keyword argument list.  For example:  dict(one=1, two=2)</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.type">
+<code class="sig-name descname">type</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.type"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.type" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.title">
+<code class="sig-name descname">title</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.title"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.title" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.description">
+<code class="sig-name descname">description</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.description"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.description" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.enum">
+<code class="sig-name descname">enum</code><em class="property"> :List[Union[int, float, str]]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.enum"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.enum" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.default">
+<code class="sig-name descname">default</code><em class="property"> :Union[int, float, str, bool]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.default"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.default" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.PropertyType.items">
+<code class="sig-name descname">items</code><em class="property"> :ItemType</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#PropertyType.items"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.PropertyType.items" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="schema_entry.entrypoint_base.SchemaType">
+<em class="property">class </em><code class="sig-prename descclassname">schema_entry.entrypoint_base.</code><code class="sig-name descname">SchemaType</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#SchemaType"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.SchemaType" title="永久链接至目标">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mypy_extensions.TypedDict</span></code></p>
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object’s</p>
+<blockquote>
+<div><p>(key, value) pairs</p>
+</div></blockquote>
+<dl>
+<dt>dict(iterable) -&gt; new dictionary initialized as if via:</dt><dd><p>d = {}
+for k, v in iterable:</p>
+<blockquote>
+<div><p>d[k] = v</p>
+</div></blockquote>
+</dd>
+<dt>dict(<a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs) -&gt; new dictionary initialized with the name=value pairs</dt><dd><p>in the keyword argument list.  For example:  dict(one=1, two=2)</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.SchemaType.required">
+<code class="sig-name descname">required</code><em class="property"> :List[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#SchemaType.required"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.SchemaType.required" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.SchemaType.type">
+<code class="sig-name descname">type</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#SchemaType.type"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.SchemaType.type" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.SchemaType.properties">
+<code class="sig-name descname">properties</code><em class="property"> :Dict[str, PropertyType]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#SchemaType.properties"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.SchemaType.properties" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt id="schema_entry.entrypoint_base.EntryPointABC">
 <em class="property">class </em><code class="sig-prename descclassname">schema_entry.entrypoint_base.</code><code class="sig-name descname">EntryPointABC</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC" title="永久链接至目标">¶</a></dt>
@@ -259,6 +393,28 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.EntryPointABC.config_file_only_get_need">
+<code class="sig-name descname">config_file_only_get_need</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.config_file_only_get_need"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.config_file_only_get_need" title="永久链接至目标">¶</a></dt>
+<dd><p>设置是否只从配置文件中获取schema中定义的配置项</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.EntryPointABC.load_all_config_file">
+<code class="sig-name descname">load_all_config_file</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.load_all_config_file"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.load_all_config_file" title="永久链接至目标">¶</a></dt>
+<dd><p>设置的默认配置文件全部加载.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="schema_entry.entrypoint_base.EntryPointABC.env_prefix">
 <code class="sig-name descname">env_prefix</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.env_prefix"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.env_prefix" title="永久链接至目标">¶</a></dt>
 <dd><p>设置环境变量的前缀</p>
@@ -294,7 +450,7 @@
 <dl class="py attribute">
 <dt id="schema_entry.entrypoint_base.EntryPointABC.argparse_noflag">
 <code class="sig-name descname">argparse_noflag</code><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.argparse_noflag"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.argparse_noflag" title="永久链接至目标">¶</a></dt>
-<dd><p>命令行参数解析哪个字段为无`–<a href="#id1"><span class="problematic" id="id2">`</span></a>的参数</p>
+<dd><p>命令行参数解析哪个字段为无`–<a href="#id7"><span class="problematic" id="id8">`</span></a>的参数</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>Optional[str]</p>
@@ -308,8 +464,8 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="id3">
-<code class="sig-name descname">usage</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.usage"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id3" title="永久链接至目标">¶</a></dt>
+<dt id="id9">
+<code class="sig-name descname">usage</code><em class="property"> :str</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.usage"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id9" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -318,48 +474,53 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="id4">
-<code class="sig-name descname">parent</code><em class="property"> :Optional['EntryPointABC']</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.parent"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id4" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="id5">
-<code class="sig-name descname">schema</code><em class="property"> :Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.schema"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id5" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="id6">
-<code class="sig-name descname">verify_schema</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.verify_schema"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id6" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="id7">
-<code class="sig-name descname">default_config_file_paths</code><em class="property"> :Sequence[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.default_config_file_paths"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id7" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="schema_entry.entrypoint_base.EntryPointABC.config_file_only_get_need">
-<code class="sig-name descname">config_file_only_get_need</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.config_file_only_get_need"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.config_file_only_get_need" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="id8">
-<code class="sig-name descname">env_prefix</code><em class="property"> :Optional[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.env_prefix"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id8" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="id9">
-<code class="sig-name descname">parse_env</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.parse_env"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id9" title="永久链接至目标">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt id="id10">
-<code class="sig-name descname">argparse_check_required</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.argparse_check_required"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id10" title="永久链接至目标">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property"> :Optional['EntryPointABC']</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.parent"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id10" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="id11">
-<code class="sig-name descname">argparse_noflag</code><em class="property"> :Optional[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.argparse_noflag"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id11" title="永久链接至目标">¶</a></dt>
+<code class="sig-name descname">schema</code><em class="property"> :Optional[SchemaType]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.schema"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id11" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id12">
+<code class="sig-name descname">verify_schema</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.verify_schema"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id12" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id13">
+<code class="sig-name descname">default_config_file_paths</code><em class="property"> :Sequence[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.default_config_file_paths"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id13" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id14">
+<code class="sig-name descname">config_file_only_get_need</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.config_file_only_get_need"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id14" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id15">
+<code class="sig-name descname">load_all_config_file</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.load_all_config_file"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id15" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id16">
+<code class="sig-name descname">env_prefix</code><em class="property"> :Optional[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.env_prefix"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id16" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id17">
+<code class="sig-name descname">parse_env</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.parse_env"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id17" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id18">
+<code class="sig-name descname">argparse_check_required</code><em class="property"> :bool</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.argparse_check_required"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id18" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id19">
+<code class="sig-name descname">argparse_noflag</code><em class="property"> :Optional[str]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.argparse_noflag"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#id19" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -370,6 +531,11 @@
 <dl class="py attribute">
 <dt id="schema_entry.entrypoint_base.EntryPointABC._main">
 <code class="sig-name descname">_main</code><em class="property"> :Optional[Callable[..., None]]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC._main"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC._main" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_entry.entrypoint_base.EntryPointABC._config_file_parser_map">
+<code class="sig-name descname">_config_file_parser_map</code><em class="property"> :Dict[str, Callable[[Path], Dict[str, Any]]]</em><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC._config_file_parser_map"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC._config_file_parser_map" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -410,7 +576,7 @@
 
 <dl class="py method">
 <dt id="schema_entry.entrypoint_base.EntryPointABC.regist_sub">
-<em class="property">abstract </em><code class="sig-name descname">regist_sub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">subcmdclz</span><span class="p">:</span> <span class="n">type</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC">EntryPointABC</a><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.regist_sub"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.regist_sub" title="永久链接至目标">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">regist_sub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">subcmdclz</span><span class="p">:</span> <span class="n">type</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC">EntryPointABC</a><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.regist_sub"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.regist_sub" title="永久链接至目标">¶</a></dt>
 <dd><p>注册子命令.</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
@@ -421,6 +587,23 @@
 </dd>
 <dt class="field-odd">返回类型</dt>
 <dd class="field-odd"><p>[<a class="reference internal" href="#schema_entry.entrypoint_base.EntryPointABC" title="schema_entry.entrypoint_base.EntryPointABC">EntryPointABC</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_entry.entrypoint_base.EntryPointABC.regist_config_file_parser">
+<em class="property">abstract </em><code class="sig-name descname">regist_config_file_parser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">file_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Callable<span class="p">[</span><span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Path<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">, </span>Callable<span class="p">[</span><span class="p">[</span>Path<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../_modules/schema_entry/entrypoint_base.html#EntryPointABC.regist_config_file_parser"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#schema_entry.entrypoint_base.EntryPointABC.regist_config_file_parser" title="永久链接至目标">¶</a></dt>
+<dd><p>注册特定配置文件名的解析方式.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – 指定文件名</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>注册的解析函数</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>Callable[[Callable[[Path], None]], Callable[[Path], None]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -544,8 +727,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parser</strong> (<em>argparse.ArgumentParser</em>) – [description]</p></li>
-<li><p><strong>argv</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – [description]</p></li>
+<li><p><strong>parser</strong> (<em>argparse.ArgumentParser</em>) – 命令行参数解析器</p></li>
+<li><p><strong>argv</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – 命令行参数序列</p></li>
 </ul>
 </dd>
 </dl>
