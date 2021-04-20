@@ -24,7 +24,7 @@ copyright = '2021, hsz'
 author = 'hsz'
 
 # The short X.Y version
-version = '0.1.4'
+version = '0.1.5'
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
