@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>简介 &mdash; schema_entry 0.0.7 文档</title>
+  <title>简介 &mdash; schema_entry  文档</title>
   
 
   
@@ -40,7 +40,6 @@
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
-    <link rel="next" title="0.0.7" href="CHANGELOG.html" />
     <link rel="prev" title="Welcome to schema_entry’s documentation!" href="index.html" /> 
 </head>
 
@@ -65,7 +64,7 @@
             
             
               <div class="version">
-                0.0.7
+                0.1.4
               </div>
             
           
@@ -102,30 +101,25 @@
 <li class="toctree-l3"><a class="reference internal" href="#id9">执行节点</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#schema">通过定义<code class="docutils literal notranslate"><span class="pre">schema字段进行参数校验</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id10">从定义的schema中获取默认配置</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id11">从指定配置文件中读取配置</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id12">从环境变量中读取配置参数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id13">从命令行参数中获取配置参数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id14">配置的读取顺序</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id15">注册入口的执行函数</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id16">直接从节点对象中获取配置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">从指定配置文件中读取配置</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#id12">指定特定命名的配置文件的解析方式</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id17">中间节点</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id18">注册子节点</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">从环境变量中读取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">从命令行参数中获取配置参数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">配置的读取顺序</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">注册入口的执行函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">直接从节点对象中获取配置</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">中间节点</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id19">注册子节点</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">0.0.7</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id3">0.0.6</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id5">0.0.5</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id7">0.0.4</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id10">0.0.3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id12">0.0.2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id14">0.0.1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id16">0.0.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
 </ul>
 
@@ -291,210 +285,245 @@
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>的子类会在解析获得参数后校验参数字典是否符合schema中定义的模式.</p>
 <p>当然schema字段也不能乱写,它的规则是json schema的一个子集:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;minProperties&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-            <span class="nt">&quot;patternProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="nt">&quot;^\\w+$&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="nt">&quot;oneOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="p">{</span>
-                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-                            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">}</span>
-                        <span class="p">},</span>
-                        <span class="p">{</span>
-                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-                            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                    <span class="p">}</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">0</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">0</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">}</span>
-                        <span class="p">},</span>
-                        <span class="p">{</span>
-                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-                            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
-                                    <span class="p">}</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;maximum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;exclusiveMaximum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+    &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;properties&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;minProperties&quot;: 1,
+            &quot;additionalProperties&quot;: False,
+            &quot;patternProperties&quot;: {
+                &quot;^\\w+$&quot;: {
+                    &quot;oneOf&quot;: [
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: False,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;boolean&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;boolean&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;$comment&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;title&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;pattern&quot;: &quot;^[a-b]|[d-z]$&quot;
+                                }
+                            }
+                        },
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;string&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;string&quot;
+                                    }
+                                },
+                                &quot;maxLength&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                    &quot;minimum&quot;: 0
+                                },
+                                &quot;minLength&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                    &quot;minimum&quot;: 0
+                                },
+                                &quot;pattern&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;format&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;$comment&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;title&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;pattern&quot;: r&quot;^[a-b]|[d-z]$&quot;
+                                }
+                            }
+                        },
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;number&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;number&quot;
+                                    }
+                                },
+                                &quot;maximum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;exclusiveMaximum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
+                                },
+                                &quot;minimum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
 
-                                <span class="p">},</span>
-                                <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                                },
+                                &quot;exclusiveMinimum&quot;: {
+                                    &quot;type&quot;: &quot;number&quot;,
 
-                                <span class="p">},</span>
-                                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">}</span>
-                        <span class="p">},</span>
-                        <span class="p">{</span>
-                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-                            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
-                                    <span class="p">}</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;maximum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;exclusiveMaximum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;minimum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;$comment&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;title&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;pattern&quot;: &quot;^[a-b]|[d-z]$&quot;
+                                }
+                            }
+                        },
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;integer&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;const&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;
+                                },
+                                &quot;enum&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: &quot;integer&quot;
+                                    }
+                                },
+                                &quot;maximum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;exclusiveMaximum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
+                                },
+                                &quot;minimum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
 
-                                <span class="p">},</span>
-                                <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+                                },
+                                &quot;exclusiveMinimum&quot;: {
+                                    &quot;type&quot;: &quot;integer&quot;,
 
-                                <span class="p">},</span>
-                                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">}</span>
-                        <span class="p">},</span>
-                        <span class="p">{</span>
-                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-                            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">]</span>
-                                    <span class="p">}</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                                    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
-                                    <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span>
-                                    <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-                                            <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">]</span>
-                                        <span class="p">},</span>
-                                        <span class="nt">&quot;enum&quot;</span><span class="p">:{</span>
-                                          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
-                                        <span class="p">}</span>
-                                    <span class="p">}</span>
-                                <span class="p">},</span>
-                                <span class="nt">&quot;description&quot;</span><span class="p">:{</span>
-                                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">}</span>
-                        <span class="p">}</span>
-                    <span class="p">]</span>
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;$comment&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;title&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;pattern&quot;: &quot;^[a-b]|[d-z]$&quot;
+                                }
+                            }
+                        },
+                        {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;additionalProperties&quot;: false,
+                            &quot;required&quot;: [&quot;type&quot;],
+                            &quot;properties&quot;: {
+                                &quot;type&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;const&quot;: &quot;array&quot;
+                                },
+                                &quot;default&quot;: {
+                                    &quot;type&quot;: &quot;array&quot;,
+                                    &quot;items&quot;: {
+                                        &quot;type&quot;: [&quot;string&quot;, &quot;number&quot;, &quot;integer&quot;]
+                                    }
+                                },
+                                &quot;items&quot;: {
+                                    &quot;type&quot;: &quot;object&quot;,
+                                    &quot;required&quot;: [&quot;type&quot;],
+                                    &quot;additionalProperties&quot;: false,
+                                    &quot;properties&quot;: {
+                                        &quot;type&quot;: {
+                                            &quot;type&quot;: &quot;string&quot;,
+                                            &quot;enum&quot;: [&quot;string&quot;, &quot;number&quot;, &quot;integer&quot;]
+                                        },
+                                        &quot;enum&quot;:{
+                                            &quot;type&quot;: &quot;array&quot;
+                                        }
+                                    }
+                                },
+                                &quot;description&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;$comment&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;
+                                },
+                                &quot;title&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;pattern&quot;: &quot;^[a-b]|[d-z]$&quot;
+                                }
+                            }
+                        }
+                    ]
 
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;const&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
+                }
+            }
+        },
+        &quot;type&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;const&quot;: &quot;object&quot;
+        },
+        &quot;required&quot;: {
+            &quot;type&quot;: &quot;array&quot;,
+            &quot;items&quot;: {
+                &quot;type&quot;: &quot;string&quot;
+            }
+        }
 
-    <span class="p">},</span>
-    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">]</span>
-<span class="p">}</span>
+    },
+    &quot;required&quot;: [&quot;properties&quot;, &quot;type&quot;]
+}
 </pre></div>
 </div>
 <p>简而言之就是:</p>
@@ -530,6 +559,7 @@
 <p>我们可以使用字段<code class="docutils literal notranslate"><span class="pre">default_config_file_paths</span></code>指定从固定的几个路径中读取配置文件,配置文件支持<code class="docutils literal notranslate"><span class="pre">json</span></code>和<code class="docutils literal notranslate"><span class="pre">yaml</span></code>两种格式.
 我们也可以通过字段<code class="docutils literal notranslate"><span class="pre">config_file_only_get_need</span></code>定义从配置文件中读取配置的行为(默认为<code class="docutils literal notranslate"><span class="pre">True</span></code>),
 当置为<code class="docutils literal notranslate"><span class="pre">True</span></code>时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.</p>
+<p>也可以通过设置<code class="docutils literal notranslate"><span class="pre">load_all_config_file</span> <span class="pre">=</span> <span class="pre">True</span></code>来按设定顺序读取全部预设的配置文件位置</p>
 <p>默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">schema_entry</span> <span class="kn">import</span> <span class="n">EntryPoint</span>
@@ -539,13 +569,53 @@
     <span class="n">default_config_file_paths</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;/test_config.json&quot;</span><span class="p">,</span>
         <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;.test_config.json&quot;</span><span class="p">)),</span>
-        <span class="s2">&quot;./test_config.json&quot;</span>
+        <span class="s2">&quot;./test_config.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;./test_config_other.json&quot;</span>
     <span class="p">]</span>
 </pre></div>
 </div>
-</div>
 <div class="section" id="id12">
-<h4>从环境变量中读取配置参数<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h4>
+<h5>指定特定命名的配置文件的解析方式<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h5>
+<p>可以使用<code class="docutils literal notranslate"><span class="pre">&#64;regist_config_file_parser(config_file_name)</span></code>来注册如何解析特定命名的配置文件.这一特性可以更好的定制化配置文件的读取</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_AC</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">load_all_config_file</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">default_config_file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;./test_config.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;./test_config1.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;./test_other_config2.json&quot;</span>
+    <span class="p">]</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Test_AC</span><span class="p">()</span>
+
+<span class="nd">@root</span><span class="o">.</span><span class="n">regist_config_file_parser</span><span class="p">(</span><span class="s2">&quot;test_other_config2.json&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_1</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</pre></div>
+</div>
+<p>如果想在定义子类时固定好,也可以定义<code class="docutils literal notranslate"><span class="pre">_config_file_parser_map:Dict[str,Callable[[Path],</span> <span class="pre">Dict[str,</span> <span class="pre">Any]]]</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_other_config2_parser</span><span class="p">(</span> <span class="n">p</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="k">class</span> <span class="nc">Test_AC</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">load_all_config_file</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">default_config_file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;./test_config.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;./test_config1.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;./test_other_config2.json&quot;</span>
+    <span class="p">]</span>
+    <span class="n">_config_file_parser_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;test_other_config2.json&quot;</span><span class="p">:</span> <span class="n">test_other_config2_parser</span>
+    <span class="p">}</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Test_AC</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id13">
+<h4>从环境变量中读取配置参数<a class="headerlink" href="#id13" title="永久链接至标题">¶</a></h4>
 <p>要从环境变量中读取配置必须设置<code class="docutils literal notranslate"><span class="pre">schema</span></code>字段,<code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code>会按照其中<code class="docutils literal notranslate"><span class="pre">properties</span></code>字段定义的字段范围和字段类型解析环境变量.</p>
 <p>环境变量key的规则为<code class="docutils literal notranslate"><span class="pre">前缀_字段名的大写</span></code>.前缀的默认值为<code class="docutils literal notranslate"><span class="pre">...父节命令节点的父命令节点大写_父节命令节点大写_子命令节点大写</span></code>.
 我们也可以通过设定<code class="docutils literal notranslate"><span class="pre">env_prefix</span></code>字段来替换默认前缀,替换的前缀依然会被转化为大写.</p>
@@ -565,9 +635,10 @@
 </div>
 <p>如果我们不希望从环境变量中解析配置,那么也可以设置<code class="docutils literal notranslate"><span class="pre">parse_env</span></code>为<code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </div>
-<div class="section" id="id13">
-<h4>从命令行参数中获取配置参数<a class="headerlink" href="#id13" title="永久链接至标题">¶</a></h4>
-<p>当我们定义好<code class="docutils literal notranslate"><span class="pre">schema</span></code>后所有schema中定义好的参数都可以以<code class="docutils literal notranslate"><span class="pre">--xxxx</span></code>的形式从命令行中读取,需要注意schema中定义的字段中<code class="docutils literal notranslate"><span class="pre">_</span></code>会被修改为<code class="docutils literal notranslate"><span class="pre">-</span></code>.</p>
+<div class="section" id="id14">
+<h4>从命令行参数中获取配置参数<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
+<p>当我们定义好<code class="docutils literal notranslate"><span class="pre">schema</span></code>后所有schema中定义好的参数都可以以<code class="docutils literal notranslate"><span class="pre">--xxxx</span></code>的形式从命令行中读取,需要注意schema中定义的字段中<code class="docutils literal notranslate"><span class="pre">_</span></code>会被修改为<code class="docutils literal notranslate"><span class="pre">-</span></code>.
+如果定义的字段模式中含有<code class="docutils literal notranslate"><span class="pre">title</span></code>字段,则使用title字段作为命令行缩写即<code class="docutils literal notranslate"><span class="pre">-x</span></code>的形式</p>
 <p>这个命令行读取是使用的标准库<code class="docutils literal notranslate"><span class="pre">argparse</span></code>,构造出的解析器中<code class="docutils literal notranslate"><span class="pre">useage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和<code class="docutils literal notranslate"><span class="pre">description</span></code>会由类中定义的<code class="docutils literal notranslate"><span class="pre">usage</span></code>,<code class="docutils literal notranslate"><span class="pre">epilog</span></code>和docstring决定;<code class="docutils literal notranslate"><span class="pre">argv</span></code>则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).</p>
 <p>通常情况下构造的命令行解析器全部都是可选项,如果我们希望指定<code class="docutils literal notranslate"><span class="pre">schema</span></code>中一项是没有<code class="docutils literal notranslate"><span class="pre">--</span></code>的那种配置,那么可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_noflag</span></code>为想要的字段,如果希望命令行中校验必填项则可以在定义类时指定<code class="docutils literal notranslate"><span class="pre">argparse_check_required=True</span></code>.需要注意如果一个字段被指定为了<code class="docutils literal notranslate"><span class="pre">noflag</span></code>那么它就是必填项了.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
@@ -588,13 +659,14 @@
     <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id14">
-<h4>配置的读取顺序<a class="headerlink" href="#id14" title="永久链接至标题">¶</a></h4>
-<p>配置的读取顺序为<code class="docutils literal notranslate"><span class="pre">schema中定义的default值</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">配置指定的配置文件路径</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行指定的配置文件</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">环境变量</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行参数</span></code>,而覆盖顺序则是反过来.</p>
+<p>命令行中默认使用<code class="docutils literal notranslate"><span class="pre">-c</span></code>/<code class="docutils literal notranslate"><span class="pre">--config</span></code>来指定读取配置文件,它的读取行为受上面介绍的从自定义配置文件中读取配置的设置影响.</p>
 </div>
 <div class="section" id="id15">
-<h4>注册入口的执行函数<a class="headerlink" href="#id15" title="永久链接至标题">¶</a></h4>
+<h4>配置的读取顺序<a class="headerlink" href="#id15" title="永久链接至标题">¶</a></h4>
+<p>配置的读取顺序为<code class="docutils literal notranslate"><span class="pre">schema中定义的default值</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">配置指定的配置文件路径</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行指定的配置文件</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">环境变量</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">命令行参数</span></code>,而覆盖顺序则是反过来.</p>
+</div>
+<div class="section" id="id16">
+<h4>注册入口的执行函数<a class="headerlink" href="#id16" title="永久链接至标题">¶</a></h4>
 <p>我们使用实例的装饰器方法<code class="docutils literal notranslate"><span class="pre">as_main</span></code>来实现对执行节点入口函数的注册,注册的入口函数会在解析好参数后执行,其参数就是解析好的<code class="docutils literal notranslate"><span class="pre">**config</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">root</span> <span class="o">=</span> <span class="n">Test_A</span><span class="p">()</span>
@@ -604,21 +676,42 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>另一种指定入口函数的方法是重写子类的<code class="docutils literal notranslate"><span class="pre">do_main(self)-&gt;None</span></code>方法</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Test_A</span><span class="p">(</span><span class="n">EntryPoint</span><span class="p">):</span>
+    <span class="n">argparse_noflag</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
+    <span class="n">argparse_check_required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;$schema&quot;</span><span class="p">:</span> <span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">do_main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="id16">
-<h4>直接从节点对象中获取配置<a class="headerlink" href="#id16" title="永久链接至标题">¶</a></h4>
+</div>
+<div class="section" id="id17">
+<h4>直接从节点对象中获取配置<a class="headerlink" href="#id17" title="永久链接至标题">¶</a></h4>
 <p>节点对象的<code class="docutils literal notranslate"><span class="pre">config</span></code>属性会在每次调用时copy一份当前的配置值,config是不可写的.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="id17">
-<h3>中间节点<a class="headerlink" href="#id17" title="永久链接至标题">¶</a></h3>
+<div class="section" id="id18">
+<h3>中间节点<a class="headerlink" href="#id18" title="永久链接至标题">¶</a></h3>
 <p>中间节点并不能执行程序,它只是用于描述一个范围内的命令集合,因此它的作用就是充当<code class="docutils literal notranslate"><span class="pre">help</span></code>指令.我们定义中间节点并不能执行.但必须有至少一个子节点才是中间节点.因此即便一个节点定义了上面的配置,只要它有子节点就不会按上面的执行流程执行.</p>
 <p>利用中间节点我们可以构造出非常复杂的启动命令树.</p>
-<div class="section" id="id18">
-<h4>注册子节点<a class="headerlink" href="#id18" title="永久链接至标题">¶</a></h4>
+<div class="section" id="id19">
+<h4>注册子节点<a class="headerlink" href="#id19" title="永久链接至标题">¶</a></h4>
 <p>中间节点的注册有两个接口</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">regist_subcmd</span></code>用于注册一个已经实例化的子节点</p>
@@ -660,7 +753,6 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="0.0.7" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to schema_entry’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
     </div>
 

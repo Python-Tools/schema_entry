@@ -422,6 +422,16 @@ class EntryPoint(EntryPointABC):
         return {}
 
     def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+        """解析获取配置
+
+        配置的加载顺序为: 指定路径的配置文件->环境变量->命令行参数
+
+        在加载完配置后校验是否满足schema的要求.
+
+        Args:
+            parser (argparse.ArgumentParser): 命令行参数解析器
+            argv (Sequence[str]): 命令行参数序列
+        """
         # 默认配置
         default_config = self.parse_default()
         self._config.update(default_config)

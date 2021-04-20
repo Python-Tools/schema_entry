@@ -17,8 +17,111 @@ Classes
 
 .. autoapisummary::
 
+   schema_entry.entrypoint_base.ItemType
+   schema_entry.entrypoint_base.PropertyType
+   schema_entry.entrypoint_base.SchemaType
    schema_entry.entrypoint_base.EntryPointABC
 
+
+
+.. py:class:: ItemType
+
+   Bases: :class:`mypy_extensions.TypedDict`
+
+   dict() -> new empty dictionary
+   dict(mapping) -> new dictionary initialized from a mapping object's
+       (key, value) pairs
+   dict(iterable) -> new dictionary initialized as if via:
+       d = {}
+       for k, v in iterable:
+           d[k] = v
+   dict(**kwargs) -> new dictionary initialized with the name=value pairs
+       in the keyword argument list.  For example:  dict(one=1, two=2)
+
+   .. attribute:: type
+      :annotation: :str
+
+      
+
+   .. attribute:: enum
+      :annotation: :List[Union[int, float, str]]
+
+      
+
+
+.. py:class:: PropertyType
+
+   Bases: :class:`mypy_extensions.TypedDict`
+
+   dict() -> new empty dictionary
+   dict(mapping) -> new dictionary initialized from a mapping object's
+       (key, value) pairs
+   dict(iterable) -> new dictionary initialized as if via:
+       d = {}
+       for k, v in iterable:
+           d[k] = v
+   dict(**kwargs) -> new dictionary initialized with the name=value pairs
+       in the keyword argument list.  For example:  dict(one=1, two=2)
+
+   .. attribute:: type
+      :annotation: :str
+
+      
+
+   .. attribute:: title
+      :annotation: :str
+
+      
+
+   .. attribute:: description
+      :annotation: :str
+
+      
+
+   .. attribute:: enum
+      :annotation: :List[Union[int, float, str]]
+
+      
+
+   .. attribute:: default
+      :annotation: :Union[int, float, str, bool]
+
+      
+
+   .. attribute:: items
+      :annotation: :ItemType
+
+      
+
+
+.. py:class:: SchemaType
+
+   Bases: :class:`mypy_extensions.TypedDict`
+
+   dict() -> new empty dictionary
+   dict(mapping) -> new dictionary initialized from a mapping object's
+       (key, value) pairs
+   dict(iterable) -> new dictionary initialized as if via:
+       d = {}
+       for k, v in iterable:
+           d[k] = v
+   dict(**kwargs) -> new dictionary initialized with the name=value pairs
+       in the keyword argument list.  For example:  dict(one=1, two=2)
+
+   .. attribute:: required
+      :annotation: :List[str]
+
+      
+
+   .. attribute:: type
+      :annotation: :str
+
+      
+
+   .. attribute:: properties
+      :annotation: :Dict[str, PropertyType]
+
+      
 
 
 .. py:class:: EntryPointABC
@@ -62,6 +165,18 @@ Classes
       设置默认的配置文件位置.
 
       :type: Sequence[str]
+
+   .. attribute:: config_file_only_get_need
+
+      设置是否只从配置文件中获取schema中定义的配置项
+
+      :type: bool
+
+   .. attribute:: load_all_config_file
+
+      设置的默认配置文件全部加载.
+
+      :type: bool
 
    .. attribute:: env_prefix
 
@@ -108,7 +223,7 @@ Classes
       
 
    .. attribute:: schema
-      :annotation: :Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
+      :annotation: :Optional[SchemaType]
 
       
 
@@ -123,6 +238,11 @@ Classes
       
 
    .. attribute:: config_file_only_get_need
+      :annotation: :bool
+
+      
+
+   .. attribute:: load_all_config_file
       :annotation: :bool
 
       
@@ -154,6 +274,11 @@ Classes
 
    .. attribute:: _main
       :annotation: :Optional[Callable[..., None]]
+
+      
+
+   .. attribute:: _config_file_parser_map
+      :annotation: :Dict[str, Callable[[Path], Dict[str, Any]]]
 
       
 
@@ -193,7 +318,7 @@ Classes
       :type subcmd: EntryPointABC
 
 
-   .. method:: regist_sub(self, subcmdclz: type) -> 'EntryPointABC'
+   .. method:: regist_sub(self, subcmdclz: type, **kwargs: Any) -> 'EntryPointABC'
       :abstractmethod:
 
       注册子命令.
@@ -203,6 +328,18 @@ Classes
 
       :returns: 注册类的实例
       :rtype: [EntryPointABC]
+
+
+   .. method:: regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]
+      :abstractmethod:
+
+      注册特定配置文件名的解析方式.
+
+      :param file_name: 指定文件名
+      :type file_name: str
+
+      :returns: 注册的解析函数
+      :rtype: Callable[[Callable[[Path], None]], Callable[[Path], None]]
 
 
    .. method:: as_main(self, func: Callable[..., None]) -> Callable[..., None]
@@ -306,9 +443,9 @@ Classes
 
       在加载完配置后校验是否满足schema的要求.
 
-      :param parser: [description]
+      :param parser: 命令行参数解析器
       :type parser: argparse.ArgumentParser
-      :param argv: [description]
+      :param argv: 命令行参数序列
       :type argv: Sequence[str]
 
 

@@ -114,13 +114,13 @@ class Test_A(EntryPoint):
         "properties": {
             "type": "object",
             "minProperties": 1,
-            "additionalProperties": false,
+            "additionalProperties": False,
             "patternProperties": {
                 "^\\w+$": {
                     "oneOf": [
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": False,
                             "required": ["type"],
                             "properties": {
                                 "type": {
@@ -135,6 +135,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -175,6 +182,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": r"^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -215,6 +229,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -255,6 +276,13 @@ class Test_A(EntryPoint):
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         },
@@ -276,19 +304,26 @@ class Test_A(EntryPoint):
                                 "items": {
                                     "type": "object",
                                     "required": ["type"],
-                                    "additionalProperties":false,
+                                    "additionalProperties": false,
                                     "properties": {
                                         "type": {
                                             "type": "string",
                                             "enum": ["string", "number", "integer"]
                                         },
                                         "enum":{
-                                          "type": "array"
+                                            "type": "array"
                                         }
                                     }
                                 },
-                                "description":{
+                                "description": {
                                     "type": "string"
+                                },
+                                "$comment": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "pattern": "^[a-b]|[d-z]$"
                                 }
                             }
                         }
@@ -320,6 +355,7 @@ class Test_A(EntryPoint):
 3. 字段类型只能是`string`,`boolean`,`number`,`integer`,`array`之一
 4. 字段类型如果为`array`则内部必须要有`items`且`items`中必须有`type`字段,且该`type`字段的值必须为`string`,`number`,`integer`之一
 
+
 如果我们不想校验,那么可以设置`verify_schema`为`False`强行关闭这个功能.
 
 #### 从定义的schema中获取默认配置
@@ -347,7 +383,9 @@ class Test_A(EntryPoint):
 
 我们可以使用字段`default_config_file_paths`指定从固定的几个路径中读取配置文件,配置文件支持`json`和`yaml`两种格式.
 我们也可以通过字段`config_file_only_get_need`定义从配置文件中读取配置的行为(默认为`True`),
-当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
+ 当置为`True`时我们只会在配置文件中读取schema中定义的字段,否则则会加载全部字段.
+
+也可以通过设置`load_all_config_file = True`来按设定顺序读取全部预设的配置文件位置
 
 默认配置文件地址是一个列表,会按顺序查找读取,只要找到了满足条件的配置文件就会读取.
 
@@ -360,8 +398,53 @@ class Test_A(EntryPoint):
     default_config_file_paths = [
         "/test_config.json",
         str(Path.home().joinpath(".test_config.json")),
-        "./test_config.json"
+        "./test_config.json",
+        "./test_config_other.json"
     ]
+```
+
+##### 指定特定命名的配置文件的解析方式
+
+可以使用`@regist_config_file_parser(config_file_name)`来注册如何解析特定命名的配置文件.这一特性可以更好的定制化配置文件的读取
+
+```python
+class Test_AC(EntryPoint):
+    load_all_config_file = True
+    default_config_file_paths = [
+        "./test_config.json",
+        "./test_config1.json",
+        "./test_other_config2.json"
+    ]
+root = Test_AC()
+
+@root.regist_config_file_parser("test_other_config2.json")
+def _1(p: Path) -> Dict[str, Any]:
+    with open(p) as f:
+        temp = json.load(f)
+    return {k.lower(): v for k, v in temp.items()}
+
+```
+
+如果想在定义子类时固定好,也可以定义`_config_file_parser_map:Dict[str,Callable[[Path], Dict[str, Any]]]`
+
+```python
+def test_other_config2_parser( p: Path) -> Dict[str, Any]:
+    with open(p) as f:
+        temp = json.load(f)
+    return {k.lower(): v for k, v in temp.items()}
+class Test_AC(EntryPoint):
+    load_all_config_file = True
+    default_config_file_paths = [
+        "./test_config.json",
+        "./test_config1.json",
+        "./test_other_config2.json"
+    ]
+    _config_file_parser_map = {
+        "test_other_config2.json": test_other_config2_parser
+    }
+
+root = Test_AC()
+
 ```
 
 #### 从环境变量中读取配置参数
@@ -391,6 +474,7 @@ class Test_A(EntryPoint):
 #### 从命令行参数中获取配置参数
 
 当我们定义好`schema`后所有schema中定义好的参数都可以以`--xxxx`的形式从命令行中读取,需要注意schema中定义的字段中`_`会被修改为`-`.
+如果定义的字段模式中含有`title`字段,则使用title字段作为命令行缩写即`-x`的形式
 
 这个命令行读取是使用的标准库`argparse`,构造出的解析器中`useage`,`epilog`和`description`会由类中定义的`usage`,`epilog`和docstring决定;`argv`则为传到节点处时剩下的命令行参数(每多一个节点就会从左侧摘掉一个命令行参数).
 
@@ -415,6 +499,8 @@ class Test_A(EntryPoint):
     }
 ```
 
+命令行中默认使用`-c`/`--config`来指定读取配置文件,它的读取行为受上面介绍的从自定义配置文件中读取配置的设置影响.
+
 #### 配置的读取顺序
 
 配置的读取顺序为`schema中定义的default值`->`配置指定的配置文件路径`->`命令行指定的配置文件`->`环境变量`->`命令行参数`,而覆盖顺序则是反过来.
@@ -431,6 +517,29 @@ def main(a,b):
     print(a)
     print(b)
 
+```
+
+另一种指定入口函数的方法是重写子类的`do_main(self)->None`方法
+
+```python
+class Test_A(EntryPoint):
+    argparse_noflag = "a"
+    argparse_check_required=True
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "a": {
+                "type": "number"
+            },
+            "b": {
+                "type": "number"
+            }
+        },
+        "required": ["a","b"]
+    }
+    def do_main(self)->None:
+        print(self.config)
 ```
 
 #### 直接从节点对象中获取配置
