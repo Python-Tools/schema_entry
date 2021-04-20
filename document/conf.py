@@ -24,9 +24,7 @@ copyright = '2021, hsz'
 author = 'hsz'
 
 # The short X.Y version
-version = '0.1.4'# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+version = '0.1.4'
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
