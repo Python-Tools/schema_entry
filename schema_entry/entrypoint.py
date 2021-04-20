@@ -179,7 +179,15 @@ class EntryPoint(EntryPointABC):
             if self.epilog:
                 epilog = self.epilog
             else:
-                epilog = "子命令描述:\n" + "\n".join([f"{subcmd}\t{ins.__doc__}" for subcmd, ins in self._subcmds.items()])
+                epilog = "子命令描述:\n"
+                rows = []
+                for subcmd, ins in self._subcmds.items():
+                    if ins.__doc__ and isinstance(ins.__doc__, str):
+                        desc = ins.__doc__.splitlines()[0]
+                        rows.append(f"{subcmd}\t{desc}")
+                    else:
+                        rows.append(f"{subcmd}")
+                epilog += "\n".join(rows)
             parser = argparse.ArgumentParser(
                 prog=self.prog,
                 epilog=epilog,
