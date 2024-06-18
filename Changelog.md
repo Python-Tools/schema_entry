@@ -4,7 +4,7 @@
 
 1. 提供一个默认的返回config的main而不是提示没有注册main
 2. 允许main返回任意值,这个值会在调用__call__时返回
-3. 增加方法`with_schema`用于在实例化后注册一个schema,支持json字符串,dict和pydantic的类三种形式,注意,pydantic的类不支持嵌套,不支持Union,不支持Optional,但可以将`with_schema`作为装饰器使用,且节点将会使用被装饰的类名作为节点名,类docstring作为description
+3. 增加方法`with_schema`用于在实例化后注册一个schema,支持json字符串,dict和pydantic的类三种形式,注意,pydantic的类不支持嵌套,不支持Union,不支持Optional,但可以将`with_schema`作为装饰器使用,且节点将会使用被装饰的类名小写作为节点名,类docstring作为description
 
 ## 移除特性
 

@@ -18,7 +18,7 @@ import argparse
 import functools
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional, Union
+from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional, Union, cast
 from jsonschema import validate
 from yaml import load as yaml_load
 
@@ -176,11 +176,12 @@ class EntryPoint(EntryPointABC):
         if isinstance(schemaObj, str):
             self.schema = json.loads(schemaObj)
         elif isinstance(schemaObj, dict):
-            self.schema = schemaObj
+            schemaObjSchemaType = cast(SchemaType, schemaObj)
+            self.schema = schemaObjSchemaType
         else:
-            schema = schemaObj.model_json_schema()
+            schema = cast(SchemaType, schemaObj.model_json_schema())
             self.schema = pydantic_schema_to_protocol(schema)
-            self._name = schemaObj.__name__
+            self._name = schemaObj.__name__.lower()
             self.__doc__ = schemaObj.__doc__
         return schemaObj
 

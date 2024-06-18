@@ -218,7 +218,7 @@ def parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.Argumen
         return parser
 
 
-def _remove_sigal_allOf(x):
+def _remove_sigal_allOf(x: Dict[str, Any]) -> Dict[str, Any]:
     info = {}
     if x.get("allOf"):
         if len(x["allOf"]) == 1:
@@ -232,14 +232,14 @@ def _remove_sigal_allOf(x):
         return x
 
 
-def remove_sigal_allOf(d):
+def remove_sigal_allOf(d: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in d.get('properties').items():
         info = _remove_sigal_allOf(value)
         d['properties'][key] = info
     return d
 
 
-def remove_defs_interference(d):
+def remove_defs_interference(d: Dict[str, Any]) -> Dict[str, Any]:
     if d.get("$defs"):
         for key, value in d["$defs"].items():
             if value.get("title"):
@@ -249,7 +249,7 @@ def remove_defs_interference(d):
     return d
 
 
-def replace_refs(d):
+def replace_refs(d: Dict[str, Any]) -> Dict[str, Any]:
     info = jsonref.replace_refs(d)
     print(info)
     if info.get("$defs"):
@@ -258,7 +258,7 @@ def replace_refs(d):
     return info
 
 
-def pydantic_schema_to_protocol(schema: dict) -> dict:
+def pydantic_schema_to_protocol(schema: Dict[str, Any]) -> Dict[str, Any]:
     schema = remove_sigal_allOf(schema)
     schema = remove_defs_interference(schema)
     schema = replace_refs(schema)
