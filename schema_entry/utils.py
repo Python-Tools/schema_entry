@@ -219,7 +219,7 @@ def parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.Argumen
 
 
 def _remove_sigal_allOf(x: Dict[str, Any]) -> Dict[str, Any]:
-    info = {}
+    info: Dict[str, Any] = {}
     if x.get("allOf"):
         if len(x["allOf"]) == 1:
             info.update(**x["allOf"][0])
@@ -233,15 +233,16 @@ def _remove_sigal_allOf(x: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def remove_sigal_allOf(d: Dict[str, Any]) -> Dict[str, Any]:
-    for key, value in d.get('properties').items():
-        info = _remove_sigal_allOf(value)
-        d['properties'][key] = info
+    if d.get('properties'):
+        for key, value in d.get('properties').items():
+            info = _remove_sigal_allOf(value)
+            d['properties'][key] = info
     return d
 
 
 def remove_defs_interference(d: Dict[str, Any]) -> Dict[str, Any]:
-    if d.get("$defs"):
-        for key, value in d["$defs"].items():
+    if d.get("$defs") and isinstance(d["$defs"], dict):
+        for _, value in d["$defs"].items():
             if value.get("title"):
                 del value["title"]
             if value.get("description"):

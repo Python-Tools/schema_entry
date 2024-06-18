@@ -215,14 +215,14 @@ class EntryPoint(EntryPointABC):
                 description=self.__doc__,
                 usage=self.usage,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
-            self.pass_args_to_sub(parser, argv)
+            return self.pass_args_to_sub(parser, argv)
         else:
             parser = argparse.ArgumentParser(
                 prog=self.prog,
                 epilog=self.epilog,
                 description=self.__doc__,
                 usage=self.usage)
-            self.parse_args(parser, argv)
+            return self.parse_args(parser, argv)
 
     def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
         scmds = list(self._subcmds.keys())
