@@ -9,21 +9,21 @@ from schema_entry.entrypoint import EntryPoint
 
 
 def setUpModule() -> None:
-    print("[SetUp Submodule schema_entry.entrypoint test]")
+    print("[SetUp Submodule schema_entry.entrypoint without_subclass test]")
 
 
 def tearDownModule() -> None:
-    print("[TearDown Submodule schema_entry.entrypoint test]")
+    print("[TearDown Submodule schema_entry.entrypoint without_subclass test]")
 
 
 class CMDTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        print("setUp CMDTest test context")
+        print("setUp CMDTest  without_subclass test context")
 
     @classmethod
     def tearDownClass(cls) -> None:
-        print("tearDown CMDTest test context")
+        print("tearDown CMDTest without_subclass test context")
 
     def test_set_name_when_init(self) -> None:
         root = EntryPoint(name="test_a")
@@ -95,11 +95,11 @@ class CMDTest(unittest.TestCase):
 class LoadConfigTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        print("setUp LoadConfigTest test context")
+        print("setUp LoadConfigTest without_subclass test context")
 
     @classmethod
     def tearDownClass(cls) -> None:
-        print("tearDown LoadConfigTest test context")
+        print("tearDown LoadConfigTest without_subclass test context")
 
     def test_load_default_config(self) -> None:
         root = EntryPoint(

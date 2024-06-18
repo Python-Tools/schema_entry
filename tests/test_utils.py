@@ -1,6 +1,6 @@
 import unittest
 import argparse
-from schema_entry.utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
+from schema_entry.utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd, pydantic_schema_to_protocol
 from schema_entry.entrypoint import EntryPoint
 
 
@@ -76,7 +76,8 @@ class ParseValueStringBySchemaTest(unittest.TestCase):
                 "type": "integer"
             }
         }
-        self.assertListEqual(parse_value_string_by_schema(schema, "10,3,4,2"), [10, 3, 4, 2])
+        self.assertListEqual(parse_value_string_by_schema(
+            schema, "10,3,4,2"), [10, 3, 4, 2])
 
     def test_parse_array_float(self) -> None:
         schema = {
@@ -85,7 +86,8 @@ class ParseValueStringBySchemaTest(unittest.TestCase):
                 "type": "number"
             }
         }
-        self.assertListEqual(parse_value_string_by_schema(schema, "10.1,3.2,4.3,2.3"), [10.1, 3.2, 4.3, 2.3])
+        self.assertListEqual(parse_value_string_by_schema(
+            schema, "10.1,3.2,4.3,2.3"), [10.1, 3.2, 4.3, 2.3])
 
     def test_parse_array_str(self) -> None:
         schema = {
@@ -94,7 +96,8 @@ class ParseValueStringBySchemaTest(unittest.TestCase):
                 "type": "string"
             }
         }
-        self.assertListEqual(parse_value_string_by_schema(schema, "a,b,c,d"), ["a", "b", "c", "d"])
+        self.assertListEqual(parse_value_string_by_schema(
+            schema, "a,b,c,d"), ["a", "b", "c", "d"])
 
 
 class ParseSchemaAsCMDTest(unittest.TestCase):
@@ -116,7 +119,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "integer"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a", "10"])
         self.assertDictEqual(vars(args), {"test_a": 10})
 
@@ -124,7 +128,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "number"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a", "10.1"])
         self.assertDictEqual(vars(args), {"test_a": 10.1})
 
@@ -132,7 +137,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "string"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a", "10a"])
         self.assertDictEqual(vars(args), {"test_a": "10a"})
 
@@ -140,7 +146,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "boolean"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a"])
         self.assertDictEqual(vars(args), {"test_a": True})
 
@@ -148,7 +155,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "boolean"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args([])
         self.assertDictEqual(vars(args), {"test_a": False})
 
@@ -159,7 +167,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
                 "type": "integer"
             }
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a=1", "--test-a=2", "--test-a=3"])
         self.assertDictEqual(vars(args), {"test_a": [1, 2, 3]})
 
@@ -170,7 +179,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
                 "type": "number"
             }
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a=1.1", "--test-a=2.2", "--test-a=3.3"])
         self.assertDictEqual(vars(args), {"test_a": [1.1, 2.2, 3.3]})
 
@@ -181,7 +191,8 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
                 "type": "string"
             }
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser)
         args = p.parse_args(["--test-a=1.1", "--test-a=2.2", "--test-a=3.3"])
         self.assertDictEqual(vars(args), {"test_a": ["1.1", "2.2", "3.3"]})
 
@@ -189,6 +200,46 @@ class ParseSchemaAsCMDTest(unittest.TestCase):
         schema = {
             "type": "string"
         }
-        p = parse_schema_as_cmd(key="test_a", schema=schema, parser=self.parser, noflag=True)
+        p = parse_schema_as_cmd(
+            key="test_a", schema=schema, parser=self.parser, noflag=True)
         args = p.parse_args(["noflag"])
         self.assertDictEqual(vars(args), {"test_a": "noflag"})
+
+
+class PydanticSchemaTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        print("setUp PydanticSchema test context")
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        print("tearDown PydanticSchema test context")
+
+    def test_pydantic_schema_to_protocol(self) -> None:
+
+        pdschema = {'$defs': {'Gender': {'enum': ['male', 'female', 'other', 'not_given'],
+                                         'title': 'Gender',
+                                         'type': 'string'}},
+                    'properties': {'gender': {'allOf': [{'$ref': '#/$defs/Gender'}],
+                                              'description': 'this is the value of snap',
+                                              'title': 'g'},
+                                   'gender_list': {'description': 'this is the value of snap',
+                                                   'items': {'$ref': '#/$defs/Gender'},
+                                                   'title': 'l',
+                                                   'type': 'array'}},
+                    'required': ['gender', 'gender_list'],
+                    'title': 'D',
+                    'type': 'object'}
+        get_schema = pydantic_schema_to_protocol(pdschema)
+
+        target = {'properties': {'gender': {'enum': ['male', 'female', 'other', 'not_given'],
+                                            'type': 'string'},
+                                 'gender_list': {'description': 'this is the value of snap',
+                  'items': {'enum': ['male', 'female', 'other', 'not_given'],
+                            'type': 'string'},
+            'title': 'l',
+            'type': 'array'}},
+            'required': ['gender', 'gender_list'],
+            'title': 'D',
+            'type': 'object'}
+        self.assertDictEqual(target, get_schema)

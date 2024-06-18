@@ -9,11 +9,11 @@ from schema_entry.entrypoint import EntryPoint
 
 
 def setUpModule() -> None:
-    print("[SetUp Submodule schema_entry.entrypoint test]")
+    print("[SetUp Submodule schema_entry.entrypoint basic test]")
 
 
 def tearDownModule() -> None:
-    print("[TearDown Submodule schema_entry.entrypoint test]")
+    print("[TearDown Submodule schema_entry.entrypoint basic test]")
 
 
 class CMDTest(unittest.TestCase):
@@ -38,6 +38,7 @@ class CMDTest(unittest.TestCase):
         root = Test_A()
         assert root.name == "test_b"
 
+
     def test_default_entry_usage(self) -> None:
         class Test_A(EntryPoint):
             schema = {
@@ -61,6 +62,46 @@ class CMDTest(unittest.TestCase):
 
         assert root.usage == "test_a [options]"
 
+    def test_default_main(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number",
+                        "default": 33.3
+                    }
+                },
+                "required": ["a_a"]
+            }
+        root = Test_A()
+        config = root(["--a-a=4.2"])
+        target = {
+            "a_a": 4.2
+        }
+        self.assertDictEqual(config,target)
+        
+    def test_main_return(self) -> None:
+        class Test_A(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a_a": {
+                        "type": "number",
+                        "default": 33.3
+                    }
+                },
+                "required": ["a_a"]
+            }
+            def do_main(self) -> str:
+                return "a test"
+        root = Test_A()
+        get_value = root(["--a-a=4.2"])
+        target = "a test"
+        assert get_value == target
+        
     def test_override_do_main(self) -> None:
         class Test_A(EntryPoint):
             schema = {

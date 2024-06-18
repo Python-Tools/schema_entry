@@ -4,8 +4,9 @@
 """
 import warnings
 import argparse
+import jsonref
 from typing import List, Dict, Any, Optional
-from .entrypoint_base import EntryPointABC, PropertyType, ItemType
+from .entrypoint_base import EntryPointABC, PropertyType, ItemType, SchemaType
 
 
 def _get_parent_tree(c: EntryPointABC, result: List[str]) -> None:
@@ -215,3 +216,50 @@ def parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.Argumen
     else:
         print(f"未支持的类型{_type}")
         return parser
+
+
+def _remove_sigal_allOf(x):
+    info = {}
+    if x.get("allOf"):
+        if len(x["allOf"]) == 1:
+            info.update(**x["allOf"][0])
+            del x["allOf"]
+            info.update(x)
+            return info
+        else:
+            raise AttributeError("schema with multiple allOf")
+    else:
+        return x
+
+
+def remove_sigal_allOf(d):
+    for key, value in d.get('properties').items():
+        info = _remove_sigal_allOf(value)
+        d['properties'][key] = info
+    return d
+
+
+def remove_defs_interference(d):
+    if d.get("$defs"):
+        for key, value in d["$defs"].items():
+            if value.get("title"):
+                del value["title"]
+            if value.get("description"):
+                del value["description"]
+    return d
+
+
+def replace_refs(d):
+    info = jsonref.replace_refs(d)
+    print(info)
+    if info.get("$defs"):
+        print("remove $defs")
+        del info["$defs"]
+    return info
+
+
+def pydantic_schema_to_protocol(schema: dict) -> dict:
+    schema = remove_sigal_allOf(schema)
+    schema = remove_defs_interference(schema)
+    schema = replace_refs(schema)
+    return schema

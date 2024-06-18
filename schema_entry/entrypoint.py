@@ -18,13 +18,13 @@ import argparse
 import functools
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional
+from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional, Union
 from jsonschema import validate
 from yaml import load as yaml_load
 
 from .protocol import SUPPORT_SCHEMA
-from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd
-from .entrypoint_base import SchemaType, PropertyType, EntryPointABC
+from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd, pydantic_schema_to_protocol
+from .entrypoint_base import SchemaType, PropertyType, EntryPointABC, PydanticModelLike
 
 
 class EntryPoint(EntryPointABC):
@@ -69,8 +69,9 @@ class EntryPoint(EntryPointABC):
                  parse_env: Optional[bool] = None,
                  argparse_check_required: Optional[bool] = None,
                  argparse_noflag: Optional[str] = None,
-                 config_file_parser_map: Optional[Dict[str, Callable[[Path], Dict[str, Any]]]] = None,
-                 main: Optional[Callable[..., None]] = None
+                 config_file_parser_map: Optional[Dict[str, Callable[[
+                     Path], Dict[str, Any]]]] = None,
+                 main: Optional[Callable[..., Optional[Any]]] = None
                  ) -> None:
         """初始化时定义配置.
 
@@ -156,15 +157,33 @@ class EntryPoint(EntryPointABC):
         self.regist_subcmd(instance)
         return instance
 
-    def as_main(self, func: Callable[..., None]) -> Callable[..., None]:
+    def as_main(self, func: Callable[..., Optional[Any]]) -> Callable[..., Optional[Any]]:
         @ functools.wraps(func)
-        def warp(*args: Any, **kwargs: Any) -> None:
+        def warp(*args: Any, **kwargs: Any) -> Optional[Any]:
             return func(*args, **kwargs)
 
         self._main = warp
         return warp
 
-    def __call__(self, argv: Sequence[str]) -> None:
+    def with_schema(self, schemaObj: Union[str, dict, PydanticModelLike]) -> None:
+        """注册schema
+
+        # todo 注册schema或pydantic类
+        可以是一个json字符串,一个dict,或一个pydantic的类.
+        pydantic的类不支持嵌套,不支持Union,不支持Optional,
+        但可以将`with_schema`作为装饰器使用,且节点将会使用被装饰的类名作为节点名,类docstring作为description
+        """
+        if isinstance(schemaObj, str):
+            self.schema = json.loads(schemaObj)
+        elif isinstance(schemaObj, dict):
+            self.schema = schemaObj
+        else:
+            schema = schemaObj.model_json_schema()
+            self.schema = pydantic_schema_to_protocol(schema)
+            self._name = schemaObj.__name__
+            self.__doc__ = schemaObj.__doc__
+
+    def __call__(self, argv: Sequence[str]) -> Optional[Any]:
         if not self.usage:
             if len(self._subcmds) == 0:
                 self.usage = f"{self.prog} [options]"
@@ -219,7 +238,8 @@ class EntryPoint(EntryPointABC):
         if self.schema is None:
             raise AttributeError("此处不该被执行")
         else:
-            properties: Dict[str, PropertyType] = self.schema.get("properties", {})
+            properties: Dict[str, PropertyType] = self.schema.get(
+                "properties", {})
             requireds: List[str] = self.schema.get("required", [])
             for key, prop in properties.items():
                 required = False
@@ -229,7 +249,8 @@ class EntryPoint(EntryPointABC):
                 else:
                     if self.argparse_check_required and key in requireds:
                         required = True
-                parser = parse_schema_as_cmd(key, prop, parser, required=required, noflag=noflag)
+                parser = parse_schema_as_cmd(
+                    key, prop, parser, required=required, noflag=noflag)
             return parser
 
     def _parse_commandline_args_by_schema(self,
@@ -383,9 +404,11 @@ class EntryPoint(EntryPointABC):
                         result.update(self.file_config_filter(parfunc(p)))
                     else:
                         if p.suffix == ".json":
-                            result.update(self.file_config_filter(self.parse_json_configfile_args(p)))
+                            result.update(self.file_config_filter(
+                                self.parse_json_configfile_args(p)))
                         elif p.suffix == ".yml":
-                            result.update(self.file_config_filter(self.parse_yaml_configfile_args(p)))
+                            result.update(self.file_config_filter(
+                                self.parse_yaml_configfile_args(p)))
                         else:
                             warnings.warn(f"跳过不支持的配置格式的文件{str(p)}")
             return result
@@ -406,13 +429,13 @@ class EntryPoint(EntryPointABC):
         else:
             return True
 
-    def do_main(self) -> None:
+    def do_main(self) -> Optional[Any]:
         if self._main is None:
-            print("未注册main函数")
-            sys.exit(1)
+            warnings.warn("未注册启动函数,返回config值")
+            return self.config
         else:
             config = self.config
-            self._main(**config)
+            return self._main(**config)
 
     def parse_default(self) -> Dict[str, Any]:
         if self.schema:
@@ -422,7 +445,7 @@ class EntryPoint(EntryPointABC):
             return {}
         return {}
 
-    def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+    def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Optional[Any]:
         """解析获取配置
 
         配置的加载顺序为: 指定路径的配置文件->环境变量->命令行参数
@@ -440,7 +463,8 @@ class EntryPoint(EntryPointABC):
         file_config = self.parse_configfile_args()
         self._config.update(file_config)
         # 命令行指定配置文件配置
-        cmd_config_file_config, cmd_config = self.parse_commandline_args(parser, argv)
+        cmd_config_file_config, cmd_config = self.parse_commandline_args(
+            parser, argv)
         self._config.update(cmd_config_file_config)
         # 环境变量配置
         env_config = self.parse_env_args()
@@ -448,6 +472,6 @@ class EntryPoint(EntryPointABC):
         # 命令行指定配置
         self._config.update(cmd_config)
         if self.validat_config():
-            self.do_main()
+            return self.do_main()
         else:
             sys.exit(1)

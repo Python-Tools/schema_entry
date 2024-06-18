@@ -2,8 +2,20 @@
 import abc
 import argparse
 from pathlib import Path
-from typing import Callable, Sequence, Dict, Any, Optional, Tuple, List, Union
+from typing import Callable, Sequence, Dict, Any, Optional, Tuple, List, Union, Protocol, Literal
 from mypy_extensions import TypedDict
+
+JsonSchemaMode = Literal['validation', 'serialization']
+
+
+class PydanticModelLike(Protocol):
+    def model_json_schema(
+        by_alias: bool,
+        ref_template: str,
+        schema_generator: Any,
+        mode: JsonSchemaMode
+    ) -> dict[str, Any]:
+        ...
 
 
 class ItemType(TypedDict):
@@ -49,7 +61,8 @@ class EntryPointABC(abc.ABC):
     _name: str
     parent: Optional["EntryPointABC"]
 
-    schema: Optional[SchemaType]  # Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
+    # Optional[Dict[str, Union[str, List[str], Dict[str, Dict[str, Any]]]]]
+    schema: Optional[SchemaType]
     verify_schema: bool
 
     default_config_file_paths: Sequence[str]
@@ -61,22 +74,25 @@ class EntryPointABC(abc.ABC):
     argparse_noflag: Optional[str]
 
     _subcmds: Dict[str, "EntryPointABC"]
-    _main: Optional[Callable[..., None]]
+    _main: Optional[Callable[..., Optional[Any]]]
     _config_file_parser_map: Dict[str, Callable[[Path], Dict[str, Any]]]
     _config: Dict[str, Any]
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def name(self) -> str:
         """实例的名字.
 
         实例名字就是它的构造类名.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def prog(self) -> str:
         """命令路径."""
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def config(self) -> Dict[str, Any]:
         """执行配置.
 
@@ -116,7 +132,7 @@ class EntryPointABC(abc.ABC):
         '''
 
     @abc.abstractmethod
-    def as_main(self, func: Callable[..., None]) -> Callable[..., None]:
+    def as_main(self, func: Callable[..., Optional[Any]]) -> Callable[..., Optional[Any]]:
         """注册函数在解析参数成功后执行.
 
         执行顺序按被注册的顺序来.
@@ -127,7 +143,14 @@ class EntryPointABC(abc.ABC):
         """
 
     @abc.abstractmethod
-    def __call__(self, argv: Sequence[str]) -> None:
+    def with_schema(self, schemaObj: Union[str,dict,PydanticModelLike]) -> None:
+        """注册schema
+
+        可以是一个json字符串,一个dict,或一个pydantic的类
+        """
+
+    @abc.abstractmethod
+    def __call__(self, argv: Sequence[str]) -> Optional[Any]:
         """执行命令.
 
         如果当前的命令节点不是终点(也就是下面还有子命令)则传递参数到下一级;
@@ -198,11 +221,11 @@ class EntryPointABC(abc.ABC):
         """
 
     @abc.abstractmethod
-    def do_main(self) -> None:
+    def do_main(self) -> Optional[Any]:
         """执行入口函数."""
 
     @abc.abstractmethod
-    def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+    def parse_args(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Optional[Any]:
         """解析获取配置
 
         配置的加载顺序为: 指定路径的配置文件->环境变量->命令行参数
