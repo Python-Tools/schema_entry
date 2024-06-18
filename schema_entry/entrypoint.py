@@ -179,8 +179,8 @@ class EntryPoint(EntryPointABC):
             schemaObjSchemaType = cast(SchemaType, schemaObj)
             self.schema = schemaObjSchemaType
         else:
-            schema = cast(SchemaType, schemaObj.model_json_schema())
-            self.schema = pydantic_schema_to_protocol(schema)
+            schema = schemaObj.model_json_schema()
+            self.schema = cast(SchemaType, pydantic_schema_to_protocol(schema))
             self._name = schemaObj.__name__.lower()
             self.__doc__ = schemaObj.__doc__
         return schemaObj
@@ -215,7 +215,8 @@ class EntryPoint(EntryPointABC):
                 description=self.__doc__,
                 usage=self.usage,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
-            return self.pass_args_to_sub(parser, argv)
+            self.pass_args_to_sub(parser, argv)
+
         else:
             parser = argparse.ArgumentParser(
                 prog=self.prog,
