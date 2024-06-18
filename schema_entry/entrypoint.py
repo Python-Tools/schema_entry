@@ -158,14 +158,14 @@ class EntryPoint(EntryPointABC):
         return instance
 
     def as_main(self, func: Callable[..., Optional[Any]]) -> Callable[..., Optional[Any]]:
-        @ functools.wraps(func)
+        @functools.wraps(func)
         def warp(*args: Any, **kwargs: Any) -> Optional[Any]:
             return func(*args, **kwargs)
 
         self._main = warp
         return warp
 
-    def with_schema(self, schemaObj: Union[str, dict, PydanticModelLike]) -> None:
+    def with_schema(self, schemaObj: Union[str, dict, PydanticModelLike]) -> Union[str, dict, PydanticModelLike]:
         """注册schema
 
         # todo 注册schema或pydantic类
@@ -182,6 +182,7 @@ class EntryPoint(EntryPointABC):
             self.schema = pydantic_schema_to_protocol(schema)
             self._name = schemaObj.__name__
             self.__doc__ = schemaObj.__doc__
+        return schemaObj
 
     def __call__(self, argv: Sequence[str]) -> Optional[Any]:
         if not self.usage:

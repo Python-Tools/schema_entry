@@ -143,7 +143,7 @@ class EntryPointABC(abc.ABC):
         """
 
     @abc.abstractmethod
-    def with_schema(self, schemaObj: Union[str, dict, PydanticModelLike]) -> None:
+    def with_schema(self, schemaObj: Union[str, dict, PydanticModelLike]) -> Union[str, dict, PydanticModelLike]:
         """注册schema
 
         可以是一个json字符串,一个dict,或一个pydantic的类
