@@ -220,7 +220,7 @@ def parse_schema_as_cmd(key: str, schema: PropertyType, parser: argparse.Argumen
 
 def _remove_sigal_allOf(x: Dict[str, Any]) -> Dict[str, Any]:
     info: Dict[str, Any] = {}
-    if x.get("allOf") and isinstance(x['allOf'], list) :
+    if x.get("allOf") and isinstance(x['allOf'], list):
         if len(x["allOf"]) == 1:
             info.update(**x["allOf"][0])
             del x["allOf"]
