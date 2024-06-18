@@ -243,7 +243,7 @@ def remove_sigal_allOf(d: Dict[str, Any]) -> Dict[str, Any]:
 
 def remove_defs_interference(d: Dict[str, Any]) -> Dict[str, Any]:
     if d.get("$defs") and isinstance(d["$defs"], dict):
-        defs = cast(Dict[str, Any],d["$defs"])
+        defs = cast(Dict[str, Any], d["$defs"])
         for _, value in defs.items():
             if value.get("title"):
                 del value["title"]
