@@ -366,7 +366,7 @@ class EntryPoint(EntryPointABC):
 
     def parse_yaml_configfile_args(self, p: Path) -> Dict[str, Any]:
         with open(p, "r", encoding="utf-8") as f:
-            result = yaml.load(f,Loader=yaml.CLoader)
+            result = yaml.load(f, Loader=yaml.CLoader)
         return result
 
     def regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]:
