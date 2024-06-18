@@ -10,11 +10,11 @@ JsonSchemaMode = Literal['validation', 'serialization']
 
 class PydanticModelLike(Protocol):
     def model_json_schema(self,
-        by_alias: bool,
-        ref_template: str,
-        schema_generator: Any,
-        mode: JsonSchemaMode
-    ) -> dict[str, Any]:
+                          by_alias: bool,
+                          ref_template: str,
+                          schema_generator: Any,
+                          mode: JsonSchemaMode
+                          ) -> Dict[str, Any]:
         ...
 
 
