@@ -134,17 +134,17 @@ class EntryPoint(EntryPointABC):
 
         self._config = {}
 
-    @ property
+    @property
     def name(self) -> str:
         return self._name if self._name else self.__class__.__name__.lower()
 
-    @ property
+    @property
     def prog(self) -> str:
         parent_list = get_parent_tree(self)
         parent_list.append(self.name)
         return " ".join(parent_list)
 
-    @ property
+    @property
     def config(self) -> Dict[str, Any]:
         return deepcopy(self._config)
 
