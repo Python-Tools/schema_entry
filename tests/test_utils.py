@@ -232,14 +232,6 @@ class PydanticSchemaTest(unittest.TestCase):
                     'type': 'object'}
         get_schema = pydantic_schema_to_protocol(pdschema)
 
-        target = {'properties': {'gender': {'enum': ['male', 'female', 'other', 'not_given'],
-                                            'type': 'string'},
-                                 'gender_list': {'description': 'this is the value of snap',
-                  'items': {'enum': ['male', 'female', 'other', 'not_given'],
-                            'type': 'string'},
-            'title': 'l',
-            'type': 'array'}},
-            'required': ['gender', 'gender_list'],
-            'title': 'D',
-            'type': 'object'}
+        target = {'properties': {'gender': {'enum': ['male', 'female', 'other', 'not_given'], 'type': 'string', 'description': 'this is the value of snap', 'title': 'g'}, 'gender_list': {
+            'description': 'this is the value of snap', 'items': {'enum': ['male', 'female', 'other', 'not_given'], 'type': 'string'}, 'title': 'l', 'type': 'array'}}, 'required': ['gender', 'gender_list'], 'title': 'D', 'type': 'object'}
         self.assertDictEqual(target, get_schema)

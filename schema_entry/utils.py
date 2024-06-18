@@ -253,7 +253,7 @@ def remove_defs_interference(d: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def replace_refs(d: Dict[str, Any]) -> Dict[str, Any]:
-    info = jsonref.replace_refs(d, lazy_load=False)
+    info = jsonref.replace_refs(d, merge_props=True, lazy_load=False)
     if info.get("$defs"):
         del info["$defs"]
     return info

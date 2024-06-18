@@ -93,6 +93,7 @@ class CMDTest(unittest.TestCase):
 
         assert root.name == "gendertest"
         assert root.__doc__ == "测试description."
+        print(root.schema)
         root(["-l", "male", "-l", "other"])
         self.assertDictEqual(root.config, {
             "gender": "male",
