@@ -5,7 +5,7 @@
 import warnings
 import argparse
 import jsonref
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, cast
 from .entrypoint_base import EntryPointABC, PropertyType, ItemType, SchemaType
 
 
@@ -234,7 +234,8 @@ def _remove_sigal_allOf(x: Dict[str, Any]) -> Dict[str, Any]:
 
 def remove_sigal_allOf(d: Dict[str, Any]) -> Dict[str, Any]:
     if d.get('properties') and isinstance(d['properties'], dict):
-        for key, value in d.get('properties').items():
+        properties = cast(Dict[str, Dict[str, Any]], d['properties'])
+        for key, value in properties.items():
             info = _remove_sigal_allOf(value)
             d['properties'][key] = info
     return d
@@ -242,7 +243,8 @@ def remove_sigal_allOf(d: Dict[str, Any]) -> Dict[str, Any]:
 
 def remove_defs_interference(d: Dict[str, Any]) -> Dict[str, Any]:
     if d.get("$defs") and isinstance(d["$defs"], dict):
-        for _, value in d["$defs"].items():
+        defs = cast(Dict[str, Any],d["$defs"])
+        for _, value in defs.items():
             if value.get("title"):
                 del value["title"]
             if value.get("description"):

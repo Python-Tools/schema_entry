@@ -20,7 +20,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Sequence, Dict, List, Any, Tuple, Optional, Union, cast
 from jsonschema import validate
-from yaml import load as yaml_load
+import yaml
 
 from .protocol import SUPPORT_SCHEMA
 from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd, pydantic_schema_to_protocol
@@ -216,7 +216,7 @@ class EntryPoint(EntryPointABC):
                 usage=self.usage,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
             self.pass_args_to_sub(parser, argv)
-
+            return None
         else:
             parser = argparse.ArgumentParser(
                 prog=self.prog,
@@ -366,7 +366,7 @@ class EntryPoint(EntryPointABC):
 
     def parse_yaml_configfile_args(self, p: Path) -> Dict[str, Any]:
         with open(p, "r", encoding="utf-8") as f:
-            result = yaml_load(f)
+            result = yaml.load(f,Loader=yaml.CLoader)
         return result
 
     def regist_config_file_parser(self, file_name: str) -> Callable[[Callable[[Path], Dict[str, Any]]], Callable[[Path], Dict[str, Any]]]:
