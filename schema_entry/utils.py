@@ -258,8 +258,10 @@ def replace_refs(d: Dict[str, Any]) -> Dict[str, Any]:
         del info["$defs"]
     return info
 
+
 def pydantic_schema_to_protocol(schema: Dict[str, Any]) -> Dict[str, Any]:
     remove_sigal_allOf_schema = remove_sigal_allOf(schema)
-    remove_defs_interference_schema = remove_defs_interference(remove_sigal_allOf_schema)
+    remove_defs_interference_schema = remove_defs_interference(
+        remove_sigal_allOf_schema)
     new = replace_refs(remove_defs_interference_schema)
     return new
