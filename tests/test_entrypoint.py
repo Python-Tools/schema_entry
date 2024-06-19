@@ -38,7 +38,6 @@ class CMDTest(unittest.TestCase):
         root = Test_A()
         assert root.name == "test_b"
 
-
     def test_default_entry_usage(self) -> None:
         class Test_A(EntryPoint):
             schema = {
@@ -78,10 +77,13 @@ class CMDTest(unittest.TestCase):
         root = Test_A()
         config = root(["--a-a=4.2"])
         target = {
-            "a_a": 4.2
+            "caller": "test_a",
+            "result": {
+                "a_a": 4.2
+            }
         }
-        self.assertDictEqual(config,target)
-        
+        self.assertDictEqual(config, target)
+
     def test_main_return(self) -> None:
         class Test_A(EntryPoint):
             schema = {
@@ -95,13 +97,14 @@ class CMDTest(unittest.TestCase):
                 },
                 "required": ["a_a"]
             }
+
             def do_main(self) -> str:
                 return "a test"
         root = Test_A()
         get_value = root(["--a-a=4.2"])
-        target = "a test"
+        target = {"caller": "test_a", "result": "a test"}
         assert get_value == target
-        
+
     def test_override_do_main(self) -> None:
         class Test_A(EntryPoint):
             schema = {
@@ -175,6 +178,38 @@ class CMDTest(unittest.TestCase):
         root(["b", "c"])
         self.assertDictEqual(a_b_c.config, {
             "a": 2
+        })
+
+    def test_subcmd_return(self) -> None:
+        class A(EntryPoint):
+            pass
+
+        class B(EntryPoint):
+            pass
+
+        class C(EntryPoint):
+            schema = {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["a"]
+            }
+        root = A()
+        a_b_c = root.regist_sub(B).regist_sub(C)
+
+        @a_b_c.as_main
+        def _(a: int) -> int:
+            return a
+        os.environ['A_B_C_A'] = "2"
+        call_result = root(["b", "c"])
+
+        self.assertDictEqual(call_result, {
+            "caller": "c",
+            "result": 2
         })
 
 

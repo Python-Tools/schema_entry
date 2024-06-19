@@ -24,7 +24,7 @@ import yaml
 
 from .protocol import SUPPORT_SCHEMA
 from .utils import get_parent_tree, parse_value_string_by_schema, parse_schema_as_cmd, pydantic_schema_to_protocol
-from .entrypoint_base import SchemaType, PropertyType, EntryPointABC, PydanticModelLike
+from .entrypoint_base import SchemaType, PropertyType, EntryPointABC, PydanticModelLike, CallerReturnType
 
 
 class EntryPoint(EntryPointABC):
@@ -185,7 +185,7 @@ class EntryPoint(EntryPointABC):
             self.__doc__ = schemaObj.__doc__
         return schemaObj
 
-    def __call__(self, argv: Sequence[str]) -> Optional[Any]:
+    def __call__(self, argv: Sequence[str]) -> Optional[CallerReturnType]:
         if not self.usage:
             if len(self._subcmds) == 0:
                 self.usage = f"{self.prog} [options]"
@@ -215,23 +215,27 @@ class EntryPoint(EntryPointABC):
                 description=self.__doc__,
                 usage=self.usage,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
-            self.pass_args_to_sub(parser, argv)
-            return None
+            return self.pass_args_to_sub(parser, argv)
+
         else:
             parser = argparse.ArgumentParser(
                 prog=self.prog,
                 epilog=self.epilog,
                 description=self.__doc__,
                 usage=self.usage)
-            return self.parse_args(parser, argv)
+            result = self.parse_args(parser, argv)
+            if result is None:
+                return result
+            else:
+                return {"caller": self.name, "result": result}
 
-    def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+    def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Optional[CallerReturnType]:
         scmds = list(self._subcmds.keys())
         scmdss = ",".join(scmds)
         parser.add_argument('subcmd', help=f'执行子命令，可选的子命有{scmdss}')
         args = parser.parse_args(argv[0:1])
         if self._subcmds.get(args.subcmd):
-            self._subcmds[args.subcmd](argv[1:])
+            return self._subcmds[args.subcmd](argv[1:])
         else:
             print(f'未知的子命令 `{argv[0]}`')
             parser.print_help()

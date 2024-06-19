@@ -16,6 +16,11 @@ class PydanticModelLike(Protocol):
         ...
 
 
+class CallerReturnType(TypedDict):
+    caller: str
+    result: Any
+
+
 class ItemType(TypedDict):
     type: str
     enum: List[Union[int, float, str]]
@@ -148,7 +153,7 @@ class EntryPointABC(abc.ABC):
         """
 
     @abc.abstractmethod
-    def __call__(self, argv: Sequence[str]) -> Optional[Any]:
+    def __call__(self, argv: Sequence[str]) -> Optional[CallerReturnType]:
         """执行命令.
 
         如果当前的命令节点不是终点(也就是下面还有子命令)则传递参数到下一级;
@@ -160,7 +165,7 @@ class EntryPointABC(abc.ABC):
 
         """
     @abc.abstractmethod
-    def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> None:
+    def pass_args_to_sub(self, parser: argparse.ArgumentParser, argv: Sequence[str]) -> Optional[CallerReturnType]:
         """解析复杂命令行参数并将参数传递至下一级."""
 
     @abc.abstractmethod
